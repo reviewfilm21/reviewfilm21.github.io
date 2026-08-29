@@ -1,0 +1,238 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReviewFilm21 - Review Film Terbaru Sub Indo</title>
+    <meta name="description" content="Review film terbaru, sinopsis, rating, dan rekomendasi film. Baca review sebelum nonton di bioskop.">
+    <meta name="robots" content="index, follow">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0a0a0a;
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        h1 {
+            color: #ff5c00;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #999;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .movie-card {
+            background: #1a1a1a;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        .movie-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255,92,0,0.5);
+        }
+        
+        .movie-card img {
+            width: 100%;
+            height: 270px;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .movie-info {
+            padding: 15px;
+        }
+        
+        .movie-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .rating {
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2em;
+            color: #999;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 20px;
+            color: #ff4444;
+            background: #2a0a0a;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎬 ReviewFilm21</h1>
+    <p class="subtitle">Review Film & Series Terbaru Subtitle Indonesia</p>
+    
+    <div id="movie-container" class="movie-grid"></div>
+    <div id="loading" class="loading">⏳ Memuat data film...</div>
+
+    <script>
+        const container = document.getElementById('movie-container');
+        const loading = document.getElementById('loading');
+        
+        // Data film fallback
+        const fallbackMovies = [
+            {
+                title: "Avatar: Fire and Ash",
+                year: "2026",
+                rating: 8.9,
+                poster: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg"
+            },
+            {
+                title: "Deadpool & Wolverine",
+                year: "2024",
+                rating: 8.1,
+                poster: "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg"
+            },
+            {
+                title: "Dune: Part Two",
+                year: "2024",
+                rating: 8.6,
+                poster: "https://image.tmdb.org/t/p/w500/1pdfifyNQrYMH7QCKV4T58I2Aky.jpg"
+            },
+            {
+                title: "Inside Out 2",
+                year: "2024",
+                rating: 8.5,
+                poster: "https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg"
+            },
+            {
+                title: "Godzilla x Kong: The New Empire",
+                year: "2024",
+                rating: 7.8,
+                poster: "https://image.tmdb.org/t/p/w500/tMefBSflR6PGQLv7WvFPpKLZkyk.jpg"
+            },
+            {
+                title: "Mad Max: Fury Road",
+                year: "2015",
+                rating: 8.3,
+                poster: "https://image.tmdb.org/t/p/w500/hA2ple9q4qnwxp3hKVNhroipsir.jpg"
+            },
+            {
+                title: "The Batman",
+                year: "2022",
+                rating: 7.9,
+                poster: "https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg"
+            },
+            {
+                title: "Spider-Man: No Way Home",
+                year: "2021",
+                rating: 8.2,
+                poster: "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg"
+            }
+        ];
+        
+        // Fungsi menampilkan film
+        function showMovies(movies) {
+            loading.style.display = 'none';
+            
+            container.innerHTML = movies.map(movie => {
+                return `
+                    <div class="movie-card">
+                        <img src="${movie.poster}" 
+                             alt="${movie.title}"
+                             onerror="this.src='https://via.placeholder.com/500x750/333333/ffffff?text=No+Poster'">
+                        <div class="movie-info">
+                            <div class="movie-title">${movie.title}</div>
+                            <div class="movie-meta">
+                                <span>${movie.year}</span>
+                                <span class="rating">★ ${movie.rating.toFixed(1)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Fungsi fetch dari TMDB
+        async function loadMovies() {
+            try {
+                const API_KEY = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOWE0MjVkOWE5NWIxOWNlZWNmNWY3NjM0OTFhMTZhMiIsIm5iZiI6MTc4NjcwODk3NS45NDMsInN1YiI6IjZhN2YwM2VmYWRhZTA1MzllZWI3YTUwMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.tYWz-uha4q8nvwC1HTDd_KUgjGAdMFSPbOzZrkE3hoY';
+                
+                const response = await fetch(
+                    'https://api.themoviedb.org/3/trending/movie/week?language=id-ID',
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${API_KEY}`,
+                            'accept': 'application/json'
+                        }
+                    }
+                );
+                
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                
+                const data = await response.json();
+                
+                if (data.results && data.results.length > 0) {
+                    const movies = data.results.slice(0, 12).map(movie => ({
+                        title: movie.title,
+                        year: movie.release_date ? movie.release_date.split('-')[0] : 'TBA',
+                        rating: movie.vote_average || 8.0,
+                        poster: movie.poster_path 
+                            ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                            : 'https://via.placeholder.com/500x750/333333/ffffff?text=No+Poster'
+                    }));
+                    showMovies(movies);
+                } else {
+                    showMovies(fallbackMovies);
+                }
+                
+            } catch (error) {
+                console.log('Menggunakan data fallback karena:', error.message);
+                showMovies(fallbackMovies);
+            }
+        }
+        
+        // Jalankan saat halaman dimuat
+        window.onload = loadMovies;
+    </script>
+</body>
+</html>
