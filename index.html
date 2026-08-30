@@ -35,7 +35,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Skrip Iklan Adsterra -->
-    <script async="async" data-cfasync="false" src="https://thrillingdeepcutlery.com/0ebe8e033d54f677c253b902dad75d61/invoke.js" onerror="console.warn('Ad script blocked or failed to load safely.');"></script>
+    <script async="async" data-cfasync="false" src="https://thrivingdeepcutlery.com/0ebe8e033d54f677c253b902dad75d61/invoke.js" onerror="console.warn('Ad script blocked or failed to load safely.');"></script>
 
     <script>
         tailwind.config = {
@@ -169,7 +169,7 @@
             <div class="flex items-center justify-between h-14 sm:h-20 gap-2 sm:gap-4">
                 
                 <!-- Brand Logo -->
-                <a href="/" onclick="event.preventDefault(); navigateTo('home')" class="focusable flex items-center gap-2 group shrink-0 rounded-xl p-1 focus:outline-none" aria-label="ReviewFilm21 Beranda">
+                <a href="#" onclick="event.preventDefault(); navigateTo('home')" class="focusable flex items-center gap-2 group shrink-0 rounded-xl p-1 focus:outline-none" aria-label="ReviewFilm21 Beranda">
                     <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform text-lg sm:text-xl">
                         🎬
                     </div>
@@ -750,13 +750,11 @@
                 return;
             }
 
-            // Filter data berdasarkan Genre
             let filteredItems = state.libraryData.filter(item => {
                 const genre = item.Genre ? item.Genre.toLowerCase() : '';
                 return keywords.some(keyword => genre.includes(keyword));
             });
 
-            // **PERUBAHAN: Filter series - hanya Episode 1 yang ditampilkan**
             filteredItems = filterSeriesOnlyEpisode1(filteredItems);
 
             if (filteredItems.length === 0) {
@@ -766,7 +764,6 @@
 
             const categoryName = collectionType.replace('-', ' ').toUpperCase();
             
-            // Simpan items untuk navigasi next/prev
             state.currentLibraryItems = filteredItems;
             state.currentLibraryIndex = 0;
             
@@ -776,40 +773,31 @@
             if (mobileMenu) mobileMenu.classList.add('hidden');
         }
 
-        // **FUNGSI BARU: Filter hanya Episode 1 dari setiap series**
         function filterSeriesOnlyEpisode1(items) {
             const grouped = {};
             const result = [];
             
             items.forEach(item => {
                 const title = item.Judul || '';
-                // Deteksi apakah ini series (ada kata Season/Episode)
                 const isSeries = title.toLowerCase().includes('season') || 
                                 title.toLowerCase().includes('episode') ||
                                 title.toLowerCase().includes('series');
                 
                 if (!isSeries) {
-                    // Film biasa langsung dimasukkan
                     result.push(item);
                     return;
                 }
                 
-                // Ekstrak judul dasar (tanpa Season/Episode)
                 let baseTitle = title;
-                // Hapus pola "Season X Episode Y" atau "Episode Y"
                 baseTitle = baseTitle.replace(/season\s*\d+/i, '').replace(/episode\s*\d+/i, '').trim();
                 baseTitle = baseTitle.replace(/[📺🎬]/g, '').trim();
-                // Hapus keterangan episode di akhir
                 baseTitle = baseTitle.replace(/-\s*(season|episode|eps|s)\s*[\d]+/i, '').trim();
                 baseTitle = baseTitle.replace(/[\(\[]?\s*(season|episode|eps|s)\s*[\d]+\s*[\)\]]?/i, '').trim();
-                // Hapus angka episode di akhir
                 baseTitle = baseTitle.replace(/\s*[\(\[\{]\s*[Ee]p(?:isode)?\s*[\d]+\s*[\)\]\}]/, '').trim();
                 baseTitle = baseTitle.replace(/\s*[Ee]p(?:isode)?\s*[\d]+\s*$/, '').trim();
                 
-                // Jika judul kosong setelah dibersihkan, gunakan judul asli
                 if (!baseTitle) baseTitle = title;
                 
-                // Ambil episode nomor
                 const epMatch = title.match(/[Ee]p(?:isode)?\s*[\d]+/i) || title.match(/[\d]+\s*[\)\]]?$/);
                 let epNumber = 999;
                 if (epMatch) {
@@ -823,7 +811,6 @@
                 }
             });
             
-            // Ambil hanya item dengan episode terkecil (Episode 1)
             Object.values(grouped).forEach(({ item }) => {
                 result.push(item);
             });
@@ -875,13 +862,9 @@
                            title.toLowerCase().includes('series');
             const type = isSeries ? 'tv' : 'movie';
             
-            // Bersihkan judul untuk ditampilkan
             let displayTitle = title;
-            // Hapus prefix "Nonton" jika ada
             displayTitle = displayTitle.replace(/^Nonton\s*/i, '').trim();
-            // Hapus "[2026]" dan sejenisnya
             displayTitle = displayTitle.replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '').trim();
-            // Hapus "Series Sub Indo" dan sejenisnya
             displayTitle = displayTitle.replace(/Series\s*Sub\s*Indo/i, '').trim();
             displayTitle = displayTitle.replace(/Sub\s*Indo/i, '').trim();
             displayTitle = displayTitle.replace(/Sub\s*Indonesia/i, '').trim();
@@ -917,7 +900,7 @@
         }
 
         // ============================================
-        // FUNGSI PLAY DARI PUSTAKA (SAMA SEPERTI MENU UTAMA)
+        // FUNGSI PLAY DARI PUSTAKA
         // ============================================
         function playLibraryItem(link, title, poster, rating, year, description, actors, type) {
             if (!link || link === '#') {
@@ -925,8 +908,7 @@
                 return;
             }
 
-            // **PERUBAHAN: Tampilkan pemutar seperti menu utama**
-            // Buat objek media palsu dengan struktur yang sama
+            // Buat objek media
             const mediaItem = {
                 id: Math.floor(Math.random() * 1000000),
                 title: title,
@@ -942,17 +924,11 @@
                 isLibraryItem: true
             };
 
-            // Simpan ke cache agar bisa diakses
             const key = getMediaKey(mediaItem.type, mediaItem.id);
             mediaCache.set(key, mediaItem);
 
-            // Buka detail page dengan item ini
-            openDetailPage(mediaItem);
-
-            // Update URL
-            const slug = slugify(mediaItem.title);
-            const path = `/${mediaItem.type}/${mediaItem.id}/${slug}`;
-            history.pushState({ mediaId: mediaItem.id, type: mediaItem.type }, '', path);
+            // Buka detail page tanpa mengubah URL (mencegah error 404)
+            openDetailPage(mediaItem, true);
         }
 
         // ============================================
@@ -991,8 +967,7 @@
         }
 
         function navigateTo(tab) {
-            const path = tab === 'home' ? '/' : `/${tab}`;
-            history.pushState({ tab }, '', path);
+            // Hanya update state tanpa mengubah URL (mencegah error 404)
             switchTab(tab);
         }
 
@@ -1099,10 +1074,13 @@
         function navigateToDetail(key) {
             const item = mediaCache.get(key);
             if (!item) return;
-            const slug = slugify(item.title);
-            const path = `/${item.type}/${item.id}/${slug}`;
-            history.pushState({ mediaId: item.id, type: item.type }, '', path);
-            openDetailPage(item);
+            // Buka detail page tanpa mengubah URL
+            openDetailPage(item, false);
+        }
+
+        function toggleFavoriteFromKey(key) {
+            const item = mediaCache.get(key);
+            if (item) toggleWatchlistDirect(item);
         }
 
         // ============================================
@@ -1164,7 +1142,7 @@
         // ============================================
         // DETAIL PAGE FUNCTIONS (DITINGKATKAN)
         // ============================================
-        async function openDetailPage(item) {
+        function openDetailPage(item, preventUrlChange = true) {
             state.currentMedia = item;
             state.currentServer = 1;
             state.currentSeason = 1;
@@ -1183,24 +1161,25 @@
 
             updateDetailFavoriteButton();
 
-            // **PERUBAHAN: Episode container untuk series dari pustaka**
+            // Episode container
             const epContainer = document.getElementById('episodes-container');
             const epGrid = document.getElementById('episodes-grid');
             
-            // Cek apakah ini series dan ada data episode lain di libraryData
             const isSeries = item.type === 'tv' || 
                             (item.title && (item.title.toLowerCase().includes('season') || 
                                            item.title.toLowerCase().includes('episode')));
             
-            if (isSeries) {
-                // Cari semua episode untuk series ini dari libraryData
-                const baseTitle = item.title
+            if (isSeries && state.libraryData.length > 0) {
+                // Cari semua episode untuk series ini
+                let baseTitle = item.title
                     .replace(/season\s*\d+/i, '')
                     .replace(/episode\s*\d+/i, '')
                     .replace(/[Ee]p(?:isode)?\s*[\d]+/i, '')
                     .trim()
-                    .replace(/[📺🎬]/g, '').trim();
+                    .replace(/[📺🎬]/g, '').trim()
+                    .replace(/-\s*(season|episode|eps|s)\s*[\d]+/i, '').trim();
                 
+                // Cari episode lain
                 const allEpisodes = state.libraryData.filter(data => {
                     const dataTitle = data.Judul || '';
                     return dataTitle.toLowerCase().includes(baseTitle.toLowerCase()) && 
@@ -1219,20 +1198,18 @@
                 
                 if (allEpisodes.length > 0) {
                     epContainer.classList.remove('hidden');
-                    let epHTML = `<button onclick="switchLibraryEpisode('${item.link}')" id="ep-btn-current" class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white">Episode 1 (Saat Ini)</button>`;
+                    let epHTML = `<span class="text-xs text-zinc-400 mr-2">Episode 1 (Saat Ini)</span>`;
                     
                     allEpisodes.forEach((ep, idx) => {
-                        const epNum = idx + 2; // Episode 2, 3, dst
+                        const epNum = idx + 2;
                         epHTML += `<button onclick="playLibraryItem('${ep.Link}', '${ep.Judul}', '${ep.Poster}', '${ep.Rating}', '${ep.Tahun}', '${ep.Deskripsi || ''}', '${ep.Aktor || ''}', 'tv')" 
-                                    id="ep-btn-${epNum}" 
-                                    class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all">
+                                    class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all">
                                     Episode ${epNum}
                                   </button>`;
                     });
                     
                     epGrid.innerHTML = epHTML;
                 } else {
-                    // Jika tidak ada episode lain, tetap tampilkan container kosong
                     epContainer.classList.remove('hidden');
                     epGrid.innerHTML = `<span class="text-xs text-zinc-400">Episode lain belum tersedia</span>`;
                 }
@@ -1243,61 +1220,52 @@
             document.querySelectorAll('#main-content > *:not(#detail-section)').forEach(s => s.classList.add('hidden'));
             document.getElementById('detail-section').classList.remove('hidden');
 
-            // **PERUBAHAN: Gunakan link dari item jika tersedia**
-            if (item.link && item.isLibraryItem) {
-                // Untuk item dari pustaka, gunakan link langsung
-                const iframe = document.getElementById('video-iframe');
-                if (iframe) {
-                    // Jika link adalah YouTube atau Dailymotion, embed langsung
-                    let embedUrl = item.link;
+            // Set iframe source
+            const iframe = document.getElementById('video-iframe');
+            if (iframe) {
+                let embedUrl = '';
+                
+                if (item.link && item.isLibraryItem) {
+                    embedUrl = item.link;
+                    // Konversi URL ke embed
                     if (embedUrl.includes('youtube.com/watch?v=')) {
                         const videoId = embedUrl.match(/v=([^&]+)/);
                         if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`;
                     } else if (embedUrl.includes('youtu.be/')) {
                         const videoId = embedUrl.match(/youtu\.be\/([^?]+)/);
                         if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`;
-                    } else if (embedUrl.includes('dailymotion.com')) {
-                        // Dailymotion sudah embed
                     } else if (embedUrl.includes('mxdrop.sx') || embedUrl.includes('vinovo.to')) {
-                        // Untuk mxdrop/vinovo, gunakan iframe dengan src langsung
-                        // Tapi biasanya mereka butuh embed URL
                         if (!embedUrl.includes('embed')) {
                             embedUrl = embedUrl.replace('/e/', '/embed/');
                         }
                     }
-                    iframe.src = embedUrl;
+                } else {
+                    // Dari TMDB
+                    const isTv = item.type === 'tv';
+                    const id = item.id;
+                    embedUrl = isTv ? `https://vidsrc.to/embed/tv/${id}/1/1` : `https://vidsrc.to/embed/movie/${id}`;
                 }
-            } else {
-                // Untuk item dari TMDB, gunakan server
-                switchServer(1);
-                updateIframeSource();
+                
+                iframe.src = embedUrl;
             }
 
-            // Fetch trailer jika item dari TMDB
+            // Fetch trailer jika dari TMDB
             if (!item.isLibraryItem) {
                 try {
-                    const res = await fetch(`https://api.themoviedb.org/3/${item.type}/${item.id}/videos?language=id-ID&api_key=${DEFAULT_API_KEY}`);
-                    if (res.ok) {
-                        const data = await res.json();
-                        let officialTrailer = data.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube') || data.results?.find(v => v.site === 'YouTube');
-                        if (officialTrailer) state.trailerKey = officialTrailer.key;
-                    }
+                    fetch(`https://api.themoviedb.org/3/${item.type}/${item.id}/videos?language=id-ID&api_key=${DEFAULT_API_KEY}`)
+                        .then(res => res.ok ? res.json() : null)
+                        .then(data => {
+                            if (data) {
+                                let officialTrailer = data.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube') || data.results?.find(v => v.site === 'YouTube');
+                                if (officialTrailer) state.trailerKey = officialTrailer.key;
+                            }
+                        })
+                        .catch(() => {});
                 } catch(e) {}
             }
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
             setTimeout(updateTvFocusables, 200);
-        }
-
-        // **FUNGSI BARU: Switch episode dari library**
-        function switchLibraryEpisode(link) {
-            if (link) {
-                // Cari item berdasarkan link
-                const item = state.libraryData.find(d => d.Link === link);
-                if (item) {
-                    playLibraryItem(item.Link, item.Judul, item.Poster, item.Rating, item.Tahun, item.Deskripsi, item.Aktor, 'tv');
-                }
-            }
         }
 
         function closeDetailPage() {
@@ -1314,8 +1282,6 @@
                 const sec = document.getElementById(id);
                 if (sec) sec.classList.remove('hidden');
             });
-            const path = state.activeTab === 'home' ? '/' : `/${state.activeTab}`;
-            history.pushState({ tab: state.activeTab }, '', path);
             document.title = 'ReviewFilm21 - Nonton Film & TV Series Subtitle Indonesia Gratis';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1349,14 +1315,6 @@
 
         function switchEpisode(epNum) {
             state.currentEpisode = epNum;
-            const container = document.getElementById('episodes-grid');
-            if (!container) return;
-            const buttons = container.querySelectorAll('button');
-            buttons.forEach((btn, idx) => {
-                btn.className = idx + 1 === epNum 
-                    ? "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white"
-                    : "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700";
-            });
             updateIframeSource();
         }
 
@@ -1740,61 +1698,6 @@
         }
 
         // ============================================
-        // ROUTE HANDLER
-        // ============================================
-        async function handleRoute() {
-            const path = window.location.pathname;
-            if (path === '/') { switchTab('home'); return; }
-            if (path === '/movies') { switchTab('movies'); return; }
-            if (path === '/tv') { switchTab('tv'); return; }
-            if (path === '/watchlist') { switchTab('watchlist'); return; }
-
-            const movieMatch = path.match(/^\/movie\/(\d+)(?:\/[^/]+)?$/);
-            if (movieMatch) { await openMediaById(movieMatch[1], 'movie'); return; }
-            const tvMatch = path.match(/^\/tv\/(\d+)(?:\/[^/]+)?$/);
-            if (tvMatch) { await openMediaById(tvMatch[1], 'tv'); return; }
-
-            switchTab('home');
-        }
-
-        async function openMediaById(id, type) {
-            const key = getMediaKey(type, id);
-            let item = mediaCache.get(key);
-            if (!item) {
-                try {
-                    const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}?language=id-ID&api_key=${DEFAULT_API_KEY}`);
-                    if (res.ok) {
-                        const data = await res.json();
-                        const title = data.title || data.name || 'Tanpa Judul';
-                        const releaseDate = data.release_date || data.first_air_date || '2026';
-                        const year = releaseDate ? (releaseDate.split('-')[0] || '2026') : '2026';
-                        item = {
-                            id: data.id,
-                            title: title,
-                            type: type,
-                            rating: data.vote_average ? data.vote_average.toFixed(1) : '8.0',
-                            year: year,
-                            genre: 'Bioskop',
-                            overview: data.overview || 'Tidak ada deskripsi tersedia.',
-                            poster_path: data.poster_path ? `https://image.tmdb.org/t/p/w500${data.poster_path}` : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
-                            backdrop_path: data.backdrop_path ? `https://image.tmdb.org/t/p/w1280${data.backdrop_path}` : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover'
-                        };
-                        mediaCache.set(key, item);
-                    }
-                } catch(e) {}
-            }
-            if (item) {
-                const slug = slugify(item.title);
-                const expectedPath = `/${type}/${id}/${slug}`;
-                if (window.location.pathname !== expectedPath) history.replaceState(null, '', expectedPath);
-                openDetailPage(item);
-            } else {
-                showToast('Konten tidak ditemukan', '⚠️');
-                navigateTo('home');
-            }
-        }
-
-        // ============================================
         // SMART TV CONTROLS
         // ============================================
         function initSmartTvControls() {
@@ -1856,15 +1759,12 @@
         // ============================================
         // WINDOW LOAD
         // ============================================
-        window.addEventListener('popstate', handleRoute);
-
         window.onload = function () {
             updateWatchlistBadge();
             setupHeroCarousel();
             renderAllSections();
             fetchTMDBCatalogs();
             initSmartTvControls();
-            handleRoute();
             setTimeout(updateTvFocusables, 500);
 
             loadLibraryFromGoogleSheets();
