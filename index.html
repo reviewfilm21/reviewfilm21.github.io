@@ -35,7 +35,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Skrip Iklan Adsterra -->
-    <script async="async" data-cfasync="false" src="https://thrivingdeepcutlery.com/0ebe8e033d54f677c253b902dad75d61/invoke.js" onerror="console.warn('Ad script blocked or failed to load safely.');"></script>
+    <script async="async" data-cfasync="false" src="https://thrillingdeepcutlery.com/0ebe8e033d54f677c253b902dad75d61/invoke.js" onerror="console.warn('Ad script blocked or failed to load safely.');"></script>
 
     <script>
         tailwind.config = {
@@ -152,6 +152,19 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Tombol Buka Tab Baru */
+        .btn-open-tab {
+            background: #27272a;
+            border: 1px solid #3f3f46;
+            color: #d4d4d8;
+            transition: all 0.2s;
+        }
+        .btn-open-tab:hover {
+            background: #3f3f46;
+            border-color: #ff5c00;
+            color: #ff5c00;
         }
     </style>
 </head>
@@ -459,10 +472,25 @@
                 <button onclick="toggleDetailFavorite()" class="focusable text-xs sm:text-sm bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3 py-2 rounded-xl border border-zinc-700">☆ Simpan</button>
             </div>
 
+            <!-- Video Player -->
             <div class="relative w-full aspect-video bg-zinc-950 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl">
                 <iframe id="video-iframe" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+                <!-- Overlay untuk mixdrop error -->
+                <div id="player-overlay" class="absolute inset-0 bg-zinc-950/90 flex flex-col items-center justify-center hidden">
+                    <div class="text-center p-4 space-y-3">
+                        <span class="text-5xl">⚠️</span>
+                        <h3 class="text-white font-bold text-sm sm:text-base">Tidak Dapat Memutar di Halaman Ini</h3>
+                        <p class="text-zinc-400 text-xs sm:text-sm max-w-md">Server video (mixdrop) menolak koneksi. Buka di tab baru untuk menonton.</p>
+                        <button id="btn-open-tab" onclick="openInNewTab()" class="focusable bg-brand-500 hover:bg-brand-600 text-white font-bold px-6 py-2.5 rounded-lg shadow-lg shadow-brand-500/30 flex items-center gap-2 mx-auto transition-all text-sm">
+                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                            Buka di Tab Baru
+                        </button>
+                        <button onclick="closeDetailPage()" class="focusable text-zinc-400 hover:text-white text-xs">Kembali ke Beranda</button>
+                    </div>
+                </div>
             </div>
 
+            <!-- Server & Action Buttons -->
             <div class="flex flex-wrap items-center justify-between gap-2 sm:gap-4 bg-zinc-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-800">
                 <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                     <span class="text-[10px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider">Server:</span>
@@ -471,11 +499,12 @@
                     <button id="server-btn-3" onclick="switchServer(3)" class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all">Server 3</button>
                 </div>
                 <div class="flex items-center gap-1.5 sm:gap-2">
+                    <button onclick="openInNewTab()" class="focusable text-[10px] sm:text-xs bg-brand-500 hover:bg-brand-600 text-white font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-md">
+                        <svg class="w-3 h-3 sm:w-4 sm:h-4 fill-current" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                        <span>Buka Tab</span>
+                    </button>
                     <button onclick="playTrailer()" class="focusable text-[10px] sm:text-xs bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-md">
                         <span>🎬</span> Trailer
-                    </button>
-                    <button onclick="openExternalPlayer()" class="focusable text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg flex items-center gap-1">
-                        <span>↗ Tab</span>
                     </button>
                     <button onclick="openShareModal()" class="focusable text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg flex items-center gap-1">
                         <span>🔗</span> Share
@@ -611,7 +640,8 @@
             libraryData: [],
             isLibraryLoaded: false,
             currentLibraryItems: [],
-            currentLibraryIndex: 0
+            currentLibraryIndex: 0,
+            currentVideoUrl: ''
         };
 
         try {
@@ -908,6 +938,18 @@
                 return;
             }
 
+            // Perbaiki link
+            let fixedLink = link;
+            if (fixedLink.startsWith('//')) {
+                fixedLink = 'https:' + fixedLink;
+            }
+            if (!fixedLink.startsWith('http://') && !fixedLink.startsWith('https://')) {
+                fixedLink = 'https://' + fixedLink;
+            }
+
+            // Simpan URL untuk dibuka di tab baru
+            state.currentVideoUrl = fixedLink;
+
             // Buat objek media
             const mediaItem = {
                 id: Math.floor(Math.random() * 1000000),
@@ -919,7 +961,7 @@
                 overview: description || 'Tidak ada deskripsi tersedia.',
                 poster_path: poster || 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
                 backdrop_path: poster || 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover',
-                link: link,
+                link: fixedLink,
                 actors: actors || '',
                 isLibraryItem: true
             };
@@ -927,7 +969,7 @@
             const key = getMediaKey(mediaItem.type, mediaItem.id);
             mediaCache.set(key, mediaItem);
 
-            // Buka detail page tanpa mengubah URL (mencegah error 404)
+            // Buka detail page
             openDetailPage(mediaItem, true);
         }
 
@@ -967,7 +1009,6 @@
         }
 
         function navigateTo(tab) {
-            // Hanya update state tanpa mengubah URL (mencegah error 404)
             switchTab(tab);
         }
 
@@ -1074,7 +1115,6 @@
         function navigateToDetail(key) {
             const item = mediaCache.get(key);
             if (!item) return;
-            // Buka detail page tanpa mengubah URL
             openDetailPage(item, false);
         }
 
@@ -1140,7 +1180,22 @@
         }
 
         // ============================================
-        // DETAIL PAGE FUNCTIONS (DITINGKATKAN)
+        // FUNGSI BUKA DI TAB BARU
+        // ============================================
+        function openInNewTab() {
+            if (state.currentVideoUrl) {
+                window.open(state.currentVideoUrl, '_blank');
+                showToast('Membuka video di tab baru...', '🚀');
+            } else if (state.currentMedia && state.currentMedia.link) {
+                window.open(state.currentMedia.link, '_blank');
+                showToast('Membuka video di tab baru...', '🚀');
+            } else {
+                showToast('Link video tidak tersedia', '⚠️');
+            }
+        }
+
+        // ============================================
+        // DETAIL PAGE FUNCTIONS
         // ============================================
         function openDetailPage(item, preventUrlChange = true) {
             state.currentMedia = item;
@@ -1148,6 +1203,13 @@
             state.currentSeason = 1;
             state.currentEpisode = 1;
             state.trailerKey = '';
+
+            // Simpan URL untuk tombol buka tab
+            if (item.link) {
+                state.currentVideoUrl = item.link;
+            } else {
+                state.currentVideoUrl = '';
+            }
 
             document.title = `Nonton ${item.title} (${item.year}) Subtitle Indonesia - ReviewFilm21`;
 
@@ -1170,7 +1232,6 @@
                                            item.title.toLowerCase().includes('episode')));
             
             if (isSeries && state.libraryData.length > 0) {
-                // Cari semua episode untuk series ini
                 let baseTitle = item.title
                     .replace(/season\s*\d+/i, '')
                     .replace(/episode\s*\d+/i, '')
@@ -1179,14 +1240,12 @@
                     .replace(/[📺🎬]/g, '').trim()
                     .replace(/-\s*(season|episode|eps|s)\s*[\d]+/i, '').trim();
                 
-                // Cari episode lain
                 const allEpisodes = state.libraryData.filter(data => {
                     const dataTitle = data.Judul || '';
                     return dataTitle.toLowerCase().includes(baseTitle.toLowerCase()) && 
                            dataTitle !== item.title;
                 });
                 
-                // Urutkan berdasarkan episode
                 allEpisodes.sort((a, b) => {
                     const aMatch = a.Judul.match(/[Ee]p(?:isode)?\s*[\d]+/i) || a.Judul.match(/[\d]+\s*[\)\]]?$/);
                     const bMatch = b.Judul.match(/[Ee]p(?:isode)?\s*[\d]+/i) || b.Judul.match(/[\d]+\s*[\)\]]?$/);
@@ -1202,7 +1261,12 @@
                     
                     allEpisodes.forEach((ep, idx) => {
                         const epNum = idx + 2;
-                        epHTML += `<button onclick="playLibraryItem('${ep.Link}', '${ep.Judul}', '${ep.Poster}', '${ep.Rating}', '${ep.Tahun}', '${ep.Deskripsi || ''}', '${ep.Aktor || ''}', 'tv')" 
+                        let epLink = ep.Link || '#';
+                        if (epLink.startsWith('//')) epLink = 'https:' + epLink;
+                        if (!epLink.startsWith('http://') && !epLink.startsWith('https://') && epLink !== '#') {
+                            epLink = 'https://' + epLink;
+                        }
+                        epHTML += `<button onclick="playLibraryItem('${epLink}', '${ep.Judul}', '${ep.Poster}', '${ep.Rating}', '${ep.Tahun}', '${ep.Deskripsi || ''}', '${ep.Aktor || ''}', 'tv')" 
                                     class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white transition-all">
                                     Episode ${epNum}
                                   </button>`;
@@ -1222,6 +1286,8 @@
 
             // Set iframe source
             const iframe = document.getElementById('video-iframe');
+            const overlay = document.getElementById('player-overlay');
+            
             if (iframe) {
                 let embedUrl = '';
                 
@@ -1234,19 +1300,57 @@
                     } else if (embedUrl.includes('youtu.be/')) {
                         const videoId = embedUrl.match(/youtu\.be\/([^?]+)/);
                         if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`;
-                    } else if (embedUrl.includes('mxdrop.sx') || embedUrl.includes('vinovo.to')) {
+                    } else if (embedUrl.includes('dailymotion.com')) {
+                        // Dailymotion sudah embed
+                    } else if (embedUrl.includes('mxdrop.sx') || embedUrl.includes('vinovo.to') || embedUrl.includes('mixdrop')) {
+                        // Untuk mixdrop, kita akan coba embed tapi siapkan overlay jika gagal
                         if (!embedUrl.includes('embed')) {
                             embedUrl = embedUrl.replace('/e/', '/embed/');
                         }
+                        // Tampilkan overlay info
+                        if (overlay) {
+                            overlay.classList.remove('hidden');
+                            overlay.querySelector('h3').textContent = '⏳ Memuat video...';
+                            overlay.querySelector('p').textContent = 'Jika video tidak muncul, klik tombol "Buka Tab" di bawah.';
+                            setTimeout(() => {
+                                if (overlay) overlay.classList.add('hidden');
+                            }, 5000);
+                        }
                     }
+                    iframe.src = embedUrl;
+                    
+                    // Cek error mixdrop setelah beberapa detik
+                    setTimeout(() => {
+                        // Jika iframe masih kosong atau error, tampilkan overlay
+                        try {
+                            const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+                            if (iframeDoc && iframeDoc.body && iframeDoc.body.innerHTML.includes('404')) {
+                                if (overlay) {
+                                    overlay.classList.remove('hidden');
+                                    overlay.querySelector('h3').textContent = '⚠️ Tidak Dapat Memutar di Halaman Ini';
+                                    overlay.querySelector('p').textContent = 'Server video (mixdrop) menolak koneksi. Buka di tab baru untuk menonton.';
+                                }
+                            }
+                        } catch(e) {
+                            // Cross-origin error, tidak bisa cek
+                            // Tampilkan overlay setelah 8 detik sebagai fallback
+                            setTimeout(() => {
+                                if (overlay && !iframe.src.includes('youtube') && !iframe.src.includes('dailymotion')) {
+                                    overlay.classList.remove('hidden');
+                                    overlay.querySelector('h3').textContent = '⚠️ Tidak Dapat Memutar di Halaman Ini';
+                                    overlay.querySelector('p').textContent = 'Server video menolak koneksi. Buka di tab baru untuk menonton.';
+                                }
+                            }, 8000);
+                        }
+                    }, 3000);
                 } else {
                     // Dari TMDB
                     const isTv = item.type === 'tv';
                     const id = item.id;
                     embedUrl = isTv ? `https://vidsrc.to/embed/tv/${id}/1/1` : `https://vidsrc.to/embed/movie/${id}`;
+                    iframe.src = embedUrl;
+                    if (overlay) overlay.classList.add('hidden');
                 }
-                
-                iframe.src = embedUrl;
             }
 
             // Fetch trailer jika dari TMDB
@@ -1270,6 +1374,10 @@
 
         function closeDetailPage() {
             document.getElementById('detail-section').classList.add('hidden');
+            // Sembunyikan overlay
+            const overlay = document.getElementById('player-overlay');
+            if (overlay) overlay.classList.add('hidden');
+            
             const sections = {
                 home: ['hero-section', 'trending-section', 'movies-section', 'series-section', 'thriller-section'],
                 movies: ['movies-section'],
@@ -1353,8 +1461,7 @@
         }
 
         function openExternalPlayer() {
-            const iframe = document.getElementById('video-iframe');
-            if (iframe && iframe.src) window.open(iframe.src, '_blank');
+            openInNewTab();
         }
 
         // ============================================
