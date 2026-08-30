@@ -63,6 +63,7 @@
     </script>
 
     <style>
+        /* ===== STYLE DASAR ===== */
         body {
             background-color: #09090b;
             color: #f4f4f5;
@@ -154,17 +155,282 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Tombol Buka Tab Baru */
-        .btn-open-tab {
-            background: #27272a;
-            border: 1px solid #3f3f46;
-            color: #d4d4d8;
-            transition: all 0.2s;
+        /* ===== PLAYER OVERLAY STYLE ===== */
+        .player-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            padding: 10px;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
         }
-        .btn-open-tab:hover {
-            background: #3f3f46;
+        .player-overlay.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .player-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #121217;
+            border-radius: 16px;
+            border: 1px solid #27272a;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            max-height: calc(100vh - 20px);
+            overflow-y: auto;
+        }
+        .player-main {
+            flex: 3;
+            min-width: 280px;
+        }
+        .player-sidebar {
+            flex: 1;
+            min-width: 200px;
+            max-width: 350px;
+            background: #18181b;
+            border-radius: 12px;
+            border: 1px solid #27272a;
+            padding: 12px;
+            max-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        .player-sidebar .side-title {
+            color: #f4f4f5;
+            font-weight: bold;
+            font-size: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #27272a;
+            margin-bottom: 10px;
+        }
+
+        .player-ad-banner {
+            text-align: center;
+            background: #0a0a0f;
+            border-radius: 8px;
+            padding: 5px;
+            border: 1px solid #1a1a22;
+            width: 100%;
+            overflow: hidden;
+        }
+        .player-ad-banner iframe {
+            max-width: 100%;
+        }
+
+        .player-main iframe {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border: none;
+            border-radius: 10px;
+            background: #0a0a0f;
+        }
+
+        .player-info-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 5px 5px 5px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .player-info-bar h2 {
+            color: #f4f4f5;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+            flex: 1;
+        }
+        .btn-close {
+            background: #27272a;
+            border: none;
+            color: #f4f4f5;
+            padding: 6px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-close:hover {
+            background: #ff5c00;
+            color: #fff;
+        }
+
+        .player-film-info {
+            background: #0f0f14;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin: 8px 0 10px 0;
+            border: 1px solid #1f1f26;
+        }
+        .info-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            margin-bottom: 4px;
+        }
+        .info-label {
+            color: #8888aa;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .info-value {
+            color: #e8e8f0;
+            font-size: 13px;
+        }
+        .info-desc {
+            color: #b0b0c0;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 4px;
+            max-height: 60px;
+            overflow-y: auto;
+        }
+
+        .server-btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 6px 0 4px 0;
+        }
+        .server-btn {
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .server-btn.vinovo {
+            background: #ff5c00;
+            color: #fff;
+        }
+        .server-btn.vinovo:hover {
+            background: #e05000;
+            transform: scale(1.03);
+        }
+        .server-btn.byse {
+            background: #2a2a35;
+            color: #e0e0e8;
+            border: 1px solid #3a3a47;
+        }
+        .server-btn.byse:hover {
+            background: #3a3a47;
+            color: #fff;
+        }
+        .server-btn.unduh {
+            background: #1a4a2a;
+            color: #8fdfb0;
+            border: 1px solid #2a5a3a;
+        }
+        .server-btn.unduh:hover {
+            background: #2a5a3a;
+            color: #afffc0;
+        }
+
+        .player-rekomen-scroll {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 450px;
+        }
+        .player-rekomen-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .rekomen-item {
+            display: flex;
+            gap: 10px;
+            background: #121217;
+            border-radius: 8px;
+            padding: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: 1px solid transparent;
+        }
+        .rekomen-item:hover {
+            background: #1c1c24;
             border-color: #ff5c00;
-            color: #ff5c00;
+        }
+        .rekomen-item img {
+            width: 50px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 4px;
+            flex-shrink: 0;
+            background: #0a0a0f;
+        }
+        .rekomen-item .rekomen-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .rekomen-item .rekomen-info .r-title {
+            color: #f4f4f5;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .rekomen-item .rekomen-info .r-year {
+            color: #8888aa;
+            font-size: 11px;
+        }
+        .rekomen-item .rekomen-info .r-rating {
+            color: #f5b342;
+            font-size: 11px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .player-container {
+                flex-direction: column;
+                padding: 10px;
+                max-height: none;
+            }
+            .player-sidebar {
+                max-width: 100%;
+                max-height: 300px;
+            }
+            .player-overlay {
+                padding: 5px;
+            }
+            .player-info-bar h2 {
+                font-size: 14px;
+            }
+            .server-btn {
+                font-size: 12px;
+                padding: 6px 14px;
+            }
+        }
+        @media (max-width: 480px) {
+            .player-film-info {
+                padding: 8px 10px;
+            }
+            .info-label, .info-value, .info-desc {
+                font-size: 12px;
+            }
+            .rekomen-item img {
+                width: 40px;
+                height: 60px;
+            }
         }
     </style>
 </head>
@@ -475,19 +741,6 @@
             <!-- Video Player -->
             <div class="relative w-full aspect-video bg-zinc-950 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl">
                 <iframe id="video-iframe" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-                <!-- Overlay untuk mixdrop error -->
-                <div id="player-overlay" class="absolute inset-0 bg-zinc-950/90 flex flex-col items-center justify-center hidden">
-                    <div class="text-center p-4 space-y-3">
-                        <span class="text-5xl">⚠️</span>
-                        <h3 class="text-white font-bold text-sm sm:text-base">Tidak Dapat Memutar di Halaman Ini</h3>
-                        <p class="text-zinc-400 text-xs sm:text-sm max-w-md">Server video (mixdrop) menolak koneksi. Buka di tab baru untuk menonton.</p>
-                        <button id="btn-open-tab" onclick="openInNewTab()" class="focusable bg-brand-500 hover:bg-brand-600 text-white font-bold px-6 py-2.5 rounded-lg shadow-lg shadow-brand-500/30 flex items-center gap-2 mx-auto transition-all text-sm">
-                            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-                            Buka di Tab Baru
-                        </button>
-                        <button onclick="closeDetailPage()" class="focusable text-zinc-400 hover:text-white text-xs">Kembali ke Beranda</button>
-                    </div>
-                </div>
             </div>
 
             <!-- Server & Action Buttons -->
@@ -499,15 +752,17 @@
                     <button id="server-btn-3" onclick="switchServer(3)" class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all">Server 3</button>
                 </div>
                 <div class="flex items-center gap-1.5 sm:gap-2">
-                    <button onclick="openInNewTab()" class="focusable text-[10px] sm:text-xs bg-brand-500 hover:bg-brand-600 text-white font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-md">
-                        <svg class="w-3 h-3 sm:w-4 sm:h-4 fill-current" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 00-2 2v14a2 2 0 002 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-                        <span>Buka Tab</span>
-                    </button>
                     <button onclick="playTrailer()" class="focusable text-[10px] sm:text-xs bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-md">
                         <span>🎬</span> Trailer
                     </button>
+                    <button onclick="openExternalPlayer()" class="focusable text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg flex items-center gap-1">
+                        <span>↗ Tab</span>
+                    </button>
                     <button onclick="openShareModal()" class="focusable text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg flex items-center gap-1">
                         <span>🔗</span> Share
+                    </button>
+                    <button onclick="openPlayerOverlay()" class="focusable text-[10px] sm:text-xs bg-brand-500 hover:bg-brand-600 text-white font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-md">
+                        <span>🎥</span> Player
                     </button>
                 </div>
             </div>
@@ -537,6 +792,72 @@
             </div>
         </section>
     </main>
+
+    <!-- ==================== PLAYER OVERLAY ==================== -->
+    <div class="player-overlay" id="playerOverlay">
+        <div class="player-ad-banner" id="playerAdTop">
+            <div style="margin: 5px;">
+                <script>atOptions={'key':'75ebdc5c95f071feb6c8fa467de1eb14','format':'iframe','height':50,'width':320,'params':{}};</script>
+                <script src="https://thrillingdeepcutlery.com/75ebdc5c95f071feb6c8fa467de1eb14/invoke.js"></script>
+            </div>
+            <div style="margin: 5px;">
+                <script>atOptions={'key':'e6811d3168960daaba7f3c9744743964','format':'iframe','height':90,'width':728,'params':{}};</script>
+                <script src="https://thrillingdeepcutlery.com/e6811d3168960daaba7f3c9744743964/invoke.js"></script>
+            </div>
+        </div>
+
+        <div class="player-container">
+            <div class="player-main">
+                <iframe id="playerFrame" src="" allowfullscreen></iframe>
+                <div class="player-info-bar">
+                    <h2 id="playerTitle">▶️ Memutar...</h2>
+                    <button class="btn-close" onclick="closePlayer()">✕ Tutup</button>
+                </div>
+                
+                <div class="player-film-info" id="playerFilmInfo">
+                    <div class="info-row">
+                        <span class="info-label">🎬 Aktor/Artis:</span>
+                        <span class="info-value" id="infoActor">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">🎬 Genre:</span>
+                        <span class="info-value" id="infoGenre">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">📖 Deskripsi:</span>
+                    </div>
+                    <div class="info-desc" id="infoDesc">Tidak ada deskripsi.</div>
+                </div>
+                
+                <div class="server-btns">
+                    <a href="https://paceboook21.blogspot.com/p/penawaran-eksklusif-body-basic-styling.html" target="_blank" class="server-btn vinovo">Vinovo</a>
+                    <a href="https://paceboook21.blogspot.com/p/live-hot-box-sizing-border-box-margin-0.html" target="_blank" class="server-btn byse">Byse</a>
+                    <a href="https://paceboook21.blogspot.com/p/video-preview-body-margin-0-padding-0_0619822090.html" target="_blank" class="server-btn unduh">Unduh</a>
+                </div>
+            </div>
+            <div class="player-sidebar">
+                <div class="side-title" id="playerSideTitle">🔥 Rekomendasi</div>
+                <div class="player-rekomen-scroll">
+                    <div class="player-rekomen-inner" id="playerRekomenInner"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="player-ad-banner" id="playerAdBottom" style="margin-top: 10px;">
+            <div style="margin: 5px;">
+                <script>atOptions={'key':'aa2f1af474195d8c88ebd682842425cc','format':'iframe','height':250,'width':300,'params':{}};</script>
+                <script src="https://thrillingdeepcutlery.com/aa2f1af474195d8c88ebd682842425cc/invoke.js"></script>
+            </div>
+            <div style="margin: 5px;">
+                <script>atOptions={'key':'b809f25de1bd9a2ed0574ad1dfec11c3','format':'iframe','height':600,'width':160,'params':{}};</script>
+                <script src="https://thrillingdeepcutlery.com/b809f25de1bd9a2ed0574ad1dfec11c3/invoke.js"></script>
+            </div>
+            <div style="margin: 5px;">
+                <script async="async" data-cfasync="false" src="https://thrillingdeepcutlery.com/0ebe8e033d54f677c253b902dad75d61/invoke.js"></script>
+                <div id="container-0ebe8e033d54f677c253b902dad75d61"></div>
+            </div>
+        </div>
+    </div>
 
     <!-- ==================== REQUEST MODAL ==================== -->
     <div id="request-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
@@ -641,7 +962,9 @@
             isLibraryLoaded: false,
             currentLibraryItems: [],
             currentLibraryIndex: 0,
-            currentVideoUrl: ''
+            currentVideoUrl: '',
+            // Untuk player overlay
+            playerData: null
         };
 
         try {
@@ -938,7 +1261,6 @@
                 return;
             }
 
-            // Perbaiki link
             let fixedLink = link;
             if (fixedLink.startsWith('//')) {
                 fixedLink = 'https:' + fixedLink;
@@ -947,10 +1269,8 @@
                 fixedLink = 'https://' + fixedLink;
             }
 
-            // Simpan URL untuk dibuka di tab baru
             state.currentVideoUrl = fixedLink;
 
-            // Buat objek media
             const mediaItem = {
                 id: Math.floor(Math.random() * 1000000),
                 title: title,
@@ -969,8 +1289,134 @@
             const key = getMediaKey(mediaItem.type, mediaItem.id);
             mediaCache.set(key, mediaItem);
 
+            // Simpan data untuk player overlay
+            state.playerData = {
+                title: displayTitle(mediaItem.title),
+                link: fixedLink,
+                poster: poster,
+                rating: rating,
+                year: year,
+                actors: actors || '-',
+                genre: 'Pustaka Film',
+                description: description || 'Tidak ada deskripsi.'
+            };
+
             // Buka detail page
             openDetailPage(mediaItem, true);
+
+            // Buka player overlay
+            setTimeout(() => {
+                openPlayerOverlay();
+            }, 300);
+        }
+
+        function displayTitle(title) {
+            let display = title;
+            display = display.replace(/^Nonton\s*/i, '').trim();
+            display = display.replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '').trim();
+            display = display.replace(/Series\s*Sub\s*Indo/i, '').trim();
+            display = display.replace(/Sub\s*Indo/i, '').trim();
+            display = display.replace(/Sub\s*Indonesia/i, '').trim();
+            return display || title;
+        }
+
+        // ============================================
+        // FUNGSI PLAYER OVERLAY
+        // ============================================
+        function openPlayerOverlay() {
+            const overlay = document.getElementById('playerOverlay');
+            const frame = document.getElementById('playerFrame');
+            const titleEl = document.getElementById('playerTitle');
+            const infoActor = document.getElementById('infoActor');
+            const infoGenre = document.getElementById('infoGenre');
+            const infoDesc = document.getElementById('infoDesc');
+            const rekomenInner = document.getElementById('playerRekomenInner');
+
+            // Gunakan data dari state
+            const data = state.playerData || state.currentMedia || {};
+
+            // Set title
+            const titleText = data.title || 'Memutar Film';
+            titleEl.textContent = '▶️ ' + titleText;
+
+            // Set info
+            infoActor.textContent = data.actors || '-';
+            infoGenre.textContent = data.genre || 'Pustaka Film';
+            infoDesc.textContent = data.description || 'Tidak ada deskripsi.';
+
+            // Set iframe source
+            let videoUrl = data.link || '';
+            if (videoUrl) {
+                // Konversi ke embed jika perlu
+                if (videoUrl.includes('youtube.com/watch?v=')) {
+                    const videoId = videoUrl.match(/v=([^&]+)/);
+                    if (videoId) videoUrl = `https://www.youtube.com/embed/${videoId[1]}`;
+                } else if (videoUrl.includes('youtu.be/')) {
+                    const videoId = videoUrl.match(/youtu\.be\/([^?]+)/);
+                    if (videoId) videoUrl = `https://www.youtube.com/embed/${videoId[1]}`;
+                } else if (videoUrl.includes('mxdrop.sx') || videoUrl.includes('vinovo.to') || videoUrl.includes('mixdrop')) {
+                    if (!videoUrl.includes('embed')) {
+                        videoUrl = videoUrl.replace('/e/', '/embed/');
+                    }
+                }
+                frame.src = videoUrl;
+            } else {
+                frame.src = '';
+            }
+
+            // Generate rekomendasi dari libraryData
+            let rekomenHTML = '';
+            const items = state.libraryData.slice(0, 20);
+            items.forEach(item => {
+                const rTitle = displayTitle(item.Judul || '');
+                const rPoster = item.Poster || 'https://placehold.co/50x75/18181b/ff5c00?text=N/A';
+                const rRating = item.Rating || 'N/A';
+                const rYear = item.Tahun || '';
+                const rLink = item.Link || '#';
+                rekomenHTML += `
+                    <div class="rekomen-item" onclick="playLibraryItem('${rLink}', '${item.Judul || ''}', '${rPoster}', '${rRating}', '${rYear}', '${item.Deskripsi || ''}', '${item.Aktor || ''}', '${item.Judul && (item.Judul.toLowerCase().includes('season') || item.Judul.toLowerCase().includes('episode')) ? 'tv' : 'movie'}')">
+                        <img src="${rPoster}" alt="${rTitle}" onerror="this.src='https://placehold.co/50x75/18181b/ff5c00?text=N/A'">
+                        <div class="rekomen-info">
+                            <span class="r-title">${rTitle}</span>
+                            <span class="r-year">${rYear}</span>
+                            <span class="r-rating">⭐ ${rRating}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            if (!rekomenHTML) {
+                rekomenHTML = '<div class="text-zinc-500 text-sm p-2">Belum ada rekomendasi</div>';
+            }
+            rekomenInner.innerHTML = rekomenHTML;
+
+            // Tampilkan overlay
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            // Refresh iklan
+            refreshAds();
+        }
+
+        function closePlayer() {
+            const overlay = document.getElementById('playerOverlay');
+            const frame = document.getElementById('playerFrame');
+            
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+            
+            // Hentikan video
+            if (frame) {
+                frame.src = '';
+            }
+        }
+
+        function refreshAds() {
+            try {
+                const topAds = document.querySelectorAll('#playerAdTop script');
+                const bottomAds = document.querySelectorAll('#playerAdBottom script');
+                // Re-invoke ads jika perlu
+            } catch(e) {}
         }
 
         // ============================================
@@ -1180,21 +1626,6 @@
         }
 
         // ============================================
-        // FUNGSI BUKA DI TAB BARU
-        // ============================================
-        function openInNewTab() {
-            if (state.currentVideoUrl) {
-                window.open(state.currentVideoUrl, '_blank');
-                showToast('Membuka video di tab baru...', '🚀');
-            } else if (state.currentMedia && state.currentMedia.link) {
-                window.open(state.currentMedia.link, '_blank');
-                showToast('Membuka video di tab baru...', '🚀');
-            } else {
-                showToast('Link video tidak tersedia', '⚠️');
-            }
-        }
-
-        // ============================================
         // DETAIL PAGE FUNCTIONS
         // ============================================
         function openDetailPage(item, preventUrlChange = true) {
@@ -1204,7 +1635,6 @@
             state.currentEpisode = 1;
             state.trailerKey = '';
 
-            // Simpan URL untuk tombol buka tab
             if (item.link) {
                 state.currentVideoUrl = item.link;
             } else {
@@ -1286,70 +1716,27 @@
 
             // Set iframe source
             const iframe = document.getElementById('video-iframe');
-            const overlay = document.getElementById('player-overlay');
-            
             if (iframe) {
                 let embedUrl = '';
-                
                 if (item.link && item.isLibraryItem) {
                     embedUrl = item.link;
-                    // Konversi URL ke embed
                     if (embedUrl.includes('youtube.com/watch?v=')) {
                         const videoId = embedUrl.match(/v=([^&]+)/);
                         if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`;
                     } else if (embedUrl.includes('youtu.be/')) {
                         const videoId = embedUrl.match(/youtu\.be\/([^?]+)/);
                         if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`;
-                    } else if (embedUrl.includes('dailymotion.com')) {
-                        // Dailymotion sudah embed
                     } else if (embedUrl.includes('mxdrop.sx') || embedUrl.includes('vinovo.to') || embedUrl.includes('mixdrop')) {
-                        // Untuk mixdrop, kita akan coba embed tapi siapkan overlay jika gagal
                         if (!embedUrl.includes('embed')) {
                             embedUrl = embedUrl.replace('/e/', '/embed/');
                         }
-                        // Tampilkan overlay info
-                        if (overlay) {
-                            overlay.classList.remove('hidden');
-                            overlay.querySelector('h3').textContent = '⏳ Memuat video...';
-                            overlay.querySelector('p').textContent = 'Jika video tidak muncul, klik tombol "Buka Tab" di bawah.';
-                            setTimeout(() => {
-                                if (overlay) overlay.classList.add('hidden');
-                            }, 5000);
-                        }
                     }
                     iframe.src = embedUrl;
-                    
-                    // Cek error mixdrop setelah beberapa detik
-                    setTimeout(() => {
-                        // Jika iframe masih kosong atau error, tampilkan overlay
-                        try {
-                            const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-                            if (iframeDoc && iframeDoc.body && iframeDoc.body.innerHTML.includes('404')) {
-                                if (overlay) {
-                                    overlay.classList.remove('hidden');
-                                    overlay.querySelector('h3').textContent = '⚠️ Tidak Dapat Memutar di Halaman Ini';
-                                    overlay.querySelector('p').textContent = 'Server video (mixdrop) menolak koneksi. Buka di tab baru untuk menonton.';
-                                }
-                            }
-                        } catch(e) {
-                            // Cross-origin error, tidak bisa cek
-                            // Tampilkan overlay setelah 8 detik sebagai fallback
-                            setTimeout(() => {
-                                if (overlay && !iframe.src.includes('youtube') && !iframe.src.includes('dailymotion')) {
-                                    overlay.classList.remove('hidden');
-                                    overlay.querySelector('h3').textContent = '⚠️ Tidak Dapat Memutar di Halaman Ini';
-                                    overlay.querySelector('p').textContent = 'Server video menolak koneksi. Buka di tab baru untuk menonton.';
-                                }
-                            }, 8000);
-                        }
-                    }, 3000);
                 } else {
-                    // Dari TMDB
                     const isTv = item.type === 'tv';
                     const id = item.id;
                     embedUrl = isTv ? `https://vidsrc.to/embed/tv/${id}/1/1` : `https://vidsrc.to/embed/movie/${id}`;
                     iframe.src = embedUrl;
-                    if (overlay) overlay.classList.add('hidden');
                 }
             }
 
@@ -1374,10 +1761,6 @@
 
         function closeDetailPage() {
             document.getElementById('detail-section').classList.add('hidden');
-            // Sembunyikan overlay
-            const overlay = document.getElementById('player-overlay');
-            if (overlay) overlay.classList.add('hidden');
-            
             const sections = {
                 home: ['hero-section', 'trending-section', 'movies-section', 'series-section', 'thriller-section'],
                 movies: ['movies-section'],
@@ -1461,7 +1844,12 @@
         }
 
         function openExternalPlayer() {
-            openInNewTab();
+            if (state.currentVideoUrl) {
+                window.open(state.currentVideoUrl, '_blank');
+                showToast('Membuka video di tab baru...', '🚀');
+            } else {
+                showToast('Link video tidak tersedia', '⚠️');
+            }
         }
 
         // ============================================
@@ -1830,7 +2218,11 @@
                     const requestModal = document.getElementById('request-modal');
                     const shareModal = document.getElementById('share-modal');
                     const collectionContainer = document.getElementById('collection-container');
-                    if (detailSection && !detailSection.classList.contains('hidden')) {
+                    const playerOverlay = document.getElementById('playerOverlay');
+                    if (playerOverlay && playerOverlay.classList.contains('active')) {
+                        closePlayer();
+                        e.preventDefault();
+                    } else if (detailSection && !detailSection.classList.contains('hidden')) {
                         closeDetailPage();
                         e.preventDefault();
                     } else if (requestModal && !requestModal.classList.contains('hidden')) {
