@@ -317,7 +317,7 @@
             <div class="flex items-center justify-between h-14 sm:h-20 gap-2 sm:gap-4">
                 
                 <!-- Brand Logo -->
-                <a href="/" onclick="event.preventDefault(); navigateTo('home')" class="focusable flex items-center gap-2 group shrink-0 rounded-xl p-1 focus:outline-none touch-target" aria-label="ReviewFilm21 Beranda">
+                <a href="#/" onclick="event.preventDefault(); navigateTo('home')" class="focusable flex items-center gap-2 group shrink-0 rounded-xl p-1 focus:outline-none touch-target" aria-label="ReviewFilm21 Beranda">
                     <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform text-lg sm:text-xl">
                         🎬
                     </div>
@@ -788,7 +788,6 @@
 
         function getMediaKey(type, id) { return `${type}-${id}`; }
         function slugify(text) { return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
-        function triggerAdAndRedirect(callback) { try { window.open(AD_DIRECT_LINK, '_blank'); } catch(e) {} if (typeof callback === 'function') callback(); }
 
         // ============================================
         // LOADING OVERLAY
@@ -1117,10 +1116,10 @@
             // Buka detail page dengan item ini
             openDetailPage(mediaItem);
 
-            // Update URL
+            // Update hash URL
             const slug = slugify(mediaItem.title);
-            const path = `/${mediaItem.type}/${mediaItem.id}/${slug}`;
-            history.pushState({ mediaId: mediaItem.id, type: mediaItem.type }, '', path);
+            const hash = `#/${mediaItem.type}/${mediaItem.id}/${slug}`;
+            window.location.hash = hash;
         }
 
         // ============================================
@@ -1170,8 +1169,8 @@
         }
 
         function navigateTo(tab) {
-            const path = tab === 'home' ? '/' : `/${tab}`;
-            history.pushState({ tab }, '', path);
+            const hash = tab === 'home' ? '#/' : `#/${tab}`;
+            window.location.hash = hash;
             switchTab(tab);
         }
 
@@ -1282,8 +1281,8 @@
             const item = mediaCache.get(key);
             if (!item) return;
             const slug = slugify(item.title);
-            const path = `/${item.type}/${item.id}/${slug}`;
-            history.pushState({ mediaId: item.id, type: item.type }, '', path);
+            const hash = `#/${item.type}/${item.id}/${slug}`;
+            window.location.hash = hash;
             openDetailPage(item);
         }
 
@@ -1589,8 +1588,8 @@
                 const sec = document.getElementById(id);
                 if (sec) sec.classList.remove('hidden');
             });
-            const path = state.activeTab === 'home' ? '/' : `/${state.activeTab}`;
-            history.pushState({ tab: state.activeTab }, '', path);
+            const hash = state.activeTab === 'home' ? '#/' : `#/${state.activeTab}`;
+            window.location.hash = hash;
             document.title = 'ReviewFilm21 - Nonton Film & TV Series Subtitle Indonesia Gratis';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -2061,19 +2060,21 @@
         }
 
         // ============================================
-        // ROUTE HANDLER
+        // ROUTE HANDLER (HASH-BASED)
         // ============================================
-        async function handleRoute() {
-            const path = window.location.pathname;
-            if (path === '/') { switchTab('home'); return; }
+        function handleRoute() {
+            const hash = window.location.hash || '#/';
+            const path = hash.substring(1); // Hapus '#'
+            
+            if (path === '/' || path === '') { switchTab('home'); return; }
             if (path === '/movies') { switchTab('movies'); return; }
             if (path === '/tv') { switchTab('tv'); return; }
             if (path === '/watchlist') { switchTab('watchlist'); return; }
 
             const movieMatch = path.match(/^\/movie\/(\d+)(?:\/[^/]+)?$/);
-            if (movieMatch) { await openMediaById(movieMatch[1], 'movie'); return; }
+            if (movieMatch) { openMediaById(movieMatch[1], 'movie'); return; }
             const tvMatch = path.match(/^\/tv\/(\d+)(?:\/[^/]+)?$/);
-            if (tvMatch) { await openMediaById(tvMatch[1], 'tv'); return; }
+            if (tvMatch) { openMediaById(tvMatch[1], 'tv'); return; }
 
             switchTab('home');
         }
@@ -2105,9 +2106,6 @@
                 } catch(e) {}
             }
             if (item) {
-                const slug = slugify(item.title);
-                const expectedPath = `/${type}/${id}/${slug}`;
-                if (window.location.pathname !== expectedPath) history.replaceState(null, '', expectedPath);
                 openDetailPage(item);
             } else {
                 showToast('Konten tidak ditemukan', '⚠️');
@@ -2181,7 +2179,7 @@
         // ============================================
         // WINDOW LOAD
         // ============================================
-        window.addEventListener('popstate', handleRoute);
+        window.addEventListener('hashchange', handleRoute);
 
         window.onload = function () {
             updateWatchlistBadge();
@@ -2189,12 +2187,9 @@
             renderAllSections();
             fetchTMDBCatalogs();
             initSmartTvControls();
-            handleRoute();
+            handleRoute(); // Ini akan membaca hash
             setTimeout(updateTvFocusables, 500);
-
             loadLibraryFromGoogleSheets();
-            
-            // Sembunyikan loading overlay
             hideLoading();
         };
 
