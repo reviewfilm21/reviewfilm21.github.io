@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id" class="dark">
 <head>
-   <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, user-scalable=yes">
     <meta name="theme-color" content="#09090b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -22,7 +22,7 @@
 
     <!-- Verifikasi Search Engine -->
     <meta name="google-site-verification" content="NawKeEqOgbxUWIDbLPlpPYTFmbnMEZ9TEkHTEia3nts" />
-   <meta name="msvalidate.01" content="C34B61F3D297CB00DCDD5EC9D1D20C25" />
+    <meta name="msvalidate.01" content="C34B61F3D297CB00DCDD5EC9D1D20C25" />
     
     <link rel="canonical" href="https://reviewfilm21.github.io/" />
     
@@ -326,6 +326,14 @@
         }
         .breadcrumb .separator {
             margin: 0 0.5rem;
+        }
+
+        /* Popup Iklan */
+        #ad-popup-overlay {
+            transition: opacity 0.3s ease;
+        }
+        #ad-popup-overlay.hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -651,12 +659,6 @@
                     <button onclick="playTrailer()" class="focusable text-[10px] sm:text-xs bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold px-3 sm:px-4 py-2 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-md touch-target">
                         <span>🎬</span> Trailer
                     </button>
-                    <button onclick="openExternalPlayer()" class="focusable text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-2 sm:py-2 rounded-lg flex items-center gap-1 touch-target">
-                        <span>↗ Tab</span>
-                    </button>
-                    <button onclick="openShareModal()" class="focusable text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-2 sm:py-2 rounded-lg flex items-center gap-1 touch-target">
-                        <span>🔗</span> Share
-                    </button>
                 </div>
             </div>
 
@@ -703,6 +705,23 @@
         </div>
     </footer>
 
+    <!-- Popup Iklan -->
+    <div id="ad-popup-overlay" class="fixed inset-0 z-[90] hidden items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-2xl max-w-sm w-full p-6 space-y-4 text-center shadow-2xl">
+            <div class="text-4xl">📢</div>
+            <h3 class="text-xl font-bold text-white">Iklan Mendukung Kami</h3>
+            <p class="text-sm text-zinc-400">Tonton iklan singkat untuk melanjutkan streaming gratis.</p>
+            <div class="flex flex-col gap-3 mt-4">
+                <button onclick="goToAd()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-4 rounded-xl transition-all">
+                    ➡️ Lanjutkan ke Video
+                </button>
+                <button onclick="closeAdPopup()" class="w-full bg-zinc-800 hover:bg-zinc-700 text-zinc-300 font-bold py-3 px-4 rounded-xl transition-all">
+                    ✕ Tutup Iklan
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="request-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="request-modal-title">
         <div class="bg-zinc-900 border border-zinc-800 rounded-xl sm:rounded-2xl max-w-md w-full p-4 sm:p-6 space-y-3 sm:space-y-4 shadow-2xl fade-in">
             <div class="flex items-center justify-between border-b border-zinc-800 pb-2 sm:pb-3">
@@ -721,29 +740,6 @@
         </div>
     </div>
 
-    <div id="share-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl sm:rounded-2xl max-w-md w-full p-4 sm:p-6 space-y-3 sm:space-y-4 shadow-2xl fade-in">
-            <div class="flex items-center justify-between border-b border-zinc-800 pb-2 sm:pb-3">
-                <h3 id="share-modal-title" class="text-base sm:text-lg font-bold text-white flex items-center gap-1.5 sm:gap-2"><span>🔗</span> Bagikan Video</h3>
-                <button onclick="closeShareModal()" class="focusable text-zinc-400 hover:text-white p-2 touch-target" aria-label="Tutup">✕</button>
-            </div>
-            <div>
-                <label class="block text-[10px] sm:text-xs font-bold text-zinc-300 mb-1">Link Tontonan:</label>
-                <div class="flex gap-2">
-                    <input type="text" id="share-link-input" readonly class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-xs sm:text-sm text-white focus:outline-none">
-                    <button onclick="copyShareLink()" class="focusable shrink-0 bg-brand-500 hover:bg-brand-600 text-white text-xs sm:text-sm font-bold px-4 py-2 rounded-lg touch-target">Salin</button>
-                </div>
-            </div>
-            <div>
-                <label class="block text-[10px] sm:text-xs font-bold text-zinc-300 mb-1">Kode Embed (iframe):</label>
-                <div class="flex gap-2">
-                    <textarea id="share-embed-code" readonly rows="3" class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-xs sm:text-sm text-white focus:outline-none resize-none"></textarea>
-                    <button onclick="copyEmbedCode()" class="focusable shrink-0 bg-brand-500 hover:bg-brand-600 text-white text-xs sm:text-sm font-bold px-4 py-2 rounded-lg touch-target">Salin</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <div id="container-0ebe8e033d54f677c253b902dad75d61" class="w-full text-center py-3 sm:py-4 bg-zinc-950 border-t border-zinc-800 no-print"></div>
 
     <script>
@@ -759,13 +755,11 @@
         });
 
         // ================= KONSTANTA & STATE =================
-        // API key di-encode base64 untuk menghindari pembacaan langsung.
-        // TETAP TIDAK AMAN untuk produksi. Batasi domain di dashboard TMDB!
-        // Kunjungi https://www.themoviedb.org/settings/api untuk restrict domain.
         const DEFAULT_API_KEY_ENCODED = "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhaR1FpT2lKbE9XRTBNalZrT1dFNVdXSXhPV05sWldObU5XWTNOak0wT1RGaE1UWmhNaUlzSW01aVppSTZNVGM0Tmpjd09EazNOUzQ1TkRNc0luTjFZaUk2SWpaaE4yWXdNMlZtWVdSaFpUQXhNelZsWldJM1lUVXdNU0lzSW5OamIzQmxjeUk2V3lKaGNHbGZjbUZoWkNJc1pYSnphVzVuWlhNaUxDSnBibWwwYVc5dUlpd2laVzFwYm1sdVp5SjkuZFlXei11aGE0cThudndDMUhURGRfS1VnakdBZE1GU1BiT3pacmszRWhvWQ==";
         const DEFAULT_API_KEY = atob(DEFAULT_API_KEY_ENCODED);
         const AD_DIRECT_LINK = "https://thrillingdeepcutlery.com/qwa587wxa2?key=561c88fe11ec0930083abdb24ca2352a";
         const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTdLZAQVdfGSSB2qO076v43C7Gxwe0WWLYG46pELaAYgOeM30fGPQWFJBHdla_FSmN4ki_v3yqG3OvN/pub?output=csv";
+        const POPUP_AD_LINK = "https://thrillingdeepcutlery.com/d9uv6gii3s?key=e0e20a0ecd1b6f1cb7026fe979363c3e";
 
         // Daftar provider video embed
         const VIDEO_PROVIDERS = [
@@ -843,7 +837,9 @@
             collectionPageSize: 12,
             collectionCurrentPage: 1,
             currentCollectionItems: [],
-            currentCollectionName: ''
+            currentCollectionName: '',
+            adPopupInterval: null,
+            savedIframeSrc: ''
         };
 
         try {
@@ -856,24 +852,16 @@
         // ================= FUNGSI UTILITAS =================
         function getMediaKey(type, id) { return `${type}-${id}`; }
         function slugify(text) { return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
-
-        // Paksa semua URL eksternal menggunakan HTTPS
         function enforceHttps(url) {
             if (!url) return url;
-            if (url.startsWith('http://')) {
-                return url.replace('http://', 'https://');
-            }
-            if (url.startsWith('//')) {
-                return 'https:' + url;
-            }
+            if (url.startsWith('http://')) return url.replace('http://', 'https://');
+            if (url.startsWith('//')) return 'https:' + url;
             return url;
         }
-
         function escapeHtml(text) {
             if (!text) return '';
             return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
-
         function hashCode(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -883,7 +871,6 @@
             }
             return Math.abs(hash);
         }
-
         function showToast(message, icon = 'ℹ️') {
             const toast = document.getElementById('toast');
             const iconEl = document.getElementById('toast-icon');
@@ -899,17 +886,8 @@
                 toast.classList.add('translate-y-[-100px]', 'opacity-0');
             }, 3000);
         }
-
-        function showLoading() {
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) overlay.classList.remove('hidden');
-        }
-
-        function hideLoading() {
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) overlay.classList.add('hidden');
-        }
-
+        function showLoading() { document.getElementById('loading-overlay')?.classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loading-overlay')?.classList.add('hidden'); }
         async function fetchWithRetry(url, retries = 2) {
             for (let i = 0; i <= retries; i++) {
                 try {
@@ -922,9 +900,44 @@
                 }
             }
         }
+        function updateTvFocusables() { tvFocusables = Array.from(document.querySelectorAll('.focusable:not(.hidden)')); }
 
-        function updateTvFocusables() {
-            tvFocusables = Array.from(document.querySelectorAll('.focusable:not(.hidden)'));
+        // ================= POPUP IKLAN =================
+        function startAdInterval() {
+            if (state.adPopupInterval) clearInterval(state.adPopupInterval);
+            state.adPopupInterval = setInterval(() => {
+                showAdPopup();
+            }, 15 * 60 * 1000); // 15 menit
+        }
+
+        function showAdPopup() {
+            const iframe = document.getElementById('video-iframe');
+            const popup = document.getElementById('ad-popup-overlay');
+            if (!iframe || !popup) return;
+            if (!state.savedIframeSrc && iframe.src && iframe.src !== 'about:blank') {
+                state.savedIframeSrc = iframe.src;
+            }
+            iframe.src = 'about:blank';
+            popup.classList.remove('hidden');
+            popup.style.display = 'flex';
+        }
+
+        function closeAdPopup() {
+            const popup = document.getElementById('ad-popup-overlay');
+            const iframe = document.getElementById('video-iframe');
+            if (popup) {
+                popup.classList.add('hidden');
+                popup.style.display = 'none';
+            }
+            if (iframe && state.savedIframeSrc) {
+                iframe.src = state.savedIframeSrc;
+                state.savedIframeSrc = '';
+            }
+        }
+
+        function goToAd() {
+            window.open(POPUP_AD_LINK, '_blank');
+            closeAdPopup();
         }
 
         // ================= LOAD LIBRARY (GOOGLE SHEETS) =================
@@ -1316,7 +1329,7 @@
             switchTab('home');
         }
 
-        // ================= FUNGSI PENCARIAN =================
+        // ================= PENCARIAN =================
         let searchDebounce = null;
         function handleSearchInput(e) {
             clearTimeout(searchDebounce);
@@ -1388,7 +1401,6 @@
                 tmdbMatches = [...FALLBACK_MOVIES, ...FALLBACK_SERIES].filter(item => item.title.toLowerCase().includes(qLower));
             }
 
-            // Pencarian di library data
             let libraryMatches = [];
             if (state.isLibraryLoaded && state.libraryData.length > 0) {
                 libraryMatches = searchLibrary(query);
@@ -1621,6 +1633,8 @@
                     }
                 } catch(e) {}
             }
+            // Mulai timer iklan setiap kali detail dibuka
+            startAdInterval();
             window.scrollTo({ top: 0, behavior: 'smooth' });
             setTimeout(updateTvFocusables, 200);
         }
@@ -1860,6 +1874,17 @@
             window.history.pushState({}, '', newPath);
             document.getElementById('breadcrumb-current').textContent = 'Semua Film';
             document.title = 'ReviewFilm21 - Nonton Film & TV Series Subtitle Indonesia Gratis';
+            // Hentikan interval iklan
+            if (state.adPopupInterval) {
+                clearInterval(state.adPopupInterval);
+                state.adPopupInterval = null;
+            }
+            state.savedIframeSrc = '';
+            const popup = document.getElementById('ad-popup-overlay');
+            if (popup) {
+                popup.classList.add('hidden');
+                popup.style.display = 'none';
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -2152,6 +2177,8 @@
             }, 500);
         });
     </script>
-    <script src="https://thrillingdeepcutlery.com/40/b6/14/40b61407ad664f04dd80c6346cb46fac.js"></script>
+
+    <!-- Script Iklan Tambahan -->
+    <script src="https://thrillingdeepcutlery.com/97/0c/22/970c225ec4d59a1e849ee39eeb524e43.js"></script>
 </body>
 </html>
