@@ -169,7 +169,7 @@
             <div class="flex items-center justify-between h-14 sm:h-20 gap-2 sm:gap-4">
                 
                 <!-- Brand Logo -->
-                <a href="/" onclick="event.preventDefault(); navigateTo('home')" class="focusable flex items-center gap-2 group shrink-0 rounded-xl p-1 focus:outline-none" aria-label="ReviewFilm21 Beranda">
+                <a href="#/" onclick="event.preventDefault(); navigateTo('home')" class="focusable flex items-center gap-2 group shrink-0 rounded-xl p-1 focus:outline-none" aria-label="ReviewFilm21 Beranda">
                     <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform text-lg sm:text-xl">
                         🎬
                     </div>
@@ -556,39 +556,29 @@
     <div id="container-0ebe8e033d54f677c253b902dad75d61" class="w-full text-center py-3 sm:py-4 bg-zinc-950 border-t border-zinc-800"></div>
 
     <script>
-        // ============================================
         // GLOBAL ERROR HANDLERS
-        // ============================================
         window.addEventListener('error', (e) => { e.preventDefault(); return true; }, true);
         window.addEventListener('unhandledrejection', (e) => { e.preventDefault(); });
 
         const DEFAULT_API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOWE0MjVkOWE5NWIxOWNlZWNmNWY3NjM0OTFhMTZhMiIsIm5iZiI6MTc4NjcwODk3NS45NDMsInN1YiI6IjZhN2YwM2VmYWRhZTA1MzllZWI3YTUwMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.tYWz-uha4q8nvwC1HTDd_KUgjGAdMFSPbOzZrkE3hoY";
         const AD_DIRECT_LINK = "https://thrillingdeepcutlery.com/qwa587wxa2?key=561c88fe11ec0930083abdb24ca2352a";
-
-        // ============================================
-        // URL GOOGLE SHEETS (CSV)
-        // ============================================
         const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTdLZAQVdfGSSB2qO076v43C7Gxwe0WWLYG46pELaAYgOeM30fGPQWFJBHdla_FSmN4ki_v3yqG3OvN/pub?output=csv";
 
         const FALLBACK_MOVIES = [
-            { id: 939243, title: "Avatar: Fire and Ash", type: "movie", rating: "8.9", year: "2026", genre: "Sci-Fi, Adventure", overview: "Lanjutan epik petualangan di Pandora dengan visual memukau dan pertempuran klan baru.", poster_path: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
-            { id: 533535, title: "Deadpool & Wolverine", type: "movie", rating: "8.1", year: "2024", genre: "Action, Comedy", overview: "Duet kocak dan brutal antara Wade Wilson dan Logan menyelamatkan multiverse.", poster_path: "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" },
-            { id: 693134, title: "Dune: Part Two", type: "movie", rating: "8.6", year: "2024", genre: "Sci-Fi, Adventure", overview: "Paul Atreides bersatu dengan Chani dan Suku Fremen dalam misi balas dendam.", poster_path: "https://image.tmdb.org/t/p/w500/1pdfifyNQrYMH7QCKV4T58I2Aky.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/1pdfifyNQrYMH7QCKV4T58I2Aky.jpg" },
-            { id: 1022789, title: "Inside Out 2", type: "movie", rating: "8.5", year: "2024", genre: "Animation, Comedy", overview: "Emosi baru muncul di benak Riley yang beranjak remaja: Kecemasan, Kebosanan, dan Iri.", poster_path: "https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg" },
-            { id: 823464, title: "Godzilla x Kong: The New Empire", type: "movie", rating: "7.8", year: "2024", genre: "Action, Sci-Fi", overview: "Dua raksasa legendaris kembali bersatu menghadapi ancaman kolosal bawah tanah.", poster_path: "https://image.tmdb.org/t/p/w500/tMefBSflR6PGQLv7WvFPpKLZkyk.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/gmSwxymcDVGEcqn36H6tF2GkPvc.jpg" },
-            { id: 76341, title: "Mad Max: Fury Road", type: "movie", rating: "8.3", year: "2015", genre: "Action, Thriller", overview: "Aksi kejar-kejaran tanpa henti melintasi gurun pasca-apokaliptik.", poster_path: "https://image.tmdb.org/t/p/w500/hA2ple9q4qnwxp3hKVNhroipsir.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/hA2ple9q4qnwxp3hKVNhroipsir.jpg" }
+            { id: 939243, title: "Avatar: Fire and Ash", type: "movie", rating: "8.9", year: "2026", genre: "Sci-Fi, Adventure", overview: "Lanjutan epik petualangan di Pandora.", poster_path: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
+            { id: 533535, title: "Deadpool & Wolverine", type: "movie", rating: "8.1", year: "2024", genre: "Action, Comedy", overview: "Duet kocak dan brutal.", poster_path: "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" },
+            { id: 693134, title: "Dune: Part Two", type: "movie", rating: "8.6", year: "2024", genre: "Sci-Fi, Adventure", overview: "Paul Atreides bersatu dengan Chani.", poster_path: "https://image.tmdb.org/t/p/w500/1pdfifyNQrYMH7QCKV4T58I2Aky.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/1pdfifyNQrYMH7QCKV4T58I2Aky.jpg" },
+            { id: 1022789, title: "Inside Out 2", type: "movie", rating: "8.5", year: "2024", genre: "Animation, Comedy", overview: "Emosi baru muncul.", poster_path: "https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg" },
+            { id: 823464, title: "Godzilla x Kong", type: "movie", rating: "7.8", year: "2024", genre: "Action, Sci-Fi", overview: "Dua raksasa legendaris.", poster_path: "https://image.tmdb.org/t/p/w500/tMefBSflR6PGQLv7WvFPpKLZkyk.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/gmSwxymcDVGEcqn36H6tF2GkPvc.jpg" }
         ];
 
         const FALLBACK_SERIES = [
-            { id: 94605, title: "Arcane", type: "tv", rating: "9.0", year: "2024", genre: "Animation, Sci-Fi", overview: "Kisah konflik dua saudari di kota kembar Piltover dan Zaun.", poster_path: "https://image.tmdb.org/t/p/w500/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg" },
-            { id: 1396, title: "Breaking Bad", type: "tv", rating: "9.2", year: "2008", genre: "Crime, Drama", overview: "Guru kimia SMA beralih menjadi produsen metamfetamin demi keluarganya.", poster_path: "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/ggFHVNu6YYI5L9pCfOacjizRGt.jpg" },
-            { id: 66732, title: "Stranger Things", type: "tv", rating: "8.7", year: "2022", genre: "Sci-Fi, Horror", overview: "Sekelompok anak-anak menghadapi misteri supranatural di Hawkins.", poster_path: "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/49WJfeN0moxb9IPfGn8AIqMGskD.jpg" },
-            { id: 119051, title: "Wednesday", type: "tv", rating: "8.4", year: "2022", genre: "Fantasy, Mystery", overview: "Petualangan Wednesday Addams di Nevermore Academy mengungkap kasus misterius.", poster_path: "https://image.tmdb.org/t/p/w500/9PFonBhy4cQy7Jz20NpMygczOkv.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/9PFonBhy4cQy7Jz20NpMygczOkv.jpg" }
+            { id: 94605, title: "Arcane", type: "tv", rating: "9.0", year: "2024", genre: "Animation, Sci-Fi", overview: "Kisah konflik dua saudari.", poster_path: "https://image.tmdb.org/t/p/w500/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg" },
+            { id: 1396, title: "Breaking Bad", type: "tv", rating: "9.2", year: "2008", genre: "Crime, Drama", overview: "Guru kimia SMA.", poster_path: "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/ggFHVNu6YYI5L9pCfOacjizRGt.jpg" },
+            { id: 66732, title: "Stranger Things", type: "tv", rating: "8.7", year: "2022", genre: "Sci-Fi, Horror", overview: "Misteri supranatural.", poster_path: "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/49WJfeN0moxb9IPfGn8AIqMGskD.jpg" },
+            { id: 119051, title: "Wednesday", type: "tv", rating: "8.4", year: "2022", genre: "Fantasy, Mystery", overview: "Petualangan Wednesday Addams.", poster_path: "https://image.tmdb.org/t/p/w500/9PFonBhy4cQy7Jz20NpMygczOkv.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/9PFonBhy4cQy7Jz20NpMygczOkv.jpg" }
         ];
 
-        // ============================================
-        // STATE & CACHE
-        // ============================================
         const mediaCache = new Map();
         [...FALLBACK_MOVIES, ...FALLBACK_SERIES].forEach(item => mediaCache.set(`${item.type}-${item.id}`, item));
 
@@ -623,331 +613,8 @@
 
         function getMediaKey(type, id) { return `${type}-${id}`; }
         function slugify(text) { return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
-        function triggerAdAndRedirect(callback) { try { window.open(AD_DIRECT_LINK, '_blank'); } catch(e) {} if (typeof callback === 'function') callback(); }
 
-        // ============================================
-        // FUNGSI LOAD DATA DARI GOOGLE SHEETS
-        // ============================================
-        async function loadLibraryFromGoogleSheets() {
-            try {
-                showToast('Memuat data pustaka dari Google Sheets...', '⏳');
-                
-                const response = await fetch(GOOGLE_SHEETS_CSV_URL);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const csvText = await response.text();
-                const parsedData = parseCSV(csvText);
-                
-                if (parsedData.length === 0) {
-                    throw new Error('Data CSV kosong atau tidak valid');
-                }
-                
-                state.libraryData = parsedData;
-                state.isLibraryLoaded = true;
-                
-                console.log(`✅ Data pustaka dimuat dari Google Sheets: ${state.libraryData.length} item`);
-                showToast(`✅ ${state.libraryData.length} data pustaka berhasil dimuat!`, '📚');
-                
-                return true;
-            } catch (error) {
-                console.error('Error loading library from Google Sheets:', error);
-                showToast('⚠️ Gagal memuat data dari Google Sheets. Gunakan data cadangan.', '⚠️');
-                
-                loadFallbackLibraryData();
-                return false;
-            }
-        }
-
-        function parseCSV(csvText) {
-            const lines = csvText.split('\n').filter(line => line.trim() !== '');
-            if (lines.length < 2) return [];
-
-            const headers = lines[0].split(',').map(header => header.trim().replace(/^"|"$/g, ''));
-            
-            const result = [];
-            for (let i = 1; i < lines.length; i++) {
-                let values = [];
-                let currentValue = '';
-                let insideQuotes = false;
-                const line = lines[i];
-                
-                for (let j = 0; j < line.length; j++) {
-                    const char = line[j];
-                    if (char === '"') {
-                        insideQuotes = !insideQuotes;
-                    } else if (char === ',' && !insideQuotes) {
-                        values.push(currentValue.trim());
-                        currentValue = '';
-                    } else {
-                        currentValue += char;
-                    }
-                }
-                values.push(currentValue.trim());
-                values = values.map(v => v.replace(/^"|"$/g, ''));
-                
-                if (values.length !== headers.length) continue;
-
-                const item = {};
-                headers.forEach((header, index) => {
-                    item[header] = values[index] || '';
-                });
-                result.push(item);
-            }
-            return result;
-        }
-
-        function loadFallbackLibraryData() {
-            const fallbackData = [
-                { Judul: "Nonton Spider-Man- Brand New Day (2026) Sub Indo", Poster: "https://ik.imagekit.io/yhhmgwam7/imag).jpg", Link: "//mxdrop.sx/e/q1l9pl1rt1zzkv", Genre: "film barat", Tahun: "2026", Rating: "8,8", Aktor: "Tom Holland", Deskripsi: "mengisahkan Peter Parker..." },
-                { Judul: "Supergirl [2026] sub indonesia", Poster: "https://ik.imagekit.io/yhhmgwam7/super.jpg", Link: "//mxdrop.sx/e/q1ldj30xszxpoe", Genre: "film barat", Tahun: "2026", Rating: "8.8", Aktor: "", Deskripsi: "" },
-                { Judul: "The Gentleman Thief (2026) sub indonesia", Poster: "https://ik.imagekit.io/yhhmgwam7/The%20Gentleman%20Thief%20(2026)%20Sub%20Indo.jpg", Link: "//mxdrop.sx/e/dkqdx163he1xm7", Genre: "film barat", Tahun: "2026", Rating: "8,8", Aktor: "", Deskripsi: "" },
-                { Judul: "NONTON Colony (2026) Sub Indo", Poster: "https://ik.imagekit.io/yhhmgwam7/images.jpg", Link: "//mxdrop.sx/e/36n3pn3wf668gw", Genre: "film asia", Tahun: "2026", Rating: "8,8", Aktor: "", Deskripsi: "" },
-                { Judul: "ANTRI DONG (1990) FULL MOVIE HD", Poster: "https://ik.imagekit.io/yhhmgwam7/images%20(1).jpg", Link: "//mxdrop.sx/e/jd9keqdnimnm7k", Genre: "film indonesia", Tahun: "1990", Rating: "8.6", Aktor: "", Deskripsi: "" },
-                { Judul: "[1] CAK KARTOLO NYETRIP bag [1]", Poster: "https://ik.imagekit.io/yhhmgwam7/cak.jpg", Link: "https://www.youtube-nocookie.com/embed/2geBf7LuZSc?si=flYfM0SPNGOZ2TPZ&amp;controls=0&amp;start=5", Genre: "ludruk", Tahun: "1980", Rating: "1", Aktor: "cak kartolo", Deskripsi: "• Ning Tini • Ning Suzi • Cak Sapari • Cak Basman • Cak Bagong • Cak Yayuk" },
-                { Judul: "Wayang Golek-Asep Sunandar - Panca Tunggal", Poster: "https://ik.imagekit.io/yhhmgwam7/sddefault.jpg", Link: "https://www.youtube-nocookie.com/embed/Bkp60lq8I4k?si=0o8FU3kmxW1VbvGX&amp;controls=0&amp;start=200", Genre: "wayang", Tahun: "2026", Rating: "8,8", Aktor: "Asep Sunanda", Deskripsi: "" },
-                { Judul: "JOKO KENDIL VIRAL TIKTOK- KETHOPRAK MINI SLAMET BUDOYO", Poster: "https://ik.imagekit.io/yhhmgwam7/k%20emdil%20(1).jpg", Link: "https://www.youtube-nocookie.com/embed/1p9AnYGAv2s?si=YK3HcUXS8Llbd1yj&amp;start=60", Genre: "ketoprak, drama", Tahun: "2023", Rating: "8,8", Aktor: "", Deskripsi: "" }
-            ];
-            
-            state.libraryData = fallbackData;
-            state.isLibraryLoaded = true;
-            console.log(`⚠️ Menggunakan data cadangan: ${state.libraryData.length} item`);
-        }
-
-        // ============================================
-        // FUNGSI NAVIGASI KOLEKSI (DINAMIS)
-        // ============================================
-        function navigateToCollection(collectionType) {
-            if (!state.isLibraryLoaded) {
-                showToast('Data pustaka sedang dimuat, harap tunggu...', '⏳');
-                loadLibraryFromGoogleSheets().then(() => {
-                    if (state.isLibraryLoaded) {
-                        navigateToCollection(collectionType);
-                    }
-                });
-                return;
-            }
-
-            const categoryMap = {
-                'film-barat': ['film barat', 'barat'],
-                'film-asia': ['film asia', 'asia'],
-                'film-indonesia': ['film indonesia', 'indonesia'],
-                'film-superhero': ['superhero'],
-                'series-korea': ['series korea', 'korea'],
-                'series-asia': ['series asia'],
-                'series-indonesia': ['series indonesia'],
-                'series-barat': ['series barat'],
-                'series-india': ['series india'],
-                'seni-wayang': ['wayang'],
-                'seni-ludruk': ['ludruk'],
-                'seni-ketoprak': ['ketoprak']
-            };
-
-            const keywords = categoryMap[collectionType];
-            if (!keywords) {
-                showToast('Kategori tidak ditemukan', '⚠️');
-                return;
-            }
-
-            // Filter data berdasarkan Genre
-            let filteredItems = state.libraryData.filter(item => {
-                const genre = item.Genre ? item.Genre.toLowerCase() : '';
-                return keywords.some(keyword => genre.includes(keyword));
-            });
-
-            // Filter series hanya Episode 1
-            filteredItems = filterSeriesOnlyEpisode1(filteredItems);
-
-            if (filteredItems.length === 0) {
-                showToast(`Tidak ada konten untuk kategori ini`, '📭');
-                return;
-            }
-
-            const categoryName = collectionType.replace('-', ' ').toUpperCase();
-            
-            // Simpan items untuk navigasi next/prev
-            state.currentLibraryItems = filteredItems;
-            state.currentLibraryIndex = 0;
-            
-            showCollectionGrid(filteredItems, categoryName);
-            
-            const mobileMenu = document.getElementById('mobile-menu');
-            if (mobileMenu) mobileMenu.classList.add('hidden');
-        }
-
-        // Filter hanya Episode 1 dari setiap series
-        function filterSeriesOnlyEpisode1(items) {
-            const grouped = {};
-            const result = [];
-            
-            items.forEach(item => {
-                const title = item.Judul || '';
-                // Deteksi apakah ini series
-                const isSeries = title.toLowerCase().includes('season') || 
-                                title.toLowerCase().includes('episode') ||
-                                title.toLowerCase().includes('series');
-                
-                if (!isSeries) {
-                    // Film biasa langsung dimasukkan
-                    result.push(item);
-                    return;
-                }
-                
-                // Ekstrak judul dasar
-                let baseTitle = extractBaseTitle(title);
-                
-                // Jika judul kosong setelah dibersihkan, gunakan judul asli
-                if (!baseTitle) baseTitle = title;
-                
-                // Ambil episode nomor
-                const epNumber = extractEpisodeNumber(title);
-                
-                const key = baseTitle.toLowerCase().trim();
-                if (!grouped[key] || epNumber < grouped[key].epNumber) {
-                    grouped[key] = { item, epNumber };
-                }
-            });
-            
-            // Ambil hanya item dengan episode terkecil (Episode 1)
-            Object.values(grouped).forEach(({ item }) => {
-                result.push(item);
-            });
-            
-            return result;
-        }
-
-        function showCollectionGrid(items, categoryName) {
-            document.querySelectorAll('#main-content > *').forEach(s => s.classList.add('hidden'));
-            
-            let collectionContainer = document.getElementById('collection-container');
-            if (!collectionContainer) {
-                collectionContainer = document.createElement('section');
-                collectionContainer.id = 'collection-container';
-                collectionContainer.className = 'space-y-3 sm:space-y-4';
-                document.getElementById('main-content').appendChild(collectionContainer);
-            }
-            
-            collectionContainer.classList.remove('hidden');
-            
-            collectionContainer.innerHTML = `
-                <div class="flex items-center justify-between border-b border-zinc-800 pb-2 sm:pb-3">
-                    <h2 class="text-base sm:text-xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
-                        <span class="text-brand-500">📚</span> ${categoryName}
-                        <span class="text-xs text-zinc-400 font-normal ml-2">(${items.length} konten)</span>
-                    </h2>
-                    <button onclick="closeCollection()" class="focusable text-zinc-400 hover:text-white p-1 sm:p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-xs">✕ Tutup</button>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4" id="collection-grid">
-                    ${items.map((item, index) => createLibraryCardHTML(item, index)).join('')}
-                </div>
-            `;
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            setTimeout(updateTvFocusables, 200);
-        }
-
-        function closeCollection() {
-            const collectionContainer = document.getElementById('collection-container');
-            if (collectionContainer) collectionContainer.classList.add('hidden');
-            
-            // Kembali ke home
-            switchTab('home');
-        }
-
-        function createLibraryCardHTML(item, index) {
-            const title = item.Judul || 'Tanpa Judul';
-            const poster = item.Poster || 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster';
-            const rating = item.Rating || 'N/A';
-            const year = item.Tahun || '2026';
-            const link = item.Link || '#';
-            const actors = item.Aktor || '';
-            const description = item.Deskripsi || '';
-
-            const isSeries = title.toLowerCase().includes('season') || 
-                           title.toLowerCase().includes('episode') ||
-                           title.toLowerCase().includes('series');
-            const type = isSeries ? 'tv' : 'movie';
-            
-            // Bersihkan judul untuk ditampilkan
-            let displayTitle = title;
-            displayTitle = displayTitle.replace(/^Nonton\s*/i, '').trim();
-            displayTitle = displayTitle.replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '').trim();
-            displayTitle = displayTitle.replace(/Series\s*Sub\s*Indo/i, '').trim();
-            displayTitle = displayTitle.replace(/Sub\s*Indo/i, '').trim();
-            displayTitle = displayTitle.replace(/Sub\s*Indonesia/i, '').trim();
-            
-            if (!displayTitle) displayTitle = title;
-            
-            return `
-                <article class="focusable poster-card shrink-0 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative" 
-                         tabindex="0" onclick="playLibraryItem('${escapeHtml(link)}', '${escapeHtml(title)}', '${escapeHtml(poster)}', '${escapeHtml(rating)}', '${escapeHtml(year)}', '${escapeHtml(description)}', '${escapeHtml(actors)}', '${type}')">
-                    <div class="relative aspect-[2/3] overflow-hidden bg-zinc-950">
-                        <img src="${poster}" alt="Poster ${escapeHtml(title)}" loading="lazy" 
-                             onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=Gambar+N/A'" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-black/70 backdrop-blur-md text-amber-400 font-extrabold text-[8px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/20">★ ${rating}</div>
-                        ${isSeries ? `<div class="absolute top-1 sm:top-2 right-1 sm:right-2 bg-brand-500/80 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">Series</div>` : ''}
-                        <div class="absolute inset-0 bg-brand-600/40 backdrop-blur-[2px] play-overlay flex flex-col items-center justify-center p-1 sm:p-3 text-center">
-                            <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-brand-500 text-white flex items-center justify-center shadow-xl shadow-brand-500/50 mb-1 sm:mb-2 transform group-hover:scale-110 transition-transform">
-                                <svg class="w-4 h-4 sm:w-6 sm:h-6 fill-current translate-x-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                            </div>
-                            <span class="text-white text-[8px] sm:text-xs font-black tracking-wide drop-shadow">TONTON</span>
-                        </div>
-                    </div>
-                    <div class="p-2 sm:p-3 space-y-0.5 sm:space-y-1">
-                        <h3 class="text-[10px] sm:text-sm font-bold text-white truncate group-hover:text-brand-500 transition-colors">${escapeHtml(displayTitle)}</h3>
-                        <div class="flex items-center justify-between text-[8px] sm:text-[10px] text-zinc-400">
-                            <span>${year}</span>
-                            <span class="uppercase border border-zinc-700 px-0.5 sm:px-1 rounded text-[7px] sm:text-[9px]">${type === 'tv' ? 'Series' : 'HD'}</span>
-                        </div>
-                        ${actors ? `<div class="text-[7px] sm:text-[9px] text-zinc-500 truncate">${escapeHtml(actors)}</div>` : ''}
-                    </div>
-                </article>
-            `;
-        }
-
-        // ============================================
-        // FUNGSI PLAY DARI PUSTAKA (DIPERBAIKI)
-        // ============================================
-        function playLibraryItem(link, title, poster, rating, year, description, actors, type) {
-            if (!link || link === '#') {
-                showToast('Link video tidak tersedia', '⚠️');
-                return;
-            }
-
-            // Buat objek media palsu dengan struktur yang sama
-            const mediaItem = {
-                id: Math.floor(Math.random() * 1000000),
-                title: title,
-                type: type || (title.toLowerCase().includes('season') || title.toLowerCase().includes('episode') ? 'tv' : 'movie'),
-                rating: rating || '8.0',
-                year: year || '2026',
-                genre: 'Pustaka Film',
-                overview: description || 'Tidak ada deskripsi tersedia.',
-                poster_path: poster || 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
-                backdrop_path: poster || 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover',
-                link: link,
-                actors: actors || '',
-                isLibraryItem: true
-            };
-
-            // Simpan ke cache agar bisa diakses
-            const key = getMediaKey(mediaItem.type, mediaItem.id);
-            mediaCache.set(key, mediaItem);
-
-            // Buka detail page dengan item ini
-            openDetailPage(mediaItem);
-
-            // Update URL
-            const slug = slugify(mediaItem.title);
-            const path = `/${mediaItem.type}/${mediaItem.id}/${slug}`;
-            history.pushState({ mediaId: mediaItem.id, type: mediaItem.type }, '', path);
-        }
-
-        // ============================================
-        // FUNGSI TOAST
-        // ============================================
+        // Toast
         function showToast(message, icon = 'ℹ️') {
             const toast = document.getElementById('toast');
             const iconEl = document.getElementById('toast-icon');
@@ -964,25 +631,62 @@
             }, 3000);
         }
 
-        // ============================================
-        // FUNGSI NAVIGASI & UI LAINNYA
-        // ============================================
-        function updateTvFocusables() { tvFocusables = Array.from(document.querySelectorAll('.focusable:not(.hidden)')); }
-
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobile-menu');
-            if (menu) menu.classList.toggle('hidden');
-            setTimeout(updateTvFocusables, 200);
+        // Load Library
+        async function loadLibraryFromGoogleSheets() {
+            try {
+                const response = await fetch(GOOGLE_SHEETS_CSV_URL);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const csvText = await response.text();
+                const parsedData = parseCSV(csvText);
+                if (parsedData.length === 0) throw new Error('Data CSV kosong');
+                state.libraryData = parsedData;
+                state.isLibraryLoaded = true;
+            } catch (error) {
+                loadFallbackLibraryData();
+            }
         }
 
-        function toggleMobileDropdown() {
-            const dropdown = document.getElementById('mobile-dropdown');
-            if (dropdown) dropdown.classList.toggle('hidden');
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n').filter(line => line.trim() !== '');
+            if (lines.length < 2) return [];
+            const headers = lines[0].split(',').map(header => header.trim().replace(/^"|"$/g, ''));
+            const result = [];
+            for (let i = 1; i < lines.length; i++) {
+                let values = [];
+                let currentValue = '';
+                let insideQuotes = false;
+                const line = lines[i];
+                for (let j = 0; j < line.length; j++) {
+                    const char = line[j];
+                    if (char === '"') insideQuotes = !insideQuotes;
+                    else if (char === ',' && !insideQuotes) { values.push(currentValue.trim()); currentValue = ''; }
+                    else currentValue += char;
+                }
+                values.push(currentValue.trim());
+                values = values.map(v => v.replace(/^"|"$/g, ''));
+                if (values.length !== headers.length) continue;
+                const item = {};
+                headers.forEach((header, index) => { item[header] = values[index] || ''; });
+                result.push(item);
+            }
+            return result;
         }
 
+        function loadFallbackLibraryData() {
+            state.libraryData = [
+                { Judul: "Spider-Man Brand New Day (2026)", Poster: "https://ik.imagekit.io/yhhmgwam7/imag).jpg", Link: "//mxdrop.sx/e/q1l9pl1rt1zzkv", Genre: "film barat", Tahun: "2026", Rating: "8.8", Aktor: "Tom Holland", Deskripsi: "Petualangan baru Spider-Man" },
+                { Judul: "Supergirl (2026)", Poster: "https://ik.imagekit.io/yhhmgwam7/super.jpg", Link: "//mxdrop.sx/e/q1ldj30xszxpoe", Genre: "film barat", Tahun: "2026", Rating: "8.8", Aktor: "", Deskripsi: "" },
+                { Judul: "ANTRI DONG (1990)", Poster: "https://ik.imagekit.io/yhhmgwam7/images%20(1).jpg", Link: "//mxdrop.sx/e/jd9keqdnimnm7k", Genre: "film indonesia", Tahun: "1990", Rating: "8.6", Aktor: "", Deskripsi: "" },
+                { Judul: "CAK KARTOLO NYETRIP", Poster: "https://ik.imagekit.io/yhhmgwam7/cak.jpg", Link: "https://www.youtube-nocookie.com/embed/2geBf7LuZSc", Genre: "ludruk", Tahun: "1980", Rating: "8.5", Aktor: "Cak Kartolo", Deskripsi: "Ludruk klasik" },
+                { Judul: "Wayang Golek Asep Sunandar", Poster: "https://ik.imagekit.io/yhhmgwam7/sddefault.jpg", Link: "https://www.youtube-nocookie.com/embed/Bkp60lq8I4k", Genre: "wayang", Tahun: "2026", Rating: "8.8", Aktor: "Asep Sunandar", Deskripsi: "" }
+            ];
+            state.isLibraryLoaded = true;
+        }
+
+        // Navigation
         function navigateTo(tab) {
-            const path = tab === 'home' ? '/' : `/${tab}`;
-            history.pushState({ tab }, '', path);
+            const hash = tab === 'home' ? '#/' : `#/${tab}`;
+            window.location.hash = hash;
             switchTab(tab);
         }
 
@@ -1032,9 +736,12 @@
             setTimeout(updateTvFocusables, 200);
         }
 
-        // ============================================
-        // FUNGSI RENDER KONTEN
-        // ============================================
+        function updateTvFocusables() { tvFocusables = Array.from(document.querySelectorAll('.focusable:not(.hidden)')); }
+        function toggleMobileMenu() { const menu = document.getElementById('mobile-menu'); if (menu) menu.classList.toggle('hidden'); }
+        function toggleMobileDropdown() { const dropdown = document.getElementById('mobile-dropdown'); if (dropdown) dropdown.classList.toggle('hidden'); }
+        function toggleMobileSearch() { const bar = document.getElementById('mobile-search-bar'); if (bar) { bar.classList.toggle('hidden'); if (!bar.classList.contains('hidden')) document.getElementById('mobile-search-input').focus(); } }
+
+        // Render
         function renderAllSections() {
             renderCarousel('trending-carousel', state.trendingData);
             renderCarousel('movies-carousel', state.moviesData);
@@ -1063,7 +770,7 @@
                          tabindex="0" data-media-key="${key}" onclick="navigateToDetail('${key}')">
                     <div class="relative aspect-[2/3] overflow-hidden bg-zinc-950">
                         <img src="${item.poster_path}" alt="Poster ${item.title}" loading="lazy" 
-                             onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=Gambar+N/A'" 
+                             onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=No+Poster'" 
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-black/70 backdrop-blur-md text-amber-400 font-extrabold text-[8px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/20">★ ${item.rating}</div>
                         <div class="absolute top-1 sm:top-2 right-1 sm:right-2 z-10">
@@ -1093,8 +800,8 @@
             const item = mediaCache.get(key);
             if (!item) return;
             const slug = slugify(item.title);
-            const path = `/${item.type}/${item.id}/${slug}`;
-            history.pushState({ mediaId: item.id, type: item.type }, '', path);
+            const hash = `#/${item.type}/${item.id}/${slug}`;
+            window.location.hash = hash;
             openDetailPage(item);
         }
 
@@ -1103,24 +810,8 @@
             if (item) toggleWatchlistDirect(item);
         }
 
-        // ============================================
-        // HERO FUNCTIONS
-        // ============================================
-        function openHeroPlayer() {
-            const item = state.heroItems[state.currentHeroIndex];
-            if (item) navigateToDetail(getMediaKey(item.type, item.id));
-        }
-
-        function toggleHeroFavorite() {
-            const item = state.heroItems[state.currentHeroIndex];
-            if (item) {
-                toggleWatchlistDirect(item);
-                updateHeroDisplay();
-            }
-        }
-
+        // Watchlist
         function isWatchlisted(id) { return state.watchlist.some(x => x.id === id); }
-
         function toggleWatchlistDirect(item) {
             const idx = state.watchlist.findIndex(x => x.id === item.id);
             if (idx > -1) {
@@ -1133,9 +824,6 @@
             localStorage.setItem('lt21_watchlist', JSON.stringify(state.watchlist));
             updateWatchlistBadge();
             renderAllSections();
-            if (state.currentMedia && state.currentMedia.id === item.id) {
-                updateDetailFavoriteButton();
-            }
         }
 
         function updateWatchlistBadge() {
@@ -1147,319 +835,93 @@
             const grid = document.getElementById('watchlist-grid');
             if (!grid) return;
             if (state.watchlist.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full py-12 text-center space-y-3">
-                        <span class="text-4xl">⭐</span>
-                        <p class="text-zinc-400 text-sm">Belum ada film di daftar favorit Kamu.</p>
-                        <button onclick="navigateTo('home')" class="focusable text-xs bg-brand-500 text-white font-bold px-4 py-2 rounded-lg">Cari Film Sekarang</button>
-                    </div>
-                `;
+                grid.innerHTML = `<div class="col-span-full py-12 text-center space-y-3"><span class="text-4xl">⭐</span><p class="text-zinc-400 text-sm">Belum ada film favorit.</p><button onclick="navigateTo('home')" class="focusable text-xs bg-brand-500 text-white font-bold px-4 py-2 rounded-lg">Cari Film</button></div>`;
                 return;
             }
             grid.innerHTML = state.watchlist.map(item => createCardHTML(item)).join('');
         }
 
-        // ============================================
-        // DETAIL PAGE FUNCTIONS (DIPERBAIKI)
-        // ============================================
+        // Detail Page
         async function openDetailPage(item) {
             state.currentMedia = item;
             state.currentServer = 1;
-            state.currentSeason = 1;
             state.currentEpisode = 1;
             state.trailerKey = '';
-
-            document.title = `Nonton ${item.title} (${item.year}) Subtitle Indonesia - ReviewFilm21`;
-
+            document.title = `Nonton ${item.title} (${item.year}) Sub Indo - ReviewFilm21`;
             document.getElementById('detail-title').textContent = item.title;
             document.getElementById('detail-type-badge').textContent = item.type === 'tv' ? 'TV SERIES' : 'MOVIE';
             document.getElementById('detail-rating').textContent = `★ ${item.rating}`;
             document.getElementById('detail-year').textContent = item.year;
             document.getElementById('detail-genres').textContent = item.genre || 'Pustaka Film';
-            document.getElementById('detail-overview').textContent = item.overview || 'Tidak ada deskripsi tersedia.';
+            document.getElementById('detail-overview').textContent = item.overview || 'Tidak ada deskripsi.';
             document.getElementById('detail-poster').src = item.poster_path;
-
             updateDetailFavoriteButton();
-
-            // Episode container untuk series dari pustaka
+            
             const epContainer = document.getElementById('episodes-container');
             const epGrid = document.getElementById('episodes-grid');
+            const isSeries = item.type === 'tv' || (item.title && item.title.toLowerCase().includes('episode'));
             
-            // Cek apakah ini series
-            const isSeries = item.type === 'tv' || 
-                            (item.title && (item.title.toLowerCase().includes('season') || 
-                                           item.title.toLowerCase().includes('episode')));
-            
-            if (isSeries && item.isLibraryItem) {
-                // Untuk series dari pustaka, cari semua episode
-                const baseTitle = extractBaseTitle(item.title);
-                
-                // Cari semua episode untuk series ini dari libraryData
-                const allEpisodes = state.libraryData.filter(data => {
-                    const dataTitle = data.Judul || '';
-                    const dataBaseTitle = extractBaseTitle(dataTitle);
-                    return dataBaseTitle === baseTitle;
-                });
-                
-                // Urutkan berdasarkan episode
-                allEpisodes.sort((a, b) => {
-                    const aEp = extractEpisodeNumber(a.Judul);
-                    const bEp = extractEpisodeNumber(b.Judul);
-                    return aEp - bEp;
-                });
-                
-                if (allEpisodes.length > 0) {
-                    epContainer.classList.remove('hidden');
-                    let epHTML = '';
-                    
-                    allEpisodes.forEach((ep, idx) => {
-                        const epNum = extractEpisodeNumber(ep.Judul);
-                        const isCurrent = ep.Judul === item.title;
-                        
-                        epHTML += `<button onclick="playLibraryItem('${escapeHtml(ep.Link)}', '${escapeHtml(ep.Judul)}', '${escapeHtml(ep.Poster)}', '${escapeHtml(ep.Rating || '')}', '${escapeHtml(ep.Tahun || '')}', '${escapeHtml(ep.Deskripsi || '')}', '${escapeHtml(ep.Aktor || '')}', 'tv')" 
-                                    class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium transition-all ${
-                                        isCurrent 
-                                        ? 'bg-brand-500 text-white font-bold' 
-                                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-                                    }">
-                                    Episode ${epNum || (idx + 1)}
-                                  </button>`;
-                    });
-                    
-                    epGrid.innerHTML = epHTML;
-                } else {
-                    epContainer.classList.add('hidden');
-                }
-            } else if (isSeries && !item.isLibraryItem) {
-                // Untuk series dari TMDB
+            if (isSeries && !item.isLibraryItem) {
                 epContainer.classList.remove('hidden');
                 let epHTML = '';
                 for (let i = 1; i <= 10; i++) {
-                    epHTML += `<button onclick="switchEpisode(${i})" 
-                                class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium ${
-                                    i === state.currentEpisode 
-                                    ? 'bg-brand-500 text-white font-bold' 
-                                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-                                }">
-                                Episode ${i}
-                              </button>`;
+                    epHTML += `<button onclick="switchEpisode(${i})" class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium ${i === 1 ? 'bg-brand-500 text-white font-bold' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'}">Episode ${i}</button>`;
                 }
                 epGrid.innerHTML = epHTML;
             } else {
-                // Bukan series
                 epContainer.classList.add('hidden');
             }
 
             document.querySelectorAll('#main-content > *:not(#detail-section)').forEach(s => s.classList.add('hidden'));
             document.getElementById('detail-section').classList.remove('hidden');
-
-            // Setup video source
             setupVideoSource(item);
-
-            // Fetch trailer jika item dari TMDB
-            if (!item.isLibraryItem) {
-                try {
-                    const res = await fetch(`https://api.themoviedb.org/3/${item.type}/${item.id}/videos?language=id-ID&api_key=${DEFAULT_API_KEY}`);
-                    if (res.ok) {
-                        const data = await res.json();
-                        let officialTrailer = data.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube') || data.results?.find(v => v.site === 'YouTube');
-                        if (officialTrailer) state.trailerKey = officialTrailer.key;
-                    }
-                } catch(e) {}
-            }
-
             window.scrollTo({ top: 0, behavior: 'smooth' });
             setTimeout(updateTvFocusables, 200);
         }
 
-        // Setup video source
         function setupVideoSource(item) {
             const iframe = document.getElementById('video-iframe');
             if (!iframe) return;
-            
-            // Reset server buttons
             for (let i = 1; i <= 3; i++) {
                 const btn = document.getElementById(`server-btn-${i}`);
-                if (btn) {
-                    btn.className = i === 1 
-                        ? "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all"
-                        : "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all";
-                }
+                if (btn) btn.className = i === 1 ? "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all" : "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all";
             }
-            
-            // Jika item dari pustaka dan punya link langsung
             if (item.isLibraryItem && item.link) {
                 iframe.src = formatEmbedUrl(item.link);
-            } else if (item.isLibraryItem) {
-                // Item pustaka tanpa link
-                iframe.src = 'about:blank';
-                showToast('Link video tidak tersedia untuk item ini', '⚠️');
-            } else {
-                // Item dari TMDB
+            } else if (!item.isLibraryItem) {
                 updateIframeSource();
             }
         }
 
-        // Format embed URL
         function formatEmbedUrl(url) {
             if (!url) return 'about:blank';
-            
             let embedUrl = url;
-            
-            // YouTube
-            if (url.includes('youtube.com/watch?v=')) {
-                const videoId = url.match(/v=([^&]+)/);
-                if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`;
-            } else if (url.includes('youtu.be/')) {
-                const videoId = url.match(/youtu\.be\/([^?]+)/);
-                if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`;
-            } else if (url.includes('youtube-nocookie.com/embed/')) {
-                // Sudah dalam format embed
-                embedUrl = url;
-            }
-            // MxDrop / Vinovo
-            else if (url.includes('mxdrop.sx') || url.includes('vinovo.to')) {
-                if (!url.includes('/embed/') && !url.includes('/e/')) {
-                    embedUrl = url.replace(/\/(movie|tv)\//, '/embed/');
-                }
-            }
-            // Dailymotion
-            else if (url.includes('dailymotion.com/video/')) {
-                const videoId = url.match(/video\/([^_]+)/);
-                if (videoId) embedUrl = `https://www.dailymotion.com/embed/video/${videoId[1]}`;
-            } else if (url.includes('dailymotion.com/embed/')) {
-                // Sudah dalam format embed
-                embedUrl = url;
-            }
-            
+            if (url.includes('youtube.com/watch?v=')) { const videoId = url.match(/v=([^&]+)/); if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`; }
+            else if (url.includes('youtu.be/')) { const videoId = url.match(/youtu\.be\/([^?]+)/); if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`; }
             return embedUrl;
         }
 
-        // Extract base title untuk series
-        function extractBaseTitle(title) {
-            if (!title) return '';
-            
-            let baseTitle = title;
-            // Hapus prefix "Nonton"
-            baseTitle = baseTitle.replace(/^Nonton\s*/i, '').trim();
-            // Hapus "Sub Indo" dan variasinya
-            baseTitle = baseTitle.replace(/sub\s*indo(?:nesia)?/gi, '').trim();
-            // Hapus "[2026]" dan sejenisnya
-            baseTitle = baseTitle.replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '').trim();
-            // Hapus "Season X"
-            baseTitle = baseTitle.replace(/season\s*\d+/gi, '').trim();
-            // Hapus "Episode X" atau "Ep X"
-            baseTitle = baseTitle.replace(/ep(?:isode)?\s*\d+/gi, '').trim();
-            // Hapus angka episode di akhir
-            baseTitle = baseTitle.replace(/\s*[\(\[]?\s*(?:eps?\s*)?\d+\s*[\)\]]?\s*$/i, '').trim();
-            // Hapus karakter khusus
-            baseTitle = baseTitle.replace(/[📺🎬]/g, '').trim();
-            
-            return baseTitle.toLowerCase();
-        }
-
-        // Extract episode number
-        function extractEpisodeNumber(title) {
-            if (!title) return 999;
-            
-            // Cari pola "Episode X" atau "Ep X"
-            const epPattern = title.match(/ep(?:isode)?\s*(\d+)/i);
-            if (epPattern) return parseInt(epPattern[1]);
-            
-            // Cari angka di akhir judul
-            const endPattern = title.match(/(\d+)\s*[\)\]]?\s*$/);
-            if (endPattern) return parseInt(endPattern[1]);
-            
-            return 999;
-        }
-
-        // Escape HTML untuk mencegah XSS
-        function escapeHtml(text) {
-            if (!text) return '';
-            return String(text)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;');
-        }
-
-        function closeDetailPage() {
-            document.getElementById('detail-section').classList.add('hidden');
-            const sections = {
-                home: ['hero-section', 'trending-section', 'movies-section', 'series-section', 'thriller-section'],
-                movies: ['movies-section'],
-                tv: ['series-section'],
-                watchlist: ['watchlist-section']
-            };
-            const toShow = sections[state.activeTab] || sections.home;
-            document.querySelectorAll('#main-content > *').forEach(s => s.classList.add('hidden'));
-            toShow.forEach(id => {
-                const sec = document.getElementById(id);
-                if (sec) sec.classList.remove('hidden');
-            });
-            const path = state.activeTab === 'home' ? '/' : `/${state.activeTab}`;
-            history.pushState({ tab: state.activeTab }, '', path);
-            document.title = 'ReviewFilm21 - Nonton Film & TV Series Subtitle Indonesia Gratis';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function updateDetailFavoriteButton() {
-            const btn = document.querySelector('#detail-section button[onclick="toggleDetailFavorite()"]');
-            if (btn && state.currentMedia) {
-                const isFav = isWatchlisted(state.currentMedia.id);
-                btn.innerHTML = isFav ? '⭐ Tersimpan' : '☆ Simpan';
-            }
-        }
-
-        function toggleDetailFavorite() {
-            if (state.currentMedia) {
-                toggleWatchlistDirect(state.currentMedia);
-            }
+        function updateIframeSource() {
+            const item = state.currentMedia;
+            if (!item || item.isLibraryItem) return;
+            const iframe = document.getElementById('video-iframe');
+            if (!iframe) return;
+            let url = '';
+            const isTv = item.type === 'tv';
+            const id = item.id;
+            if (state.currentServer === 1) url = isTv ? `https://vidsrc.to/embed/tv/${id}/${state.currentSeason}/${state.currentEpisode}` : `https://vidsrc.to/embed/movie/${id}`;
+            else if (state.currentServer === 2) url = isTv ? `https://vidsrc.cc/v2/embed/tv/${id}/${state.currentSeason}/${state.currentEpisode}` : `https://vidsrc.cc/v2/embed/movie/${id}`;
+            else url = isTv ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${state.currentSeason}&episode=${state.currentEpisode}` : `https://vidsrc.me/embed/movie?tmdb=${id}`;
+            iframe.src = url;
         }
 
         function switchServer(serverNum) {
             state.currentServer = serverNum;
-            
-            // Update button styles
             for (let i = 1; i <= 3; i++) {
                 const btn = document.getElementById(`server-btn-${i}`);
-                if (btn) {
-                    btn.className = i === serverNum 
-                        ? "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all"
-                        : "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all";
-                }
+                if (btn) btn.className = i === serverNum ? "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all" : "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all";
             }
-            
-            // Handle item dari pustaka
-            if (state.currentMedia && state.currentMedia.isLibraryItem) {
-                if (serverNum === 1) {
-                    // Server 1: Link original
-                    setupVideoSource(state.currentMedia);
-                } else {
-                    // Server lain: Cari alternative di libraryData
-                    const baseTitle = extractBaseTitle(state.currentMedia.title);
-                    const alternatives = state.libraryData.filter(item => {
-                        const itemBase = extractBaseTitle(item.Judul);
-                        return itemBase === baseTitle && item.Link !== state.currentMedia.link;
-                    });
-                    
-                    if (alternatives.length > 0 && alternatives[serverNum - 2]) {
-                        // Gunakan alternative source
-                        const altItem = alternatives[serverNum - 2];
-                        const iframe = document.getElementById('video-iframe');
-                        if (iframe) {
-                            iframe.src = formatEmbedUrl(altItem.Link);
-                            showToast(`Menggunakan server ${serverNum} (alternative)`, '🔄');
-                        }
-                    } else {
-                        showToast(`Server ${serverNum} tidak tersedia untuk konten ini`, '⚠️');
-                    }
-                }
-            } else {
-                // Untuk item TMDB
-                updateIframeSource();
-            }
+            if (state.currentMedia && !state.currentMedia.isLibraryItem) updateIframeSource();
         }
 
         function switchEpisode(epNum) {
@@ -1468,497 +930,181 @@
             if (!container) return;
             const buttons = container.querySelectorAll('button');
             buttons.forEach((btn, idx) => {
-                btn.className = idx + 1 === epNum 
-                    ? "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white"
-                    : "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700";
+                btn.className = idx + 1 === epNum ? "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white" : "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700";
             });
             updateIframeSource();
         }
 
-        function updateIframeSource() {
-            const item = state.currentMedia;
-            if (!item) return;
-            
-            const iframe = document.getElementById('video-iframe');
-            if (!iframe) return;
-            
-            // Handle item dari pustaka
-            if (item.isLibraryItem) {
-                if (item.link) {
-                    iframe.src = formatEmbedUrl(item.link);
-                } else {
-                    iframe.src = 'about:blank';
-                }
-                return;
-            }
-
-            let url = '';
-            const isTv = item.type === 'tv';
-            const id = item.id;
-
-            if (state.currentServer === 1) {
-                url = isTv ? `https://vidsrc.to/embed/tv/${id}/${state.currentSeason}/${state.currentEpisode}` 
-                           : `https://vidsrc.to/embed/movie/${id}`;
-            } else if (state.currentServer === 2) {
-                url = isTv ? `https://vidsrc.cc/v2/embed/tv/${id}/${state.currentSeason}/${state.currentEpisode}` 
-                           : `https://vidsrc.cc/v2/embed/movie/${id}`;
-            } else {
-                url = isTv ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${state.currentSeason}&episode=${state.currentEpisode}` 
-                           : `https://vidsrc.me/embed/movie?tmdb=${id}`;
-            }
-            iframe.src = url;
+        function closeDetailPage() {
+            document.getElementById('detail-section').classList.add('hidden');
+            switchTab(state.activeTab);
+            document.title = 'ReviewFilm21 - Nonton Film & TV Series Subtitle Indonesia Gratis';
         }
+
+        function updateDetailFavoriteButton() {
+            const btn = document.querySelector('#detail-section button[onclick="toggleDetailFavorite()"]');
+            if (btn && state.currentMedia) btn.innerHTML = isWatchlisted(state.currentMedia.id) ? '⭐ Tersimpan' : '☆ Simpan';
+        }
+
+        function toggleDetailFavorite() { if (state.currentMedia) toggleWatchlistDirect(state.currentMedia); }
 
         function playTrailer() {
             const iframe = document.getElementById('video-iframe');
-            if (!iframe) return;
-            if (state.trailerKey) {
-                iframe.src = `https://www.youtube.com/embed/${state.trailerKey}?autoplay=1`;
-                showToast('Memutar Trailer Resmi YouTube', '🎬');
-            } else {
-                showToast('Maaf, trailer resmi tidak tersedia untuk film ini', '⚠️');
-            }
+            if (iframe && state.trailerKey) { iframe.src = `https://www.youtube.com/embed/${state.trailerKey}?autoplay=1`; showToast('Memutar Trailer', '🎬'); }
+            else showToast('Trailer tidak tersedia', '⚠️');
         }
 
-        function openExternalPlayer() {
-            const iframe = document.getElementById('video-iframe');
-            if (iframe && iframe.src) window.open(iframe.src, '_blank');
-        }
+        function openExternalPlayer() { const iframe = document.getElementById('video-iframe'); if (iframe && iframe.src) window.open(iframe.src, '_blank'); }
 
-        // ============================================
-        // SHARE FUNCTIONS
-        // ============================================
+        // Share
         function openShareModal() {
             if (!state.currentMedia) return;
-            const embedUrl = document.getElementById('video-iframe').src;
-            const pageUrl = window.location.href;
-            document.getElementById('share-link-input').value = pageUrl;
-            document.getElementById('share-embed-code').value = `<iframe src="${embedUrl}" width="640" height="360" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
+            document.getElementById('share-link-input').value = window.location.href;
+            document.getElementById('share-embed-code').value = `<iframe src="${document.getElementById('video-iframe').src}" width="640" height="360" frameborder="0" allowfullscreen></iframe>`;
             document.getElementById('share-modal').classList.remove('hidden');
         }
-
-        function closeShareModal() {
-            document.getElementById('share-modal').classList.add('hidden');
+        function closeShareModal() { document.getElementById('share-modal').classList.add('hidden'); }
+        function copyShareLink() { const input = document.getElementById('share-link-input'); copyToClipboard(input.value, 'Link disalin!'); }
+        function copyEmbedCode() { const textarea = document.getElementById('share-embed-code'); copyToClipboard(textarea.value, 'Kode embed disalin!'); }
+        function copyToClipboard(text, msg) {
+            if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => showToast(msg, '✅')).catch(() => fallbackCopy(text, msg));
+            else fallbackCopy(text, msg);
         }
+        function fallbackCopy(text, msg) { const temp = document.createElement('textarea'); temp.value = text; document.body.appendChild(temp); temp.select(); document.execCommand('copy'); document.body.removeChild(temp); showToast(msg, '✅'); }
 
-        function copyShareLink() {
-            const input = document.getElementById('share-link-input');
-            copyToClipboard(input.value, 'Link berhasil disalin!');
-        }
-
-        function copyEmbedCode() {
-            const textarea = document.getElementById('share-embed-code');
-            copyToClipboard(textarea.value, 'Kode embed berhasil disalin!');
-        }
-
-        function copyToClipboard(text, successMessage) {
-            if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(() => {
-                    showToast(successMessage, '✅');
-                }).catch(() => {
-                    fallbackCopy(text, successMessage);
-                });
-            } else {
-                fallbackCopy(text, successMessage);
-            }
-        }
-
-        function fallbackCopy(text, successMessage) {
-            const temp = document.createElement('textarea');
-            temp.value = text;
-            document.body.appendChild(temp);
-            temp.select();
-            document.execCommand('copy');
-            document.body.removeChild(temp);
-            showToast(successMessage, '✅');
-        }
-
-        // ============================================
-        // SEARCH FUNCTIONS
-        // ============================================
+        // Search
         let searchDebounce = null;
         function handleSearchInput(e) {
             clearTimeout(searchDebounce);
             const query = e.target.value.trim();
             const clearBtn = document.getElementById('search-clear-btn');
-            if (query) clearBtn.classList.remove('hidden');
-            else {
-                clearBtn.classList.add('hidden');
-                document.getElementById('search-section').classList.add('hidden');
-                return;
-            }
+            if (query) clearBtn.classList.remove('hidden'); else { clearBtn.classList.add('hidden'); document.getElementById('search-section').classList.add('hidden'); return; }
             searchDebounce = setTimeout(() => executeSearch(query), 400);
         }
-
-        function handleMobileSearchInput(e) {
-            const query = e.target.value.trim();
-            document.getElementById('search-input').value = query;
-            handleSearchInput({target:{value:query}});
-        }
-
-        function toggleMobileSearch() {
-            const bar = document.getElementById('mobile-search-bar');
-            if (bar) {
-                bar.classList.toggle('hidden');
-                if (!bar.classList.contains('hidden')) document.getElementById('mobile-search-input').focus();
-            }
-        }
-
-        function clearSearch() {
-            document.getElementById('search-input').value = '';
-            document.getElementById('mobile-search-input').value = '';
-            document.getElementById('search-clear-btn').classList.add('hidden');
-            document.getElementById('search-section').classList.add('hidden');
-        }
+        function handleMobileSearchInput(e) { document.getElementById('search-input').value = e.target.value; handleSearchInput({target:{value:e.target.value}}); }
+        function clearSearch() { document.getElementById('search-input').value = ''; document.getElementById('mobile-search-input').value = ''; document.getElementById('search-clear-btn').classList.add('hidden'); document.getElementById('search-section').classList.add('hidden'); }
 
         async function executeSearch(query) {
             state.searchQuery = query;
             document.getElementById('search-query-text').textContent = `"${query}"`;
-
-            let tmdbMatches = [];
-            try {
-                const res = await fetch(`https://api.themoviedb.org/3/search/multi?language=id-ID&query=${encodeURIComponent(query)}&api_key=${DEFAULT_API_KEY}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data?.results) {
-                        tmdbMatches = data.results
-                            .filter(x => x.media_type === 'movie' || x.media_type === 'tv')
-                            .map(item => {
-                                const title = item.title || item.name || 'Tanpa Judul';
-                                const releaseDate = item.release_date || item.first_air_date || '2026';
-                                const year = releaseDate ? (releaseDate.split('-')[0] || '2026') : '2026';
-                                return {
-                                    id: item.id,
-                                    title: title,
-                                    type: item.media_type,
-                                    rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0',
-                                    year: year,
-                                    genre: 'Bioskop',
-                                    overview: item.overview || 'Tidak ada deskripsi tersedia.',
-                                    poster_path: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
-                                    backdrop_path: item.backdrop_path ? `https://image.tmdb.org/t/p/w1280${item.backdrop_path}` : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover'
-                                };
-                            })
-                            .filter(Boolean);
-                    }
-                }
-            } catch(e) {}
-
-            if (tmdbMatches.length === 0) {
-                const qLower = query.toLowerCase();
-                tmdbMatches = [...FALLBACK_MOVIES, ...FALLBACK_SERIES].filter(item => 
-                    item.title.toLowerCase().includes(qLower)
-                );
-            }
-
+            let results = [...FALLBACK_MOVIES, ...FALLBACK_SERIES].filter(item => item.title.toLowerCase().includes(query.toLowerCase()));
             const searchGrid = document.getElementById('search-grid');
-            const searchCount = document.getElementById('search-count');
-            searchCount.textContent = `${tmdbMatches.length} Film Ditemukan`;
-
-            if (tmdbMatches.length === 0) {
-                searchGrid.innerHTML = `<div class="col-span-full py-8 text-center text-zinc-500 text-sm">Tidak ditemukan hasil untuk "${query}".</div>`;
-            } else {
-                searchGrid.innerHTML = tmdbMatches.map(item => createCardHTML(item)).join('');
-            }
+            document.getElementById('search-count').textContent = `${results.length} Film Ditemukan`;
+            if (results.length === 0) searchGrid.innerHTML = `<div class="col-span-full py-8 text-center text-zinc-500 text-sm">Tidak ditemukan hasil.</div>`;
+            else searchGrid.innerHTML = results.map(item => createCardHTML(item)).join('');
             document.getElementById('search-section').classList.remove('hidden');
-            setTimeout(updateTvFocusables, 200);
         }
 
-        // ============================================
-        // HERO CAROUSEL
-        // ============================================
-        function setupHeroCarousel() {
-            if (state.heroItems.length === 0) return;
-            updateHeroDisplay();
-            if (state.heroTimer) clearInterval(state.heroTimer);
-            state.heroTimer = setInterval(nextHero, 6000);
-        }
-
+        // Hero
+        function setupHeroCarousel() { if (state.heroItems.length > 0) { updateHeroDisplay(); if (state.heroTimer) clearInterval(state.heroTimer); state.heroTimer = setInterval(nextHero, 6000); } }
         function updateHeroDisplay() {
             const item = state.heroItems[state.currentHeroIndex];
             if (!item) return;
-            const backdrop = document.getElementById('hero-backdrop');
-            if (backdrop) backdrop.style.backgroundImage = `url('${item.backdrop_path}')`;
+            document.getElementById('hero-backdrop').style.backgroundImage = `url('${item.backdrop_path}')`;
             document.getElementById('hero-title').textContent = item.title;
             document.getElementById('hero-overview').textContent = item.overview;
             document.getElementById('hero-rating').textContent = `★ ${item.rating}`;
             document.getElementById('hero-year').textContent = item.year;
-            document.getElementById('hero-type').textContent = item.type === 'tv' ? 'TV Series' : 'Bioskop Movie';
-            const isFav = isWatchlisted(item.id);
-            document.getElementById('hero-fav-icon').textContent = isFav ? '⭐' : '☆';
-            document.getElementById('hero-fav-text').textContent = isFav ? 'Tersimpan' : 'Simpan';
+            document.getElementById('hero-type').textContent = item.type === 'tv' ? 'TV Series' : 'Movie';
+            document.getElementById('hero-fav-icon').textContent = isWatchlisted(item.id) ? '⭐' : '☆';
+            document.getElementById('hero-fav-text').textContent = isWatchlisted(item.id) ? 'Tersimpan' : 'Simpan';
         }
+        function nextHero() { if (state.heroItems.length > 0) { state.currentHeroIndex = (state.currentHeroIndex + 1) % state.heroItems.length; updateHeroDisplay(); } }
+        function prevHero() { if (state.heroItems.length > 0) { state.currentHeroIndex = (state.currentHeroIndex - 1 + state.heroItems.length) % state.heroItems.length; updateHeroDisplay(); } }
+        function openHeroPlayer() { const item = state.heroItems[state.currentHeroIndex]; if (item) navigateToDetail(getMediaKey(item.type, item.id)); }
+        function toggleHeroFavorite() { const item = state.heroItems[state.currentHeroIndex]; if (item) { toggleWatchlistDirect(item); updateHeroDisplay(); } }
+        function scrollCarousel(elementId, distance) { const container = document.getElementById(elementId); if (container) container.scrollBy({ left: distance, behavior: 'smooth' }); }
 
-        function nextHero() {
-            if (state.heroItems.length === 0) return;
-            state.currentHeroIndex = (state.currentHeroIndex + 1) % state.heroItems.length;
-            updateHeroDisplay();
-        }
-
-        function prevHero() {
-            if (state.heroItems.length === 0) return;
-            state.currentHeroIndex = (state.currentHeroIndex - 1 + state.heroItems.length) % state.heroItems.length;
-            updateHeroDisplay();
-        }
-
-        function scrollCarousel(elementId, distance) {
-            const container = document.getElementById(elementId);
-            if (container) container.scrollBy({ left: distance, behavior: 'smooth' });
-        }
-
-        // ============================================
-        // REQUEST MODAL
-        // ============================================
-        function openRequestModal() {
-            document.getElementById('request-modal').classList.remove('hidden');
-            setTimeout(updateTvFocusables, 200);
-        }
-
-        function closeRequestModal() {
-            document.getElementById('request-modal').classList.add('hidden');
-        }
-
+        // Modals
+        function openRequestModal() { document.getElementById('request-modal').classList.remove('hidden'); }
+        function closeRequestModal() { document.getElementById('request-modal').classList.add('hidden'); }
         function submitRequest() {
-            const titleInput = document.getElementById('req-title-input');
-            const noteInput = document.getElementById('req-note-input');
-            const title = titleInput?.value.trim();
-            if (!title) {
-                showToast('Mohon isi judul film yang diminta', '⚠️');
-                return;
-            }
-            showToast(`Request "${title}" berhasil dikirim!`, '📩');
-            titleInput.value = '';
-            if (noteInput) noteInput.value = '';
+            const title = document.getElementById('req-title-input')?.value.trim();
+            if (!title) { showToast('Mohon isi judul film', '⚠️'); return; }
+            showToast(`Request "${title}" dikirim!`, '📩');
+            document.getElementById('req-title-input').value = '';
+            document.getElementById('req-note-input').value = '';
             closeRequestModal();
         }
 
-        // ============================================
-        // APPLY FILTERS
-        // ============================================
-        function applyFilters() {
-            showToast('Filter genre & tahun diterapkan', '🔍');
-            fetchTMDBCatalogs();
+        // Collections
+        function navigateToCollection(collectionType) {
+            if (!state.isLibraryLoaded) { loadLibraryFromGoogleSheets().then(() => navigateToCollection(collectionType)); return; }
+            const categoryMap = { 'film-barat': ['film barat', 'barat'], 'film-asia': ['film asia', 'asia'], 'film-indonesia': ['film indonesia', 'indonesia'], 'seni-wayang': ['wayang'], 'seni-ludruk': ['ludruk'], 'seni-ketoprak': ['ketoprak'] };
+            const keywords = categoryMap[collectionType] || [collectionType.replace('-', ' ')];
+            let filteredItems = state.libraryData.filter(item => { const genre = (item.Genre || '').toLowerCase(); return keywords.some(k => genre.includes(k)); });
+            if (filteredItems.length === 0) { showToast('Tidak ada konten', '📭'); return; }
+            const categoryName = collectionType.replace('-', ' ').toUpperCase();
+            showCollectionGrid(filteredItems, categoryName);
         }
 
-        // ============================================
-        // FETCH TMDB DATA
-        // ============================================
-        async function fetchTMDBCatalogs() {
-            try {
-                const genreEl = document.getElementById('genre-filter');
-                const yearEl = document.getElementById('year-filter');
-                const genreId = genreEl ? genreEl.value : '';
-                const yearVal = yearEl ? yearEl.value : '';
-
-                let endpointAppend = '';
-                if (genreId) endpointAppend += `&with_genres=${genreId}`;
-                if (yearVal) endpointAppend += `&primary_release_year=${yearVal}&first_air_date_year=${yearVal}`;
-
-                let fetchedAny = false;
-
-                try {
-                    const resTrending = await fetch(`https://api.themoviedb.org/3/trending/all/week?language=id-ID${endpointAppend}&api_key=${DEFAULT_API_KEY}`);
-                    if (resTrending.ok) {
-                        const data = await resTrending.json();
-                        if (data?.results?.length) {
-                            state.trendingData = data.results.map(item => {
-                                const title = item.title || item.name || 'Tanpa Judul';
-                                const releaseDate = item.release_date || item.first_air_date || '2026';
-                                const year = releaseDate ? (releaseDate.split('-')[0] || '2026') : '2026';
-                                return {
-                                    id: item.id,
-                                    title: title,
-                                    type: item.media_type || (item.title ? 'movie' : 'tv'),
-                                    rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0',
-                                    year: year,
-                                    genre: 'Bioskop',
-                                    overview: item.overview || 'Tidak ada deskripsi tersedia.',
-                                    poster_path: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
-                                    backdrop_path: item.backdrop_path ? `https://image.tmdb.org/t/p/w1280${item.backdrop_path}` : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover'
-                                };
-                            }).filter(Boolean);
-                            state.heroItems = state.trendingData.slice(0, 5);
-                            fetchedAny = true;
-                        }
-                    }
-                } catch(e) {}
-
-                try {
-                    const resMovies = await fetch(`https://api.themoviedb.org/3/discover/movie?language=id-ID&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`);
-                    if (resMovies.ok) {
-                        const data = await resMovies.json();
-                        if (data?.results?.length) {
-                            state.moviesData = data.results.map(item => {
-                                const title = item.title || 'Tanpa Judul';
-                                const year = item.release_date ? (item.release_date.split('-')[0] || '2026') : '2026';
-                                return {
-                                    id: item.id,
-                                    title: title,
-                                    type: 'movie',
-                                    rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0',
-                                    year: year,
-                                    genre: 'Bioskop',
-                                    overview: item.overview || 'Tidak ada deskripsi tersedia.',
-                                    poster_path: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
-                                    backdrop_path: item.backdrop_path ? `https://image.tmdb.org/t/p/w1280${item.backdrop_path}` : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover'
-                                };
-                            }).filter(Boolean);
-                            fetchedAny = true;
-                        }
-                    }
-                } catch(e) {}
-
-                try {
-                    const resTV = await fetch(`https://api.themoviedb.org/3/discover/tv?language=id-ID&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`);
-                    if (resTV.ok) {
-                        const data = await resTV.json();
-                        if (data?.results?.length) {
-                            state.seriesData = data.results.map(item => {
-                                const title = item.name || 'Tanpa Judul';
-                                const year = item.first_air_date ? (item.first_air_date.split('-')[0] || '2026') : '2026';
-                                return {
-                                    id: item.id,
-                                    title: title,
-                                    type: 'tv',
-                                    rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0',
-                                    year: year,
-                                    genre: 'TV Series',
-                                    overview: item.overview || 'Tidak ada deskripsi tersedia.',
-                                    poster_path: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
-                                    backdrop_path: item.backdrop_path ? `https://image.tmdb.org/t/p/w1280${item.backdrop_path}` : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover'
-                                };
-                            }).filter(Boolean);
-                            fetchedAny = true;
-                        }
-                    }
-                } catch(e) {}
-
-                try {
-                    const resThriller = await fetch(`https://api.themoviedb.org/3/discover/movie?language=id-ID&with_genres=53&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`);
-                    if (resThriller.ok) {
-                        const data = await resThriller.json();
-                        if (data?.results?.length) {
-                            state.thrillerData = data.results.map(item => {
-                                const title = item.title || 'Tanpa Judul';
-                                const year = item.release_date ? (item.release_date.split('-')[0] || '2026') : '2026';
-                                return {
-                                    id: item.id,
-                                    title: title,
-                                    type: 'movie',
-                                    rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0',
-                                    year: year,
-                                    genre: 'Thriller',
-                                    overview: item.overview || 'Tidak ada deskripsi tersedia.',
-                                    poster_path: item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
-                                    backdrop_path: item.backdrop_path ? `https://image.tmdb.org/t/p/w1280${item.backdrop_path}` : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover'
-                                };
-                            }).filter(Boolean);
-                            fetchedAny = true;
-                        }
-                    }
-                } catch(e) {}
-
-                if (fetchedAny) setupHeroCarousel();
-                renderAllSections();
-            } catch (err) {
-                renderAllSections();
-            }
+        function showCollectionGrid(items, categoryName) {
+            document.querySelectorAll('#main-content > *').forEach(s => s.classList.add('hidden'));
+            let collectionContainer = document.getElementById('collection-container');
+            if (!collectionContainer) { collectionContainer = document.createElement('section'); collectionContainer.id = 'collection-container'; collectionContainer.className = 'space-y-3 sm:space-y-4'; document.getElementById('main-content').appendChild(collectionContainer); }
+            collectionContainer.classList.remove('hidden');
+            collectionContainer.innerHTML = `<div class="flex items-center justify-between border-b border-zinc-800 pb-2 sm:pb-3"><h2 class="text-base sm:text-xl font-bold text-white">📚 ${categoryName} <span class="text-xs text-zinc-400">(${items.length})</span></h2><button onclick="closeCollection()" class="focusable text-zinc-400 hover:text-white p-1 rounded-lg bg-zinc-900 border border-zinc-800 text-xs">✕ Tutup</button></div><div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">${items.map(item => createLibraryCardHTML(item)).join('')}</div>`;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // ============================================
-        // ROUTE HANDLER
-        // ============================================
-        async function handleRoute() {
-            const path = window.location.pathname;
-            if (path === '/') { switchTab('home'); return; }
+        function closeCollection() { const cc = document.getElementById('collection-container'); if (cc) cc.classList.add('hidden'); switchTab('home'); }
+
+        function createLibraryCardHTML(item) {
+            const title = item.Judul || 'Tanpa Judul';
+            const poster = item.Poster || 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster';
+            const rating = item.Rating || '8.0';
+            const year = item.Tahun || '2026';
+            const link = item.Link || '#';
+            return `
+                <article class="focusable poster-card bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer" tabindex="0" onclick="playLibraryItem('${link.replace(/'/g, "\\'")}', '${title.replace(/'/g, "\\'")}', '${poster}', '${rating}', '${year}', '', '', 'movie')">
+                    <div class="relative aspect-[2/3] overflow-hidden bg-zinc-950">
+                        <img src="${poster}" alt="${title}" loading="lazy" onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=No+Poster'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-1 left-1 bg-black/70 text-amber-400 font-extrabold text-[8px] px-1.5 py-0.5 rounded">★ ${rating}</div>
+                        <div class="absolute inset-0 bg-brand-600/40 play-overlay flex flex-col items-center justify-center">
+                            <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-brand-500 text-white flex items-center justify-center mb-1"><svg class="w-4 h-4 sm:w-6 sm:h-6 fill-current translate-x-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                            <span class="text-white text-[8px] sm:text-xs font-black">TONTON</span>
+                        </div>
+                    </div>
+                    <div class="p-2 sm:p-3">
+                        <h3 class="text-[10px] sm:text-sm font-bold text-white truncate">${title}</h3>
+                        <div class="flex justify-between text-[8px] text-zinc-400"><span>${year}</span><span>HD</span></div>
+                    </div>
+                </article>
+            `;
+        }
+
+        function playLibraryItem(link, title, poster, rating, year, desc, actors, type) {
+            if (!link || link === '#') { showToast('Link tidak tersedia', '⚠️'); return; }
+            const mediaItem = { id: Math.floor(Math.random() * 1000000), title, type: 'movie', rating, year, genre: 'Pustaka', overview: desc || '', poster_path: poster, backdrop_path: poster, link, isLibraryItem: true };
+            const key = getMediaKey(mediaItem.type, mediaItem.id);
+            mediaCache.set(key, mediaItem);
+            openDetailPage(mediaItem);
+            window.location.hash = `#/movie/${mediaItem.id}/${slugify(title)}`;
+        }
+
+        // Route Handler (HASH-BASED)
+        function handleRoute() {
+            const hash = window.location.hash || '#/';
+            const path = hash.substring(1);
+            if (path === '/' || path === '') { switchTab('home'); return; }
             if (path === '/movies') { switchTab('movies'); return; }
             if (path === '/tv') { switchTab('tv'); return; }
             if (path === '/watchlist') { switchTab('watchlist'); return; }
-
-            const movieMatch = path.match(/^\/movie\/(\d+)(?:\/[^/]+)?$/);
-            if (movieMatch) { await openMediaById(movieMatch[1], 'movie'); return; }
-            const tvMatch = path.match(/^\/tv\/(\d+)(?:\/[^/]+)?$/);
-            if (tvMatch) { await openMediaById(tvMatch[1], 'tv'); return; }
-
             switchTab('home');
         }
 
-        async function openMediaById(id, type) {
-            const key = getMediaKey(type, id);
-            let item = mediaCache.get(key);
-            if (!item) {
-                try {
-                    const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}?language=id-ID&api_key=${DEFAULT_API_KEY}`);
-                    if (res.ok) {
-                        const data = await res.json();
-                        const title = data.title || data.name || 'Tanpa Judul';
-                        const releaseDate = data.release_date || data.first_air_date || '2026';
-                        const year = releaseDate ? (releaseDate.split('-')[0] || '2026') : '2026';
-                        item = {
-                            id: data.id,
-                            title: title,
-                            type: type,
-                            rating: data.vote_average ? data.vote_average.toFixed(1) : '8.0',
-                            year: year,
-                            genre: 'Bioskop',
-                            overview: data.overview || 'Tidak ada deskripsi tersedia.',
-                            poster_path: data.poster_path ? `https://image.tmdb.org/t/p/w500${data.poster_path}` : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
-                            backdrop_path: data.backdrop_path ? `https://image.tmdb.org/t/p/w1280${data.backdrop_path}` : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover'
-                        };
-                        mediaCache.set(key, item);
-                    }
-                } catch(e) {}
-            }
-            if (item) {
-                const slug = slugify(item.title);
-                const expectedPath = `/${type}/${id}/${slug}`;
-                if (window.location.pathname !== expectedPath) history.replaceState(null, '', expectedPath);
-                openDetailPage(item);
-            } else {
-                showToast('Konten tidak ditemukan', '⚠️');
-                navigateTo('home');
-            }
-        }
-
-        // ============================================
-        // SMART TV CONTROLS
-        // ============================================
+        // Smart TV
         function initSmartTvControls() {
             window.addEventListener('keydown', (e) => {
                 const key = e.key;
-                const keyCode = e.keyCode || e.which;
-                if (key === 'ArrowLeft' || keyCode === 37) {
-                    e.preventDefault();
-                    navigateTv('left');
-                } else if (key === 'ArrowUp' || keyCode === 38) {
-                    e.preventDefault();
-                    navigateTv('up');
-                } else if (key === 'ArrowRight' || keyCode === 39) {
-                    e.preventDefault();
-                    navigateTv('right');
-                } else if (key === 'ArrowDown' || keyCode === 40) {
-                    e.preventDefault();
-                    navigateTv('down');
-                } else if (key === 'Enter' || keyCode === 13) {
-                    if (tvIndex >= 0 && tvFocusables[tvIndex]) tvFocusables[tvIndex].click();
-                } else if (key === 'Escape' || key === 'Backspace' || keyCode === 27 || keyCode === 8 || keyCode === 10009) {
-                    const detailSection = document.getElementById('detail-section');
-                    const requestModal = document.getElementById('request-modal');
-                    const shareModal = document.getElementById('share-modal');
-                    const collectionContainer = document.getElementById('collection-container');
-                    if (detailSection && !detailSection.classList.contains('hidden')) {
-                        closeDetailPage();
-                        e.preventDefault();
-                    } else if (requestModal && !requestModal.classList.contains('hidden')) {
-                        closeRequestModal();
-                        e.preventDefault();
-                    } else if (shareModal && !shareModal.classList.contains('hidden')) {
-                        closeShareModal();
-                        e.preventDefault();
-                    } else if (collectionContainer && !collectionContainer.classList.contains('hidden')) {
-                        closeCollection();
-                        e.preventDefault();
-                    }
+                if (key === 'ArrowLeft') { e.preventDefault(); navigateTv('left'); }
+                else if (key === 'ArrowUp') { e.preventDefault(); navigateTv('up'); }
+                else if (key === 'ArrowRight') { e.preventDefault(); navigateTv('right'); }
+                else if (key === 'ArrowDown') { e.preventDefault(); navigateTv('down'); }
+                else if (key === 'Enter') { if (tvIndex >= 0 && tvFocusables[tvIndex]) tvFocusables[tvIndex].click(); }
+                else if (key === 'Escape' || key === 'Backspace') {
+                    const detail = document.getElementById('detail-section');
+                    if (detail && !detail.classList.contains('hidden')) { closeDetailPage(); e.preventDefault(); }
                 }
             });
         }
@@ -1973,26 +1119,17 @@
                 else if (direction === 'left' || direction === 'up') tvIndex = (tvIndex - 1 + tvFocusables.length) % tvFocusables.length;
             }
             const current = tvFocusables[tvIndex];
-            if (current) {
-                current.classList.add('tv-focused');
-                current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-            }
+            if (current) { current.classList.add('tv-focused'); current.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
         }
 
-        // ============================================
-        // WINDOW LOAD
-        // ============================================
-        window.addEventListener('popstate', handleRoute);
-
+        // Init
+        window.addEventListener('hashchange', handleRoute);
         window.onload = function () {
             updateWatchlistBadge();
             setupHeroCarousel();
             renderAllSections();
-            fetchTMDBCatalogs();
             initSmartTvControls();
             handleRoute();
-            setTimeout(updateTvFocusables, 500);
-
             loadLibraryFromGoogleSheets();
         };
     </script>
