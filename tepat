@@ -2,23 +2,16 @@
 <html lang="id" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, user-scalable=yes">
-    <meta name="theme-color" content="#09090b">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <title>ReviewFilm21 - Nonton Film & TV Series Subtitle Indonesia Gratis</title>
     
     <meta name="description" content="Nonton film bioskop, drama korea (drakor), anime, dan TV series subtitle Indonesia secara gratis di ReviewFilm21. Pemutar multi-server cepat, jernih, dan tanpa iklan mengganggu.">
     <meta name="keywords" content="reviewfilm21, lk21, nonton film gratis, bioskop21, streaming film sub indo, drakor sub indo, anime sub indo, smart tv streaming, pustaka film, seni wayang, ludruk, ketoprak">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="author" content="ReviewFilm21">
-    <meta name="format-detection" content="telephone=no">
-    <meta name="color-scheme" content="dark">
 
     <!-- Favicon SVG Data URI -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>🎬</text></svg>">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>🎬</text></svg>">
 
     <!-- Verifikasi Search Engine -->
     <meta name="google-site-verification" content="hvjClL_eBtUIUR__ExsglmjPpdB8AZovm5CkvKPdFxE" />
@@ -32,13 +25,6 @@
     <meta property="og:description" content="Nonton film sub indo gratis, streaming movie terbaru 2026. Layarkaca21, indoxxi alternatif.">
     <meta property="og:site_name" content="ReviewFilm21">
     <meta property="og:locale" content="id_ID">
-    <meta property="og:image" content="https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg">
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="ReviewFilm21 - Nonton Film Sub Indo Gratis">
-    <meta name="twitter:description" content="Nonton film sub indo gratis, streaming movie terbaru 2026.">
-    <meta name="twitter:image" content="https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -77,267 +63,133 @@
     </script>
 
     <style>
-        /* Reset dan Base */
-        * {
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            -webkit-text-size-adjust: 100%;
-            text-size-adjust: 100%;
-        }
-
         body {
             background-color: #09090b;
             color: #f4f4f5;
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             overflow-x: hidden;
             padding-bottom: env(safe-area-inset-bottom);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            text-rendering: optimizeLegibility;
         }
 
-        /* Scrollbar Styling */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #09090b; }
-        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #ff5c00; }
 
-        /* Focus untuk Smart TV */
         .tv-focused {
-            outline: 3px solid #ff5c00 !important;
-            outline-offset: 3px !important;
-            transform: scale(1.03) !important;
+            outline: 4px solid #ff5c00 !important;
+            outline-offset: 4px !important;
+            transform: scale(1.05) !important;
             z-index: 30 !important;
-            box-shadow: 0 0 20px rgba(255, 92, 0, 0.7) !important;
+            box-shadow: 0 0 25px rgba(255, 92, 0, 0.8) !important;
             transition: all 0.15s ease-in-out !important;
         }
 
-        /* Card Animations */
         .poster-card {
-            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
-                        box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        /* Hover effects untuk desktop */
         @media (hover: hover) and (pointer: fine) {
             .poster-card:hover {
-                transform: translateY(-4px) scale(1.02);
+                transform: translateY(-6px) scale(1.02);
                 box-shadow: 0 12px 24px -8px rgba(255, 92, 0, 0.35);
             }
-            
-            .play-overlay {
-                opacity: 0;
-                transform: scale(0.8);
-                transition: all 0.25s ease-in-out;
-            }
-            
-            .poster-card:hover .play-overlay { 
-                opacity: 1; 
-                transform: scale(1); 
-            }
-            
-            .dropdown:hover .dropdown-menu {
-                display: block;
-            }
+        }
+        
+        .play-overlay {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.25s ease-in-out;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .poster-card:hover .play-overlay { opacity: 1; transform: scale(1); }
         }
 
-        /* Touch devices */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
         @media (hover: none), (pointer: coarse) {
             .poster-card:active {
-                transform: scale(0.97);
-            }
-            
-            .play-overlay {
-                opacity: 1;
-                transform: scale(1);
-                background: rgba(255, 92, 0, 0.3);
-            }
-            
-            .dropdown-menu {
-                display: none;
-            }
-            
-            .dropdown.active .dropdown-menu {
-                display: block;
+                transform: scale(0.98);
             }
         }
 
-        /* Hide scrollbar untuk carousel */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { 
-            -ms-overflow-style: none; 
-            scrollbar-width: none; 
-        }
-
-        /* Dropdown Menu */
         .dropdown-menu {
             display: none;
             position: absolute;
             background-color: #18181b;
-            min-width: 220px;
-            max-height: 70vh;
-            overflow-y: auto;
+            min-width: 200px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
             z-index: 50;
             border-radius: 0.5rem;
             border: 1px solid #27272a;
             padding: 0.5rem;
         }
-        
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
         .dropdown-menu button {
             display: block;
             width: 100%;
             text-align: left;
-            padding: 0.6rem 1rem;
+            padding: 0.5rem 1rem;
             color: #d4d4d8;
             font-size: 0.875rem;
             border-radius: 0.375rem;
-            transition: all 0.2s;
-            cursor: pointer;
-            background: transparent;
-            border: none;
         }
-        
-        .dropdown-menu button:hover,
-        .dropdown-menu button:focus {
+        .dropdown-menu button:hover {
             background-color: #27272a;
             color: #ff5c00;
-            outline: none;
         }
 
-        /* Loading Spinner */
         .spinner {
             border: 3px solid #27272a;
             border-top: 3px solid #ff5c00;
             border-radius: 50%;
             width: 40px;
             height: 40px;
-            animation: spin 0.8s linear infinite;
+            animation: spin 1s linear infinite;
         }
-        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        /* Responsive Typography */
-        @media (max-width: 640px) {
-            .text-responsive {
-                font-size: clamp(0.75rem, 2.5vw, 1rem);
-            }
-        }
-
-        /* Safe Area untuk iPhone */
-        @supports (padding: max(0px)) {
-            .safe-area-padding {
-                padding-left: max(1rem, env(safe-area-inset-left));
-                padding-right: max(1rem, env(safe-area-inset-right));
-            }
-        }
-
-        /* Smooth transitions */
-        .fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Video iframe responsive */
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            height: 0;
-            overflow: hidden;
-            background: #000;
-        }
-        
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-
-        /* Touch friendly buttons */
-        @media (max-width: 768px) {
-            button, 
-            .focusable {
-                min-height: 44px;
-                min-width: 44px;
-            }
-            
-            .touch-target {
-                min-height: 44px;
-                min-width: 44px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        }
-
-        /* Print styles */
-        @media print {
-            .no-print {
-                display: none !important;
-            }
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-16 lg:pb-0">
 
     <!-- Toast Notifikasi -->
-    <div id="toast" class="fixed top-5 right-5 z-[100] transform translate-y-[-100px] opacity-0 transition-all duration-300 bg-brand-500 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 font-semibold text-sm pointer-events-none max-w-[90vw] sm:max-w-md" role="alert" aria-live="polite">
+    <div id="toast" class="fixed top-5 right-5 z-[100] transform translate-y-[-100px] opacity-0 transition-all duration-300 bg-brand-500 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 font-semibold text-sm pointer-events-none">
         <span id="toast-icon">ℹ️</span>
         <span id="toast-message">Notifikasi</span>
     </div>
 
-    <!-- Loading Overlay -->
-    <div id="loading-overlay" class="fixed inset-0 z-[99] bg-zinc-950/90 backdrop-blur-sm hidden flex items-center justify-center">
-        <div class="spinner"></div>
-    </div>
-
     <!-- ==================== HEADER ==================== -->
-    <header class="sticky top-0 z-40 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800/80 transition-all safe-area-padding">
+    <header class="sticky top-0 z-40 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800/80 transition-all">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-14 sm:h-20 gap-2 sm:gap-4">
                 
                 <!-- Brand Logo -->
-                <a href="#/" onclick="event.preventDefault(); navigateTo('home')" class="focusable flex items-center gap-2 group shrink-0 rounded-xl p-1 focus:outline-none touch-target" aria-label="ReviewFilm21 Beranda">
+                <a href="/" onclick="event.preventDefault(); navigateTo('home')" class="focusable flex items-center gap-2 group shrink-0 rounded-xl p-1 focus:outline-none" aria-label="ReviewFilm21 Beranda">
                     <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform text-lg sm:text-xl">
                         🎬
                     </div>
                     <div class="flex flex-col">
                         <span class="text-lg sm:text-2xl font-black tracking-wider text-white leading-none">Review<span class="text-brand-500">Film</span><span class="text-amber-400">21</span></span>
-                        <span class="text-[8px] sm:text-[10px] tracking-widest text-zinc-400 font-bold uppercase hidden sm:block">🎬 Streaming Film</span>
+                        <span class="text-[8px] sm:text-[10px] tracking-widest text-zinc-400 font-bold uppercase">🎬 Streaming Film</span>
                     </div>
                 </a>
 
                 <!-- Desktop Menu Nav -->
                 <nav class="hidden lg:flex items-center gap-1 xl:gap-2 text-xs xl:text-sm font-medium" aria-label="Navigasi Utama">
-                    <button onclick="navigateTo('home')" id="nav-home" class="focusable px-3 py-2 rounded-lg text-white bg-zinc-800/80 hover:text-brand-500 transition-colors focus:outline-none">Beranda</button>
-                    <button onclick="navigateTo('movies')" id="nav-movies" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors focus:outline-none">Film Bioskop</button>
-                    <button onclick="navigateTo('tv')" id="nav-tv" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors focus:outline-none">TV Series</button>
+                    <button onclick="navigateTo('home')" id="nav-home" class="focusable px-3 py-2 rounded-lg text-white bg-zinc-800/80 hover:text-brand-500 transition-colors">Beranda</button>
+                    <button onclick="navigateTo('movies')" id="nav-movies" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors">Film Bioskop</button>
+                    <button onclick="navigateTo('tv')" id="nav-tv" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors">TV Series</button>
                     
                     <!-- Dropdown Pustaka Film dan Seni -->
-                    <div class="relative dropdown" id="desktop-dropdown">
-                        <button onclick="toggleDesktopDropdown()" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors flex items-center gap-1 focus:outline-none">
+                    <div class="relative dropdown">
+                        <button class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors flex items-center gap-1">
                             Pustaka Film dan Seni 
-                            <svg class="w-3 h-3 fill-current transition-transform" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                            <svg class="w-3 h-3 fill-current" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                         </button>
                         <div class="dropdown-menu">
                             <div class="px-3 py-2 text-xs font-bold text-zinc-500 uppercase tracking-wider">Film</div>
@@ -360,7 +212,7 @@
                         </div>
                     </div>
                     
-                    <button onclick="navigateTo('watchlist')" id="nav-watchlist" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors flex items-center gap-1.5 focus:outline-none">
+                    <button onclick="navigateTo('watchlist')" id="nav-watchlist" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors flex items-center gap-1.5">
                         <span>⭐ Favorit</span>
                         <span id="watchlist-count-badge" class="bg-brand-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">0</span>
                     </button>
@@ -369,7 +221,7 @@
                 <!-- Search & Filters -->
                 <div class="flex items-center gap-1.5 sm:gap-3">
                     <div class="hidden md:flex items-center gap-2">
-                        <select id="genre-filter" onchange="applyFilters()" class="focusable bg-zinc-900 border border-zinc-800 rounded-xl py-2 px-3 text-xs text-zinc-300 focus:outline-none focus:border-brand-500 cursor-pointer" aria-label="Filter Genre">
+                        <select id="genre-filter" onchange="applyFilters()" class="focusable bg-zinc-900 border border-zinc-800 rounded-xl py-2 px-3 text-xs text-zinc-300 focus:outline-none focus:border-brand-500">
                             <option value="">Semua Genre</option>
                             <option value="28">Action</option>
                             <option value="12">Adventure</option>
@@ -385,7 +237,7 @@
                             <option value="53">Thriller (Ketegangan)</option>
                         </select>
 
-                        <select id="year-filter" onchange="applyFilters()" class="focusable bg-zinc-900 border border-zinc-800 rounded-xl py-2 px-3 text-xs text-zinc-300 focus:outline-none focus:border-brand-500 cursor-pointer" aria-label="Filter Tahun">
+                        <select id="year-filter" onchange="applyFilters()" class="focusable bg-zinc-900 border border-zinc-800 rounded-xl py-2 px-3 text-xs text-zinc-300 focus:outline-none focus:border-brand-500">
                             <option value="">Semua Tahun</option>
                             <option value="2026">2026</option>
                             <option value="2025">2025</option>
@@ -396,71 +248,63 @@
                     </div>
 
                     <div class="relative hidden sm:block w-32 md:w-56">
-                        <input type="text" id="search-input" oninput="handleSearchInput(event)" placeholder="Cari film..." 
-                               class="focusable w-full bg-zinc-900 border border-zinc-800 rounded-full py-2 pl-9 pr-8 text-xs sm:text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all"
-                               autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                               aria-label="Cari film">
-                        <svg class="w-4 h-4 text-zinc-500 absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        <button id="search-clear-btn" onclick="clearSearch()" class="hidden absolute right-2.5 top-2 text-zinc-500 hover:text-white text-xs p-1 touch-target" aria-label="Bersihkan pencarian">✕</button>
+                        <input type="text" id="search-input" oninput="handleSearchInput(event)" placeholder="Cari film..." class="focusable w-full bg-zinc-900 border border-zinc-800 rounded-full py-2 pl-9 pr-8 text-xs sm:text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all">
+                        <svg class="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <button id="search-clear-btn" onclick="clearSearch()" class="hidden absolute right-2.5 top-2 text-zinc-500 hover:text-white text-xs p-1">✕</button>
                     </div>
 
-                    <button onclick="toggleMobileSearch()" class="sm:hidden focusable p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white touch-target" aria-label="Cari">
+                    <button onclick="toggleMobileSearch()" class="sm:hidden focusable p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white" aria-label="Cari">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </button>
 
-                    <button onclick="toggleMobileMenu()" class="focusable lg:hidden p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white touch-target" aria-label="Buka Menu Mobile">
+                    <button onclick="toggleMobileMenu()" class="focusable lg:hidden p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white" aria-label="Buka Menu Mobile">
                         <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
                     </button>
                 </div>
             </div>
 
-            <div id="mobile-search-bar" class="sm:hidden hidden pb-3 fade-in">
+            <div id="mobile-search-bar" class="sm:hidden hidden pb-3">
                 <div class="relative">
-                    <input type="text" id="mobile-search-input" oninput="handleMobileSearchInput(event)" placeholder="Cari film..." 
-                           class="focusable w-full bg-zinc-900 border border-zinc-800 rounded-full py-2.5 pl-9 pr-8 text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-brand-500"
-                           autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                           aria-label="Cari film di mobile">
-                    <svg class="w-4 h-4 text-zinc-500 absolute left-3 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" id="mobile-search-input" oninput="handleMobileSearchInput(event)" placeholder="Cari film..." class="focusable w-full bg-zinc-900 border border-zinc-800 rounded-full py-2 pl-9 pr-8 text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-brand-500">
+                    <svg class="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
             </div>
         </div>
 
         <!-- Mobile Drawer Navigation -->
-        <div id="mobile-menu" class="hidden lg:hidden bg-zinc-950 border-b border-zinc-800 px-4 py-4 space-y-3 text-sm max-h-[70vh] overflow-y-auto">
-            <button onclick="navigateTo('home'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-3 rounded-lg text-white hover:bg-zinc-900 touch-target">🏠 Beranda</button>
-            <button onclick="navigateTo('movies'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-3 rounded-lg text-zinc-300 hover:bg-zinc-900 touch-target">🎬 Film Bioskop</button>
-            <button onclick="navigateTo('tv'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-3 rounded-lg text-zinc-300 hover:bg-zinc-900 touch-target">📺 TV Series</button>
+        <div id="mobile-menu" class="hidden lg:hidden bg-zinc-950 border-b border-zinc-800 px-4 py-4 space-y-3 text-sm">
+            <button onclick="navigateTo('home'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-white hover:bg-zinc-900">🏠 Beranda</button>
+            <button onclick="navigateTo('movies'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-300 hover:bg-zinc-900">🎬 Film Bioskop</button>
+            <button onclick="navigateTo('tv'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-300 hover:bg-zinc-900">📺 TV Series</button>
             
             <div class="relative">
-                <button onclick="toggleMobileDropdown()" class="focusable block w-full text-left px-3 py-3 rounded-lg text-zinc-300 hover:bg-zinc-900 flex items-center justify-between touch-target">
+                <button onclick="toggleMobileDropdown()" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-300 hover:bg-zinc-900 flex items-center justify-between">
                     <span>📚 Pustaka Film dan Seni</span>
-                    <span id="mobile-dropdown-arrow">▼</span>
+                    <span>▼</span>
                 </button>
                 <div id="mobile-dropdown" class="hidden pl-4 space-y-1">
                     <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider px-3 pt-2">Film</p>
-                    <button onclick="navigateToCollection('film-barat'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Film Barat</button>
-                    <button onclick="navigateToCollection('film-asia'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Film Asia</button>
-                    <button onclick="navigateToCollection('film-indonesia'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Film Indonesia</button>
-                    <button onclick="navigateToCollection('film-superhero'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Film Super Hero</button>
-                    
+                    <button onclick="navigateToCollection('film-barat'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Film Barat</button>
+                    <button onclick="navigateToCollection('film-asia'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Film Asia</button>
+                    <button onclick="navigateToCollection('film-indonesia'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Film Indonesia</button>
+                    <button onclick="navigateToCollection('film-superhero'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Film Super Hero</button>
                     <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider px-3 pt-2">Series</p>
-                    <button onclick="navigateToCollection('series-korea'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Series Korea</button>
-                    <button onclick="navigateToCollection('series-asia'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Series Asia</button>
-                    <button onclick="navigateToCollection('series-indonesia'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Series Indonesia</button>
-                    <button onclick="navigateToCollection('series-barat'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Series Barat</button>
-                    <button onclick="navigateToCollection('series-india'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Series India</button>
-                    
+                    <button onclick="navigateToCollection('series-korea'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Series Korea</button>
+                    <button onclick="navigateToCollection('series-asia'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Series Asia</button>
+                    <button onclick="navigateToCollection('series-indonesia'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Series Indonesia</button>
+                    <button onclick="navigateToCollection('series-barat'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Series Barat</button>
+                    <button onclick="navigateToCollection('series-india'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Series India</button>
                     <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider px-3 pt-2">Seni Tradisional</p>
-                    <button onclick="navigateToCollection('seni-wayang'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Seni Wayang</button>
-                    <button onclick="navigateToCollection('seni-ludruk'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Seni Ludruk</button>
-                    <button onclick="navigateToCollection('seni-ketoprak'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-400 hover:bg-zinc-900 touch-target">• Seni Ketoprak</button>
+                    <button onclick="navigateToCollection('seni-wayang'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Seni Wayang</button>
+                    <button onclick="navigateToCollection('seni-ludruk'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Seni Ludruk</button>
+                    <button onclick="navigateToCollection('seni-ketoprak'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-900">• Seni Ketoprak</button>
                 </div>
             </div>
             
-            <button onclick="navigateTo('watchlist'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-3 rounded-lg text-zinc-300 hover:bg-zinc-900 touch-target">⭐ Daftar Favorit Saya</button>
+            <button onclick="navigateTo('watchlist'); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-zinc-300 hover:bg-zinc-900">⭐ Daftar Favorit Saya</button>
             
             <div class="pt-2 border-t border-zinc-800 flex gap-2">
-                <select id="mobile-genre-filter" onchange="const el=document.getElementById('genre-filter'); if(el){el.value=this.value;} applyFilters(); toggleMobileMenu();" class="focusable w-1/2 bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-xs text-zinc-300 cursor-pointer" aria-label="Filter Genre Mobile">
+                <select id="mobile-genre-filter" onchange="const el=document.getElementById('genre-filter'); if(el){el.value=this.value;} applyFilters(); toggleMobileMenu();" class="focusable w-1/2 bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-xs text-zinc-300">
                     <option value="">Semua Genre</option>
                     <option value="28">Action</option>
                     <option value="12">Adventure</option>
@@ -469,7 +313,7 @@
                     <option value="27">Horror</option>
                     <option value="53">Thriller</option>
                 </select>
-                <select id="mobile-year-filter" onchange="const el=document.getElementById('year-filter'); if(el){el.value=this.value;} applyFilters(); toggleMobileMenu();" class="focusable w-1/2 bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-xs text-zinc-300 cursor-pointer" aria-label="Filter Tahun Mobile">
+                <select id="mobile-year-filter" onchange="const el=document.getElementById('year-filter'); if(el){el.value=this.value;} applyFilters(); toggleMobileMenu();" class="focusable w-1/2 bg-zinc-900 border border-zinc-800 rounded-xl p-2.5 text-xs text-zinc-300">
                     <option value="">Semua Tahun</option>
                     <option value="2026">2026</option>
                     <option value="2025">2025</option>
@@ -477,35 +321,34 @@
                 </select>
             </div>
             
-            <button onclick="openRequestModal(); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-3 rounded-lg text-brand-500 font-semibold hover:bg-zinc-900 touch-target">📝 Request Film Baru</button>
+            <button onclick="openRequestModal(); toggleMobileMenu();" class="focusable block w-full text-left px-3 py-2.5 rounded-lg text-brand-500 font-semibold hover:bg-zinc-900">📝 Request Film Baru</button>
         </div>
     </header>
 
     <!-- Bottom Navigation Mobile -->
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-800 flex items-center justify-around py-1 px-1 text-[10px] sm:text-[11px] font-medium safe-area-padding" aria-label="Navigasi Seluler">
-        <button onclick="navigateTo('home')" id="mob-nav-home" class="focusable flex flex-col items-center gap-0.5 sm:gap-1 text-brand-500 p-2 touch-target rounded-lg">
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-800 flex items-center justify-around py-2 px-1 text-[10px] sm:text-[11px] font-medium" aria-label="Navigasi Seluler">
+        <button onclick="navigateTo('home')" id="mob-nav-home" class="focusable flex flex-col items-center gap-0.5 sm:gap-1 text-brand-500 p-1">
             <span class="text-lg sm:text-xl">🏠</span><span>Beranda</span>
         </button>
-        <button onclick="navigateTo('movies')" id="mob-nav-movies" class="focusable flex flex-col items-center gap-0.5 sm:gap-1 text-zinc-400 p-2 touch-target rounded-lg">
+        <button onclick="navigateTo('movies')" id="mob-nav-movies" class="focusable flex flex-col items-center gap-0.5 sm:gap-1 text-zinc-400 p-1">
             <span class="text-lg sm:text-xl">🎬</span><span>Bioskop</span>
         </button>
-        <button onclick="navigateTo('tv')" id="mob-nav-tv" class="focusable flex flex-col items-center gap-0.5 sm:gap-1 text-zinc-400 p-2 touch-target rounded-lg">
+        <button onclick="navigateTo('tv')" id="mob-nav-tv" class="focusable flex flex-col items-center gap-0.5 sm:gap-1 text-zinc-400 p-1">
             <span class="text-lg sm:text-xl">📺</span><span>Series</span>
         </button>
-        <button onclick="toggleMobileMenu()" class="focusable flex flex-col items-center gap-0.5 sm:gap-1 text-zinc-400 p-2 touch-target rounded-lg">
+        <button onclick="toggleMobileMenu()" class="focusable flex flex-col items-center gap-0.5 sm:gap-1 text-zinc-400 p-1">
             <span class="text-lg sm:text-xl">📚</span><span>Pustaka</span>
         </button>
-        <button onclick="navigateTo('watchlist')" id="mob-nav-watchlist" class="focusable flex flex-col items-center gap-0.5 sm:gap-1 text-zinc-400 p-2 touch-target rounded-lg relative">
+        <button onclick="navigateTo('watchlist')" id="mob-nav-watchlist" class="focusable flex flex-col items-center gap-0.5 sm:gap-1 text-zinc-400 p-1 relative">
             <span class="text-lg sm:text-xl">⭐</span><span>Favorit</span>
-            <span id="mob-watchlist-count" class="absolute top-1 right-1 bg-brand-500 text-white text-[8px] px-1 rounded-full font-bold">0</span>
         </button>
     </nav>
 
     <!-- ==================== MAIN CONTENT ==================== -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 sm:space-y-10 safe-area-padding" id="main-content">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 sm:space-y-10" id="main-content">
         
         <!-- Hero Section -->
-        <article id="hero-section" class="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-zinc-900 min-h-[280px] sm:min-h-[420px] lg:min-h-[460px] border border-zinc-800/80 shadow-2xl flex items-end">
+        <article id="hero-section" class="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-zinc-900 min-h-[320px] sm:min-h-[420px] lg:min-h-[460px] border border-zinc-800/80 shadow-2xl flex items-end">
             <div id="hero-backdrop" class="absolute inset-0 bg-cover bg-center transition-all duration-700 filter brightness-90" style="background-image: url('https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg')"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent"></div>
             
@@ -516,14 +359,14 @@
                     <span id="hero-year" class="bg-zinc-800/80 text-zinc-300 text-[10px] sm:text-xs px-2 py-0.5 rounded">2026</span>
                     <span id="hero-type" class="bg-zinc-800/80 text-zinc-300 text-[10px] sm:text-xs px-2 py-0.5 rounded capitalize">Movie</span>
                 </div>
-                <h1 id="hero-title" class="text-xl sm:text-3xl lg:text-5xl font-extrabold text-white leading-tight drop-shadow-md line-clamp-2">Avatar: Fire and Ash</h1>
+                <h1 id="hero-title" class="text-xl sm:text-3xl lg:text-5xl font-extrabold text-white leading-tight drop-shadow-md">Avatar: Fire and Ash</h1>
                 <p id="hero-overview" class="text-[11px] sm:text-sm text-zinc-300 line-clamp-2 sm:line-clamp-3 leading-relaxed max-w-2xl">Lanjutan epik petualangan di Pandora dengan visual memukau dan pertempuran klan baru.</p>
                 <div class="pt-1 sm:pt-2 flex flex-wrap items-center gap-2 sm:gap-3">
-                    <button id="hero-play-btn" onclick="openHeroPlayer()" class="focusable bg-brand-500 hover:bg-brand-600 text-white font-bold px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg sm:rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-1.5 sm:gap-2 hover:scale-105 transition-all text-xs sm:text-sm touch-target">
+                    <button id="hero-play-btn" onclick="openHeroPlayer()" class="focusable bg-brand-500 hover:bg-brand-600 text-white font-bold px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl shadow-lg shadow-brand-500/30 flex items-center gap-1.5 sm:gap-2 hover:scale-105 transition-all text-xs sm:text-sm">
                         <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         <span>Tonton Sekarang</span>
                     </button>
-                    <button id="hero-fav-btn" onclick="toggleHeroFavorite()" class="focusable bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 font-semibold px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg sm:rounded-xl border border-zinc-700 flex items-center gap-1.5 sm:gap-2 transition-all text-xs sm:text-sm touch-target">
+                    <button id="hero-fav-btn" onclick="toggleHeroFavorite()" class="focusable bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 font-semibold px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-zinc-700 flex items-center gap-1.5 sm:gap-2 transition-all text-xs sm:text-sm">
                         <span id="hero-fav-icon">⭐</span>
                         <span id="hero-fav-text">Simpan</span>
                     </button>
@@ -531,13 +374,13 @@
             </div>
 
             <div class="absolute right-2 sm:right-4 bottom-2 sm:bottom-4 z-20 flex items-center gap-1.5 sm:gap-2">
-                <button onclick="prevHero()" class="focusable p-2 sm:p-2.5 rounded-full bg-zinc-950/80 text-zinc-300 hover:text-white hover:bg-brand-500 transition-colors text-xs sm:text-sm touch-target" aria-label="Film Sebelumnya">◀</button>
-                <button onclick="nextHero()" class="focusable p-2 sm:p-2.5 rounded-full bg-zinc-950/80 text-zinc-300 hover:text-white hover:bg-brand-500 transition-colors text-xs sm:text-sm touch-target" aria-label="Film Selanjutnya">▶</button>
+                <button onclick="prevHero()" class="focusable p-2 sm:p-2.5 rounded-full bg-zinc-950/80 text-zinc-300 hover:text-white hover:bg-brand-500 transition-colors text-xs sm:text-sm" aria-label="Film Sebelumnya">◀</button>
+                <button onclick="nextHero()" class="focusable p-2 sm:p-2.5 rounded-full bg-zinc-950/80 text-zinc-300 hover:text-white hover:bg-brand-500 transition-colors text-xs sm:text-sm" aria-label="Film Selanjutnya">▶</button>
             </div>
         </article>
 
         <!-- Search Results Section -->
-        <section id="search-section" class="hidden space-y-3 sm:space-y-4 fade-in">
+        <section id="search-section" class="hidden space-y-3 sm:space-y-4">
             <div class="flex items-center justify-between border-b border-zinc-800 pb-2 sm:pb-3">
                 <h2 class="text-base sm:text-xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
                     <span class="text-brand-500">🔍</span> Hasil Pencarian: <span id="search-query-text" class="text-brand-500">""</span>
@@ -552,11 +395,11 @@
             <div class="flex items-center justify-between">
                 <h2 class="text-base sm:text-xl font-bold text-white flex items-center gap-1.5 sm:gap-2"><span class="text-brand-500">🔥</span> Trending Mingguan</h2>
                 <div class="flex items-center gap-1 sm:gap-1.5">
-                    <button onclick="scrollCarousel('trending-carousel', -300)" class="focusable p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold touch-target" aria-label="Scroll Kiri">◀</button>
-                    <button onclick="scrollCarousel('trending-carousel', 300)" class="focusable p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold touch-target" aria-label="Scroll Kanan">▶</button>
+                    <button onclick="scrollCarousel('trending-carousel', -300)" class="focusable p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold" aria-label="Scroll Kiri">◀</button>
+                    <button onclick="scrollCarousel('trending-carousel', 300)" class="focusable p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold" aria-label="Scroll Kanan">▶</button>
                 </div>
             </div>
-            <div id="trending-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1 sm:py-2 scroll-smooth snap-x snap-mandatory"></div>
+            <div id="trending-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1 sm:py-2 scroll-smooth"></div>
         </section>
 
         <!-- Movies Section -->
@@ -564,11 +407,11 @@
             <div class="flex items-center justify-between">
                 <h2 class="text-base sm:text-xl font-bold text-white flex items-center gap-1.5 sm:gap-2"><span class="text-brand-500">🎬</span> Film Bioskop Terbaru</h2>
                 <div class="flex items-center gap-1 sm:gap-1.5">
-                    <button onclick="scrollCarousel('movies-carousel', -300)" class="focusable p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold touch-target" aria-label="Scroll Kiri">◀</button>
-                    <button onclick="scrollCarousel('movies-carousel', 300)" class="focusable p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold touch-target" aria-label="Scroll Kanan">▶</button>
+                    <button onclick="scrollCarousel('movies-carousel', -300)" class="focusable p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold" aria-label="Scroll Kiri">◀</button>
+                    <button onclick="scrollCarousel('movies-carousel', 300)" class="focusable p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold" aria-label="Scroll Kanan">▶</button>
                 </div>
             </div>
-            <div id="movies-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1 sm:py-2 scroll-smooth snap-x snap-mandatory"></div>
+            <div id="movies-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1 sm:py-2 scroll-smooth"></div>
         </section>
 
         <!-- TV Series Section -->
@@ -576,11 +419,11 @@
             <div class="flex items-center justify-between">
                 <h2 class="text-base sm:text-xl font-bold text-white flex items-center gap-1.5 sm:gap-2"><span class="text-brand-500">📺</span> Series & Acara TV</h2>
                 <div class="flex items-center gap-1 sm:gap-1.5">
-                    <button onclick="scrollCarousel('series-carousel', -300)" class="focusable p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold touch-target" aria-label="Scroll Kiri">◀</button>
-                    <button onclick="scrollCarousel('series-carousel', 300)" class="focusable p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold touch-target" aria-label="Scroll Kanan">▶</button>
+                    <button onclick="scrollCarousel('series-carousel', -300)" class="focusable p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold" aria-label="Scroll Kiri">◀</button>
+                    <button onclick="scrollCarousel('series-carousel', 300)" class="focusable p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold" aria-label="Scroll Kanan">▶</button>
                 </div>
             </div>
-            <div id="series-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1 sm:py-2 scroll-smooth snap-x snap-mandatory"></div>
+            <div id="series-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1 sm:py-2 scroll-smooth"></div>
         </section>
 
         <!-- Thriller Section -->
@@ -588,15 +431,15 @@
             <div class="flex items-center justify-between">
                 <h2 class="text-base sm:text-xl font-bold text-white flex items-center gap-1.5 sm:gap-2"><span class="text-brand-500">🔪</span> Thriller & Misteri</h2>
                 <div class="flex items-center gap-1 sm:gap-1.5">
-                    <button onclick="scrollCarousel('thriller-carousel', -300)" class="focusable p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold touch-target" aria-label="Scroll Kiri">◀</button>
-                    <button onclick="scrollCarousel('thriller-carousel', 300)" class="focusable p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold touch-target" aria-label="Scroll Kanan">▶</button>
+                    <button onclick="scrollCarousel('thriller-carousel', -300)" class="focusable p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold" aria-label="Scroll Kiri">◀</button>
+                    <button onclick="scrollCarousel('thriller-carousel', 300)" class="focusable p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white hover:bg-brand-500 transition-all text-[10px] sm:text-xs font-bold" aria-label="Scroll Kanan">▶</button>
                 </div>
             </div>
-            <div id="thriller-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1 sm:py-2 scroll-smooth snap-x snap-mandatory"></div>
+            <div id="thriller-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1 sm:py-2 scroll-smooth"></div>
         </section>
 
         <!-- Watchlist Section -->
-        <section id="watchlist-section" class="hidden space-y-3 sm:space-y-4 fade-in">
+        <section id="watchlist-section" class="hidden space-y-3 sm:space-y-4">
             <div class="border-b border-zinc-800 pb-2 sm:pb-3">
                 <h2 class="text-base sm:text-xl font-bold text-white flex items-center gap-1.5 sm:gap-2"><span class="text-brand-500">⭐</span> Daftar Film Favorit Saya</h2>
             </div>
@@ -604,37 +447,37 @@
         </section>
 
         <!-- ======== DETAIL PAGE (Player) ======== -->
-        <section id="detail-section" class="hidden space-y-4 sm:space-y-6 fade-in">
+        <section id="detail-section" class="hidden space-y-4 sm:space-y-6">
             <div class="flex items-center justify-between gap-2 flex-wrap">
-                <button onclick="closeDetailPage()" class="focusable flex items-center gap-2 text-sm sm:text-base text-zinc-300 hover:text-white bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 transition-all touch-target">
+                <button onclick="closeDetailPage()" class="focusable flex items-center gap-2 text-sm sm:text-base text-zinc-300 hover:text-white bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 transition-all">
                     <span>←</span> Kembali
                 </button>
                 <div class="flex items-center gap-2">
                     <span id="detail-type-badge" class="bg-brand-500 text-white font-bold text-[10px] sm:text-xs px-2 py-0.5 sm:px-2.5 sm:py-1 rounded">MOVIE</span>
                     <h2 id="detail-title" class="text-lg sm:text-2xl font-extrabold text-white truncate max-w-[200px] sm:max-w-md">Judul</h2>
                 </div>
-                <button onclick="toggleDetailFavorite()" class="focusable text-xs sm:text-sm bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3 py-2 rounded-xl border border-zinc-700 touch-target">☆ Simpan</button>
+                <button onclick="toggleDetailFavorite()" class="focusable text-xs sm:text-sm bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3 py-2 rounded-xl border border-zinc-700">☆ Simpan</button>
             </div>
 
-            <div class="relative w-full aspect-video bg-zinc-950 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl video-container">
-                <iframe id="video-iframe" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe>
+            <div class="relative w-full aspect-video bg-zinc-950 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl">
+                <iframe id="video-iframe" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media"></iframe>
             </div>
 
             <div class="flex flex-wrap items-center justify-between gap-2 sm:gap-4 bg-zinc-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-800">
                 <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                     <span class="text-[10px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider">Server:</span>
-                    <button id="server-btn-1" onclick="switchServer(1)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target">Server 1</button>
-                    <button id="server-btn-2" onclick="switchServer(2)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Server 2</button>
-                    <button id="server-btn-3" onclick="switchServer(3)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Server 3</button>
+                    <button id="server-btn-1" onclick="switchServer(1)" class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all">Server 1</button>
+                    <button id="server-btn-2" onclick="switchServer(2)" class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all">Server 2</button>
+                    <button id="server-btn-3" onclick="switchServer(3)" class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all">Server 3</button>
                 </div>
                 <div class="flex items-center gap-1.5 sm:gap-2">
-                    <button onclick="playTrailer()" class="focusable text-[10px] sm:text-xs bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold px-3 sm:px-4 py-2 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-md touch-target">
+                    <button onclick="playTrailer()" class="focusable text-[10px] sm:text-xs bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-md">
                         <span>🎬</span> Trailer
                     </button>
-                    <button onclick="openExternalPlayer()" class="focusable text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-2 sm:py-2 rounded-lg flex items-center gap-1 touch-target">
+                    <button onclick="openExternalPlayer()" class="focusable text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg flex items-center gap-1">
                         <span>↗ Tab</span>
                     </button>
-                    <button onclick="openShareModal()" class="focusable text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-2 sm:py-2 rounded-lg flex items-center gap-1 touch-target">
+                    <button onclick="openShareModal()" class="focusable text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg flex items-center gap-1">
                         <span>🔗</span> Share
                     </button>
                 </div>
@@ -649,7 +492,7 @@
             <!-- Info & Poster -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 bg-zinc-900/40 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-zinc-800/60">
                 <div class="space-y-2 sm:space-y-3">
-                    <img id="detail-poster" src="" alt="Poster Film" class="w-full h-48 sm:h-64 object-cover rounded-lg sm:rounded-xl shadow-md border border-zinc-800" loading="lazy">
+                    <img id="detail-poster" src="" alt="Poster Film" class="w-full h-48 sm:h-64 object-cover rounded-lg sm:rounded-xl shadow-md border border-zinc-800">
                 </div>
                 <div class="md:col-span-2 space-y-3 sm:space-y-4">
                     <div class="flex flex-wrap items-center gap-2 sm:gap-3">
@@ -667,65 +510,57 @@
     </main>
 
     <!-- ==================== REQUEST MODAL ==================== -->
-    <div id="request-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="request-modal-title">
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl sm:rounded-2xl max-w-md w-full p-4 sm:p-6 space-y-3 sm:space-y-4 shadow-2xl fade-in">
+    <div id="request-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-xl sm:rounded-2xl max-w-md w-full p-4 sm:p-6 space-y-3 sm:space-y-4 shadow-2xl">
             <div class="flex items-center justify-between border-b border-zinc-800 pb-2 sm:pb-3">
-                <h3 id="request-modal-title" class="text-base sm:text-lg font-bold text-white flex items-center gap-1.5 sm:gap-2"><span>📝</span> Request Film Baru</h3>
-                <button onclick="closeRequestModal()" class="focusable text-zinc-400 hover:text-white p-2 touch-target" aria-label="Tutup">✕</button>
+                <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-1.5 sm:gap-2"><span>📝</span> Request Film Baru</h3>
+                <button onclick="closeRequestModal()" class="focusable text-zinc-400 hover:text-white p-1">✕</button>
             </div>
             <div>
                 <label class="block text-[10px] sm:text-xs font-bold text-zinc-300 mb-1">Judul Film / Series:</label>
-                <input type="text" id="req-title-input" placeholder="Contoh: Avatar Fire and Ash" class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg sm:rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500" autocomplete="off">
+                <input type="text" id="req-title-input" placeholder="Contoh: Avatar Fire and Ash" class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg sm:rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500">
             </div>
             <div>
                 <label class="block text-[10px] sm:text-xs font-bold text-zinc-300 mb-1">Pesan Tambahan:</label>
-                <textarea id="req-note-input" rows="3" placeholder="Contoh: Mohon perbaiki server 1 error..." class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg sm:rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500 resize-none"></textarea>
+                <textarea id="req-note-input" rows="3" placeholder="Contoh: Mohon perbaiki server 1 error..." class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg sm:rounded-xl p-2.5 sm:p-3 text-xs sm:text-sm text-white focus:outline-none focus:border-brand-500"></textarea>
             </div>
-            <button onclick="submitRequest()" class="focusable w-full bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs sm:text-sm py-3 rounded-lg sm:rounded-xl shadow-md touch-target">Kirim Request</button>
+            <button onclick="submitRequest()" class="focusable w-full bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs sm:text-sm py-2.5 sm:py-3 rounded-lg sm:rounded-xl shadow-md">Kirim Request</button>
         </div>
     </div>
 
     <!-- ==================== SHARE MODAL ==================== -->
-    <div id="share-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl sm:rounded-2xl max-w-md w-full p-4 sm:p-6 space-y-3 sm:space-y-4 shadow-2xl fade-in">
+    <div id="share-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-zinc-900 border border-zinc-800 rounded-xl sm:rounded-2xl max-w-md w-full p-4 sm:p-6 space-y-3 sm:space-y-4 shadow-2xl">
             <div class="flex items-center justify-between border-b border-zinc-800 pb-2 sm:pb-3">
-                <h3 id="share-modal-title" class="text-base sm:text-lg font-bold text-white flex items-center gap-1.5 sm:gap-2"><span>🔗</span> Bagikan Video</h3>
-                <button onclick="closeShareModal()" class="focusable text-zinc-400 hover:text-white p-2 touch-target" aria-label="Tutup">✕</button>
+                <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-1.5 sm:gap-2"><span>🔗</span> Bagikan Video</h3>
+                <button onclick="closeShareModal()" class="focusable text-zinc-400 hover:text-white p-1">✕</button>
             </div>
             <div>
                 <label class="block text-[10px] sm:text-xs font-bold text-zinc-300 mb-1">Link Tontonan:</label>
                 <div class="flex gap-2">
-                    <input type="text" id="share-link-input" readonly class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-xs sm:text-sm text-white focus:outline-none">
-                    <button onclick="copyShareLink()" class="focusable shrink-0 bg-brand-500 hover:bg-brand-600 text-white text-xs sm:text-sm font-bold px-4 py-2 rounded-lg touch-target">Salin</button>
+                    <input type="text" id="share-link-input" readonly class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-xs sm:text-sm text-white focus:outline-none">
+                    <button onclick="copyShareLink()" class="focusable shrink-0 bg-brand-500 hover:bg-brand-600 text-white text-xs sm:text-sm font-bold px-3 py-2 rounded-lg">Salin</button>
                 </div>
             </div>
             <div>
                 <label class="block text-[10px] sm:text-xs font-bold text-zinc-300 mb-1">Kode Embed (iframe):</label>
                 <div class="flex gap-2">
-                    <textarea id="share-embed-code" readonly rows="3" class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-xs sm:text-sm text-white focus:outline-none resize-none"></textarea>
-                    <button onclick="copyEmbedCode()" class="focusable shrink-0 bg-brand-500 hover:bg-brand-600 text-white text-xs sm:text-sm font-bold px-4 py-2 rounded-lg touch-target">Salin</button>
+                    <textarea id="share-embed-code" readonly rows="3" class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-xs sm:text-sm text-white focus:outline-none"></textarea>
+                    <button onclick="copyEmbedCode()" class="focusable shrink-0 bg-brand-500 hover:bg-brand-600 text-white text-xs sm:text-sm font-bold px-3 py-2 rounded-lg">Salin</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Banner Iklan di Bawah -->
-    <div id="container-0ebe8e033d54f677c253b902dad75d61" class="w-full text-center py-3 sm:py-4 bg-zinc-950 border-t border-zinc-800 no-print"></div>
+    <div id="container-0ebe8e033d54f677c253b902dad75d61" class="w-full text-center py-3 sm:py-4 bg-zinc-950 border-t border-zinc-800"></div>
 
     <script>
         // ============================================
         // GLOBAL ERROR HANDLERS
         // ============================================
-        window.addEventListener('error', (e) => { 
-            console.warn('Error handled:', e.message);
-            e.preventDefault(); 
-            return true; 
-        }, true);
-        
-        window.addEventListener('unhandledrejection', (e) => { 
-            console.warn('Unhandled rejection:', e.reason);
-            e.preventDefault(); 
-        });
+        window.addEventListener('error', (e) => { e.preventDefault(); return true; }, true);
+        window.addEventListener('unhandledrejection', (e) => { e.preventDefault(); });
 
         const DEFAULT_API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOWE0MjVkOWE5NWIxOWNlZWNmNWY3NjM0OTFhMTZhMiIsIm5iZiI6MTc4NjcwODk3NS45NDMsInN1YiI6IjZhN2YwM2VmYWRhZTA1MzllZWI3YTUwMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.tYWz-uha4q8nvwC1HTDd_KUgjGAdMFSPbOzZrkE3hoY";
         const AD_DIRECT_LINK = "https://thrillingdeepcutlery.com/qwa587wxa2?key=561c88fe11ec0930083abdb24ca2352a";
@@ -788,19 +623,7 @@
 
         function getMediaKey(type, id) { return `${type}-${id}`; }
         function slugify(text) { return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
-
-        // ============================================
-        // LOADING OVERLAY
-        // ============================================
-        function showLoading() {
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) overlay.classList.remove('hidden');
-        }
-
-        function hideLoading() {
-            const overlay = document.getElementById('loading-overlay');
-            if (overlay) overlay.classList.add('hidden');
-        }
+        function triggerAdAndRedirect(callback) { try { window.open(AD_DIRECT_LINK, '_blank'); } catch(e) {} if (typeof callback === 'function') callback(); }
 
         // ============================================
         // FUNGSI LOAD DATA DARI GOOGLE SHEETS
@@ -1001,7 +824,7 @@
             if (!collectionContainer) {
                 collectionContainer = document.createElement('section');
                 collectionContainer.id = 'collection-container';
-                collectionContainer.className = 'space-y-3 sm:space-y-4 fade-in';
+                collectionContainer.className = 'space-y-3 sm:space-y-4';
                 document.getElementById('main-content').appendChild(collectionContainer);
             }
             
@@ -1013,7 +836,7 @@
                         <span class="text-brand-500">📚</span> ${categoryName}
                         <span class="text-xs text-zinc-400 font-normal ml-2">(${items.length} konten)</span>
                     </h2>
-                    <button onclick="closeCollection()" class="focusable text-zinc-400 hover:text-white p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-xs touch-target">✕ Tutup</button>
+                    <button onclick="closeCollection()" class="focusable text-zinc-400 hover:text-white p-1 sm:p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-xs">✕ Tutup</button>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4" id="collection-grid">
                     ${items.map((item, index) => createLibraryCardHTML(item, index)).join('')}
@@ -1057,7 +880,7 @@
             if (!displayTitle) displayTitle = title;
             
             return `
-                <article class="focusable poster-card shrink-0 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative snap-start" 
+                <article class="focusable poster-card shrink-0 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative" 
                          tabindex="0" onclick="playLibraryItem('${escapeHtml(link)}', '${escapeHtml(title)}', '${escapeHtml(poster)}', '${escapeHtml(rating)}', '${escapeHtml(year)}', '${escapeHtml(description)}', '${escapeHtml(actors)}', '${type}')">
                     <div class="relative aspect-[2/3] overflow-hidden bg-zinc-950">
                         <img src="${poster}" alt="Poster ${escapeHtml(title)}" loading="lazy" 
@@ -1116,10 +939,10 @@
             // Buka detail page dengan item ini
             openDetailPage(mediaItem);
 
-            // Update hash URL
+            // Update URL
             const slug = slugify(mediaItem.title);
-            const hash = `#/${mediaItem.type}/${mediaItem.id}/${slug}`;
-            window.location.hash = hash;
+            const path = `/${mediaItem.type}/${mediaItem.id}/${slug}`;
+            history.pushState({ mediaId: mediaItem.id, type: mediaItem.type }, '', path);
         }
 
         // ============================================
@@ -1154,23 +977,12 @@
 
         function toggleMobileDropdown() {
             const dropdown = document.getElementById('mobile-dropdown');
-            const arrow = document.getElementById('mobile-dropdown-arrow');
-            if (dropdown) {
-                dropdown.classList.toggle('hidden');
-                if (arrow) arrow.textContent = dropdown.classList.contains('hidden') ? '▼' : '▲';
-            }
-        }
-
-        function toggleDesktopDropdown() {
-            const dropdown = document.getElementById('desktop-dropdown');
-            if (dropdown) {
-                dropdown.classList.toggle('active');
-            }
+            if (dropdown) dropdown.classList.toggle('hidden');
         }
 
         function navigateTo(tab) {
-            const hash = tab === 'home' ? '#/' : `#/${tab}`;
-            window.location.hash = hash;
+            const path = tab === 'home' ? '/' : `/${tab}`;
+            history.pushState({ tab }, '', path);
             switchTab(tab);
         }
 
@@ -1247,16 +1059,16 @@
             const key = getMediaKey(item.type, item.id);
             mediaCache.set(key, item);
             return `
-                <article class="focusable poster-card shrink-0 w-24 sm:w-36 md:w-44 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative snap-start" 
+                <article class="focusable poster-card shrink-0 w-24 sm:w-36 md:w-44 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative" 
                          tabindex="0" data-media-key="${key}" onclick="navigateToDetail('${key}')">
                     <div class="relative aspect-[2/3] overflow-hidden bg-zinc-950">
-                        <img src="${item.poster_path}" alt="Poster ${escapeHtml(item.title)}" loading="lazy" 
+                        <img src="${item.poster_path}" alt="Poster ${item.title}" loading="lazy" 
                              onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=Gambar+N/A'" 
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-black/70 backdrop-blur-md text-amber-400 font-extrabold text-[8px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/20">★ ${item.rating}</div>
                         <div class="absolute top-1 sm:top-2 right-1 sm:right-2 z-10">
                             <button onclick="event.stopPropagation(); toggleFavoriteFromKey('${key}')" 
-                                    class="focusable p-2 sm:p-1.5 rounded-full bg-black/70 hover:bg-brand-500 text-white transition-all text-[8px] sm:text-xs touch-target" 
+                                    class="focusable p-1 sm:p-1.5 rounded-full bg-black/70 hover:bg-brand-500 text-white transition-all text-[8px] sm:text-xs" 
                                     aria-label="Simpan Favorit">${isFav ? '⭐' : '☆'}</button>
                         </div>
                         <div class="absolute inset-0 bg-brand-600/40 backdrop-blur-[2px] play-overlay flex flex-col items-center justify-center p-1 sm:p-3 text-center">
@@ -1267,7 +1079,7 @@
                         </div>
                     </div>
                     <div class="p-2 sm:p-3 space-y-0.5 sm:space-y-1">
-                        <h3 class="text-[10px] sm:text-sm font-bold text-white truncate group-hover:text-brand-500 transition-colors">${escapeHtml(item.title)}</h3>
+                        <h3 class="text-[10px] sm:text-sm font-bold text-white truncate group-hover:text-brand-500 transition-colors">${item.title}</h3>
                         <div class="flex items-center justify-between text-[8px] sm:text-[10px] text-zinc-400">
                             <span>${item.year}</span>
                             <span class="uppercase border border-zinc-700 px-0.5 sm:px-1 rounded text-[7px] sm:text-[9px]">${item.type === 'tv' ? 'Series' : 'HD'}</span>
@@ -1281,8 +1093,8 @@
             const item = mediaCache.get(key);
             if (!item) return;
             const slug = slugify(item.title);
-            const hash = `#/${item.type}/${item.id}/${slug}`;
-            window.location.hash = hash;
+            const path = `/${item.type}/${item.id}/${slug}`;
+            history.pushState({ mediaId: item.id, type: item.type }, '', path);
             openDetailPage(item);
         }
 
@@ -1328,9 +1140,7 @@
 
         function updateWatchlistBadge() {
             const badge = document.getElementById('watchlist-count-badge');
-            const mobBadge = document.getElementById('mob-watchlist-count');
             if (badge) badge.textContent = state.watchlist.length;
-            if (mobBadge) mobBadge.textContent = state.watchlist.length;
         }
 
         function renderWatchlistGrid() {
@@ -1341,7 +1151,7 @@
                     <div class="col-span-full py-12 text-center space-y-3">
                         <span class="text-4xl">⭐</span>
                         <p class="text-zinc-400 text-sm">Belum ada film di daftar favorit Kamu.</p>
-                        <button onclick="navigateTo('home')" class="focusable text-xs bg-brand-500 text-white font-bold px-4 py-3 rounded-lg touch-target">Cari Film Sekarang</button>
+                        <button onclick="navigateTo('home')" class="focusable text-xs bg-brand-500 text-white font-bold px-4 py-2 rounded-lg">Cari Film Sekarang</button>
                     </div>
                 `;
                 return;
@@ -1407,7 +1217,7 @@
                         const isCurrent = ep.Judul === item.title;
                         
                         epHTML += `<button onclick="playLibraryItem('${escapeHtml(ep.Link)}', '${escapeHtml(ep.Judul)}', '${escapeHtml(ep.Poster)}', '${escapeHtml(ep.Rating || '')}', '${escapeHtml(ep.Tahun || '')}', '${escapeHtml(ep.Deskripsi || '')}', '${escapeHtml(ep.Aktor || '')}', 'tv')" 
-                                    class="focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium transition-all touch-target ${
+                                    class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium transition-all ${
                                         isCurrent 
                                         ? 'bg-brand-500 text-white font-bold' 
                                         : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
@@ -1426,7 +1236,7 @@
                 let epHTML = '';
                 for (let i = 1; i <= 10; i++) {
                     epHTML += `<button onclick="switchEpisode(${i})" 
-                                class="focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium touch-target ${
+                                class="focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium ${
                                     i === state.currentEpisode 
                                     ? 'bg-brand-500 text-white font-bold' 
                                     : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
@@ -1472,8 +1282,8 @@
                 const btn = document.getElementById(`server-btn-${i}`);
                 if (btn) {
                     btn.className = i === 1 
-                        ? "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target"
-                        : "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target";
+                        ? "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all"
+                        : "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all";
                 }
             }
             
@@ -1588,8 +1398,8 @@
                 const sec = document.getElementById(id);
                 if (sec) sec.classList.remove('hidden');
             });
-            const hash = state.activeTab === 'home' ? '#/' : `#/${state.activeTab}`;
-            window.location.hash = hash;
+            const path = state.activeTab === 'home' ? '/' : `/${state.activeTab}`;
+            history.pushState({ tab: state.activeTab }, '', path);
             document.title = 'ReviewFilm21 - Nonton Film & TV Series Subtitle Indonesia Gratis';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1616,8 +1426,8 @@
                 const btn = document.getElementById(`server-btn-${i}`);
                 if (btn) {
                     btn.className = i === serverNum 
-                        ? "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target"
-                        : "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target";
+                        ? "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all"
+                        : "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all";
                 }
             }
             
@@ -1659,8 +1469,8 @@
             const buttons = container.querySelectorAll('button');
             buttons.forEach((btn, idx) => {
                 btn.className = idx + 1 === epNum 
-                    ? "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white touch-target"
-                    : "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 touch-target";
+                    ? "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white"
+                    : "focusable px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700";
             });
             updateIframeSource();
         }
@@ -1846,7 +1656,7 @@
             searchCount.textContent = `${tmdbMatches.length} Film Ditemukan`;
 
             if (tmdbMatches.length === 0) {
-                searchGrid.innerHTML = `<div class="col-span-full py-8 text-center text-zinc-500 text-sm">Tidak ditemukan hasil untuk "${escapeHtml(query)}".</div>`;
+                searchGrid.innerHTML = `<div class="col-span-full py-8 text-center text-zinc-500 text-sm">Tidak ditemukan hasil untuk "${query}".</div>`;
             } else {
                 searchGrid.innerHTML = tmdbMatches.map(item => createCardHTML(item)).join('');
             }
@@ -1901,10 +1711,7 @@
         // ============================================
         function openRequestModal() {
             document.getElementById('request-modal').classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('req-title-input').focus();
-                updateTvFocusables();
-            }, 100);
+            setTimeout(updateTvFocusables, 200);
         }
 
         function closeRequestModal() {
@@ -1917,7 +1724,6 @@
             const title = titleInput?.value.trim();
             if (!title) {
                 showToast('Mohon isi judul film yang diminta', '⚠️');
-                titleInput?.focus();
                 return;
             }
             showToast(`Request "${title}" berhasil dikirim!`, '📩');
@@ -2060,21 +1866,19 @@
         }
 
         // ============================================
-        // ROUTE HANDLER (HASH-BASED)
+        // ROUTE HANDLER
         // ============================================
-        function handleRoute() {
-            const hash = window.location.hash || '#/';
-            const path = hash.substring(1); // Hapus '#'
-            
-            if (path === '/' || path === '') { switchTab('home'); return; }
+        async function handleRoute() {
+            const path = window.location.pathname;
+            if (path === '/') { switchTab('home'); return; }
             if (path === '/movies') { switchTab('movies'); return; }
             if (path === '/tv') { switchTab('tv'); return; }
             if (path === '/watchlist') { switchTab('watchlist'); return; }
 
             const movieMatch = path.match(/^\/movie\/(\d+)(?:\/[^/]+)?$/);
-            if (movieMatch) { openMediaById(movieMatch[1], 'movie'); return; }
+            if (movieMatch) { await openMediaById(movieMatch[1], 'movie'); return; }
             const tvMatch = path.match(/^\/tv\/(\d+)(?:\/[^/]+)?$/);
-            if (tvMatch) { openMediaById(tvMatch[1], 'tv'); return; }
+            if (tvMatch) { await openMediaById(tvMatch[1], 'tv'); return; }
 
             switchTab('home');
         }
@@ -2106,6 +1910,9 @@
                 } catch(e) {}
             }
             if (item) {
+                const slug = slugify(item.title);
+                const expectedPath = `/${type}/${id}/${slug}`;
+                if (window.location.pathname !== expectedPath) history.replaceState(null, '', expectedPath);
                 openDetailPage(item);
             } else {
                 showToast('Konten tidak ditemukan', '⚠️');
@@ -2120,7 +1927,6 @@
             window.addEventListener('keydown', (e) => {
                 const key = e.key;
                 const keyCode = e.keyCode || e.which;
-                
                 if (key === 'ArrowLeft' || keyCode === 37) {
                     e.preventDefault();
                     navigateTv('left');
@@ -2134,15 +1940,12 @@
                     e.preventDefault();
                     navigateTv('down');
                 } else if (key === 'Enter' || keyCode === 13) {
-                    if (tvIndex >= 0 && tvFocusables[tvIndex]) {
-                        tvFocusables[tvIndex].click();
-                    }
+                    if (tvIndex >= 0 && tvFocusables[tvIndex]) tvFocusables[tvIndex].click();
                 } else if (key === 'Escape' || key === 'Backspace' || keyCode === 27 || keyCode === 8 || keyCode === 10009) {
                     const detailSection = document.getElementById('detail-section');
                     const requestModal = document.getElementById('request-modal');
                     const shareModal = document.getElementById('share-modal');
                     const collectionContainer = document.getElementById('collection-container');
-                    
                     if (detailSection && !detailSection.classList.contains('hidden')) {
                         closeDetailPage();
                         e.preventDefault();
@@ -2179,7 +1982,7 @@
         // ============================================
         // WINDOW LOAD
         // ============================================
-        window.addEventListener('hashchange', handleRoute);
+        window.addEventListener('popstate', handleRoute);
 
         window.onload = function () {
             updateWatchlistBadge();
@@ -2187,27 +1990,11 @@
             renderAllSections();
             fetchTMDBCatalogs();
             initSmartTvControls();
-            handleRoute(); // Ini akan membaca hash
+            handleRoute();
             setTimeout(updateTvFocusables, 500);
+
             loadLibraryFromGoogleSheets();
-            hideLoading();
         };
-
-        // Event listener untuk resize
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                updateTvFocusables();
-            }, 250);
-        });
-
-        // Event listener untuk orientasi
-        window.addEventListener('orientationchange', () => {
-            setTimeout(() => {
-                updateTvFocusables();
-            }, 500);
-        });
     </script>
     <script src="https://thrillingdeepcutlery.com/40/b6/14/40b61407ad664f04dd80c6346cb46fac.js"></script>
 </body>
