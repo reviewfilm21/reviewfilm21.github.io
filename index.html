@@ -340,6 +340,40 @@
             justify-content: center;
             padding: 1rem;
         }
+
+        /* Rating bintang */
+        .star-rating {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #52525b;
+            transition: color 0.2s;
+        }
+        .star-rating .star.active {
+            color: #f59e0b;
+        }
+        .star-rating .star:hover {
+            color: #fbbf24;
+        }
+
+        /* Reaksi */
+        .reaction-btn {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .reaction-btn:hover,
+        .reaction-btn.active {
+            background-color: #27272a;
+            border-color: #ff5c00;
+            color: #fff;
+        }
+
+        /* Komentar */
+        .comment-item {
+            transition: background 0.2s;
+        }
+        .comment-item:hover {
+            background-color: #18181b;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-16 lg:pb-0">
@@ -674,6 +708,7 @@
                 <div id="episodes-grid" class="flex flex-wrap gap-1.5 sm:gap-2 max-h-32 sm:max-h-40 overflow-y-auto"></div>
             </div>
 
+            <!-- Bagian Detail Film / Series -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 bg-zinc-900/40 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-zinc-800/60">
                 <div class="space-y-2 sm:space-y-3">
                     <img id="detail-poster" src="" alt="Poster Film" class="w-full h-48 sm:h-64 object-cover rounded-lg sm:rounded-xl shadow-md border border-zinc-800" loading="lazy">
@@ -688,7 +723,39 @@
                         <h4 class="text-[10px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Sinopsis Ringkas:</h4>
                         <p id="detail-overview" class="text-xs sm:text-sm text-zinc-300 leading-relaxed max-h-28 sm:max-h-36 overflow-y-auto pr-2">Deskripsi film...</p>
                     </div>
+                    <!-- Tambahan info metadata -->
+                    <div id="detail-meta" class="flex flex-wrap gap-2 sm:gap-3 text-[10px] sm:text-xs text-zinc-400">
+                        <span>🎬 <span id="detail-duration">1h 55m</span></span>
+                        <span>🌍 <span id="detail-country">United States</span></span>
+                        <span>👥 <span id="detail-users">820.816 pengguna</span></span>
+                    </div>
+                    <!-- Rating Bintang -->
+                    <div class="space-y-1 sm:space-y-2">
+                        <h4 class="text-xs sm:text-sm font-bold text-white">Beri rating film ini:</h4>
+                        <div class="flex items-center gap-1 sm:gap-2">
+                            <div id="user-rating-stars" class="star-rating flex gap-0.5 sm:gap-1"></div>
+                            <span id="user-rating-message" class="text-[10px] sm:text-xs text-zinc-400"></span>
+                        </div>
+                    </div>
+                    <!-- Reaksi -->
+                    <div class="space-y-1 sm:space-y-2">
+                        <h4 class="text-xs sm:text-sm font-bold text-white">Bagikan reaksimu terhadap film ini.</h4>
+                        <div id="reaction-container" class="flex flex-wrap gap-1.5 sm:gap-2"></div>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Komentar -->
+            <div class="bg-zinc-900/40 p-3 sm:p-6 rounded-xl sm:rounded-2xl border border-zinc-800/60 space-y-3 sm:space-y-4">
+                <h3 class="text-base sm:text-lg font-bold text-white flex items-center gap-2"><span>💬</span> Komentar</h3>
+                <div class="space-y-2 sm:space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                        <input type="text" id="comment-name" placeholder="Nama kamu (opsional)" class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 sm:p-3 text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500" autocomplete="off">
+                        <input type="text" id="comment-text" placeholder="Tulis komentar..." class="focusable w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 sm:p-3 text-xs sm:text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500" autocomplete="off">
+                    </div>
+                    <button onclick="submitComment()" class="focusable bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs sm:text-sm py-2.5 sm:py-3 px-4 rounded-lg touch-target">Kirim Komentar</button>
+                </div>
+                <div id="comments-list" class="space-y-3 sm:space-y-4 max-h-72 overflow-y-auto pr-1"></div>
             </div>
         </section>
     </main>
@@ -747,7 +814,6 @@
 
     <script>
         // ================= KONSTANTA & STATE =================
-        // API key di-encode base64 untuk menghindari pembacaan langsung.
         const DEFAULT_API_KEY_ENCODED = "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhaR1FpT2lKbE9XRTBNalZrT1dFNVdXSXhPV05sWldObU5XWTNOak0wT1RGaE1UWmhNaUlzSW01aVppSTZNVGM0Tmpjd09EazNOUzQ1TkRNc0luTjFZaUk2SWpaaE4yWXdNMlZtWVdSaFpUQXhNelZsWldJM1lUVXdNU0lzSW5OamIzQmxjeUk2V3lKaGNHbGZjbUZoWkNJc1pYSnphVzVuWlhNaUxDSnBibWwwYVc5dUlpd2laVzFwYm1sdVp5SjkuZFlXei11aGE0cThudndDMUhURGRfS1VnakdBZE1GU1BiT3pacmszRWhvWQ==";
         const DEFAULT_API_KEY = atob(DEFAULT_API_KEY_ENCODED);
         const AD_DIRECT_LINK = "https://thrillingdeepcutlery.com/qwa587wxa2?key=561c88fe11ec0930083abdb24ca2352a";
@@ -1357,6 +1423,10 @@
             document.getElementById('detail-genres').textContent = item.genre || 'Pustaka Film';
             document.getElementById('detail-overview').textContent = item.overview || 'Tidak ada deskripsi tersedia.';
             document.getElementById('detail-poster').src = enforceHttps(item.poster_path) || 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster';
+            // Tambahan info metadata default
+            document.getElementById('detail-duration').textContent = '1h 55m';
+            document.getElementById('detail-country').textContent = 'United States';
+            document.getElementById('detail-users').textContent = '820.816 pengguna';
             updateDetailFavoriteButton();
             const epContainer = document.getElementById('episodes-container');
             const epGrid = document.getElementById('episodes-grid');
@@ -1394,6 +1464,8 @@
                     }
                 } catch(e) {}
             }
+            // Muat interaksi (rating, reaksi, komentar)
+            loadDetailInteractions(item.id);
             window.scrollTo({ top: 0, behavior: 'smooth' });
             startAdInterval();
             setTimeout(updateTvFocusables, 200);
@@ -1553,6 +1625,122 @@
             if (btn && state.currentMedia) btn.innerHTML = isWatchlisted(state.currentMedia.id) ? '⭐ Tersimpan' : '☆ Simpan';
         }
         function toggleDetailFavorite() { if (state.currentMedia) toggleWatchlistDirect(state.currentMedia); }
+
+        // ================= FITUR RATING, REAKSI, KOMENTAR =================
+        function loadDetailInteractions(mediaId) {
+            // Rating
+            const userRatingKey = `rating_${mediaId}`;
+            const savedRating = localStorage.getItem(userRatingKey);
+            if (savedRating) {
+                document.getElementById('user-rating-message').textContent = 'Terima kasih, rate sudah tersimpan!';
+                renderStars(parseInt(savedRating), true);
+            } else {
+                document.getElementById('user-rating-message').textContent = '';
+                renderStars(0, false);
+            }
+            // Reaksi
+            renderReactions(mediaId);
+            // Komentar
+            renderComments(mediaId);
+        }
+        function renderStars(selected, disabled) {
+            const container = document.getElementById('user-rating-stars');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                const star = document.createElement('span');
+                star.className = `star ${i <= selected ? 'active' : ''}`;
+                star.innerHTML = '★';
+                if (!disabled) {
+                    star.style.cursor = 'pointer';
+                    star.onclick = () => submitRating(i);
+                }
+                container.appendChild(star);
+            }
+        }
+        function submitRating(rating) {
+            if (!state.currentMedia) return;
+            const mediaId = state.currentMedia.id;
+            localStorage.setItem(`rating_${mediaId}`, rating.toString());
+            document.getElementById('user-rating-message').textContent = 'Terima kasih, rate sudah tersimpan!';
+            renderStars(rating, true);
+            showToast('Rating berhasil disimpan!', '⭐');
+        }
+        function renderReactions(mediaId) {
+            const container = document.getElementById('reaction-container');
+            if (!container) return;
+            const reactions = [
+                { emoji: '😄', label: 'Seru', key: 'seru' },
+                { emoji: '😢', label: 'Terharu', key: 'terharu' },
+                { emoji: '😱', label: 'Serem', key: 'serem' },
+                { emoji: '😂', label: 'Kocak', key: 'kocak' },
+                { emoji: '🥰', label: 'Baper', key: 'baper' },
+                { emoji: '🔥', label: 'Motivasi', key: 'motivasi' },
+                { emoji: '😲', label: 'Twist', key: 'twist' },
+                { emoji: '😤', label: 'Gregetan', key: 'gregetan' }
+            ];
+            container.innerHTML = '';
+            reactions.forEach(reaction => {
+                const countKey = `reaction_${mediaId}_${reaction.key}`;
+                const count = parseInt(localStorage.getItem(countKey) || '0');
+                const btn = document.createElement('button');
+                btn.className = `reaction-btn focusable px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg border border-zinc-700 bg-zinc-800/80 text-[10px] sm:text-xs font-medium flex items-center gap-1`;
+                btn.innerHTML = `${reaction.emoji} ${reaction.label} <span class="text-zinc-400">${count}</span>`;
+                btn.onclick = () => {
+                    const newCount = count + 1;
+                    localStorage.setItem(countKey, newCount.toString());
+                    renderReactions(mediaId);
+                };
+                container.appendChild(btn);
+            });
+        }
+        function renderComments(mediaId) {
+            const list = document.getElementById('comments-list');
+            if (!list) return;
+            const commentsKey = `comments_${mediaId}`;
+            const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+            if (comments.length === 0) {
+                list.innerHTML = `<p class="text-xs sm:text-sm text-zinc-500">Belum ada komentar. Jadilah yang pertama!</p>`;
+                return;
+            }
+            list.innerHTML = comments.map(comment => `
+                <div class="comment-item flex gap-2 sm:gap-3 items-start p-2 rounded-lg">
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 flex items-center justify-center text-xs sm:text-sm font-bold text-brand-500 shrink-0">${escapeHtml(comment.name || 'A').charAt(0).toUpperCase()}</div>
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <span class="text-xs sm:text-sm font-bold text-white">${escapeHtml(comment.name || 'Anonim')}</span>
+                            <span class="text-[10px] text-zinc-500">${escapeHtml(comment.date)}</span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-zinc-300">${escapeHtml(comment.text)}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+        function submitComment() {
+            if (!state.currentMedia) return;
+            const nameInput = document.getElementById('comment-name');
+            const textInput = document.getElementById('comment-text');
+            const name = nameInput.value.trim();
+            const text = textInput.value.trim();
+            if (!text) {
+                showToast('Tulis komentar terlebih dahulu', '⚠️');
+                textInput.focus();
+                return;
+            }
+            const mediaId = state.currentMedia.id;
+            const commentsKey = `comments_${mediaId}`;
+            const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+            comments.push({
+                name: name || 'Anonim',
+                text: text,
+                date: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
+            });
+            localStorage.setItem(commentsKey, JSON.stringify(comments));
+            nameInput.value = '';
+            textInput.value = '';
+            renderComments(mediaId);
+            showToast('Komentar berhasil dikirim!', '💬');
+        }
 
         // ================= FILTER & TMDB =================
         function applyFilters() { showToast('Filter genre & tahun diterapkan', '🔍'); fetchTMDBCatalogs(); }
