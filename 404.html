@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="id" class="dark">
 <head>
+   <script>
+    // SPA Fallback untuk GitHub Pages
+    (function() {
+        // Jika URL saat ini adalah 404.html tapi ada path yang diminta,
+        // redirect ke index.html
+        const path = window.location.pathname;
+        const search = window.location.search;
+        
+        // Jika bukan root, redirect ke index dengan menyimpan path
+        if (path !== '/' && path !== '/index.html' && path !== '/404.html') {
+            // Simpan path asli ke sessionStorage
+            sessionStorage.setItem('redirectPath', path);
+            
+            // Redirect ke root
+            window.location.replace('/');
+        }
+    })();
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, user-scalable=yes">
     <meta name="theme-color" content="#09090b">
