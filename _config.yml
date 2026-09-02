@@ -1,2 +1,17 @@
-include:
+# Konfigurasi GitHub Pages
+title: ReviewFilm21
+description: Nonton Film & TV Series Subtitle Indonesia Gratis
+baseurl: ""
+url: "https://reviewfilm21.github.io"
+
+# Nonaktifkan Jekyll processing
+exclude:
   - .nojekyll
+  - README.md
+  - LICENSE
+
+# Pengaturan permalink
+permalink: pretty
+
+# Nonaktifkan tema default
+theme: null
