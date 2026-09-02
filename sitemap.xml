@@ -1,15 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>https://reviewfilm21.github.io/sitemap-pages.xml</loc>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- ===== HALAMAN UTAMA ===== -->
+  <url>
+    <loc>https://reviewfilm21.github.io/</loc>
     <lastmod>2026-09-02</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://reviewfilm21.github.io/sitemap-categories.xml</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- ===== HALAMAN STATIS ===== -->
+  <url>
+    <loc>https://reviewfilm21.github.io/tentang-kami</loc>
     <lastmod>2026-09-02</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>https://reviewfilm21.github.io/sitemap-reviews.xml</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/kontak</loc>
     <lastmod>2026-09-02</lastmod>
-  </sitemap>
-</sitemapindex>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/kebijakan-privasi</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+
+  <!-- ===== KATEGORI/GENRE ===== -->
+  <url>
+    <loc>https://reviewfilm21.github.io/genre/action</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/genre/drama</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/genre/horor</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/genre/komedi</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/genre/romance</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/genre/scifi</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/genre/thriller</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- ===== REVIEW FILM ===== -->
+  <url>
+    <loc>https://reviewfilm21.github.io/review/agak-laen-2024</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/review/siksa-kubur-2024</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/review/budi-pekerti-2023</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/review/oppenheimer-2023</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/review/barbie-2023</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://reviewfilm21.github.io/review/dune-part-two-2024</loc>
+    <lastmod>2026-09-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>
