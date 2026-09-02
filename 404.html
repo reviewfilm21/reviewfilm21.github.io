@@ -1,63 +1,20 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
+<html lang="id">
 <head>
-    <script>
-        // SPA Fallback untuk GitHub Pages
-        (function() {
-            const path = window.location.pathname;
-            
-            // Jika bukan root, redirect ke index.html dengan menyimpan path
-            if (path !== '/' && path !== '/index.html' && path !== '/404.html') {
-                // Simpan path asli ke sessionStorage
-                sessionStorage.setItem('redirectPath', path);
-                
-                // Redirect ke halaman utama
-                window.location.replace('/');
-            }
-        })();
-    </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, user-scalable=yes">
-    <meta name="theme-color" content="#09090b">
-    <meta name="robots" content="noindex, nofollow">
-    <title>Redirecting... - ReviewFilm21</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <script>
+        // Simpan path yang diminta ke sessionStorage
+        sessionStorage.setItem('redirectPath', location.pathname + location.search);
+        // Alihkan ke halaman utama
+        location.replace('/');
+    </script>
     <style>
-        body {
-            background-color: #09090b;
-            color: #f4f4f5;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-        .loading {
-            text-align: center;
-        }
-        .spinner {
-            border: 3px solid #27272a;
-            border-top: 3px solid #ff5c00;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 0.8s linear infinite;
-            margin: 0 auto 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        p {
-            color: #71717a;
-            font-size: 14px;
-        }
+        body { background: #09090b; color: #f4f4f5; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; }
     </style>
 </head>
 <body>
-    <div class="loading">
-        <div class="spinner"></div>
-        <p>Memuat halaman...</p>
-    </div>
+    <p>Mengalihkan ke halaman utama...</p>
 </body>
 </html>
