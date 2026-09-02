@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+# Block akses ke file sensitif
+Disallow: /assets/
+Disallow: /css/
+Disallow: /js/
+
 Sitemap: https://reviewfilm21.github.io/sitemap.xml
