@@ -1,9 +1,11 @@
+# ReviewFilm21 Robots.txt
+# Update: 2026-09-03
+
 User-agent: *
 Allow: /
 
-# Block akses ke file sensitif
-Disallow: /assets/
-Disallow: /css/
-Disallow: /js/
+# Blokir file yang tidak perlu diindeks
+Disallow: /404.html
 
+# Lokasi sitemap
 Sitemap: https://reviewfilm21.github.io/sitemap.xml
