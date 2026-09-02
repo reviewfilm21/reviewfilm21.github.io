@@ -753,7 +753,11 @@
         const AD_DIRECT_LINK = "https://thrillingdeepcutlery.com/qwa587wxa2?key=561c88fe11ec0930083abdb24ca2352a";
         const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTdLZAQVdfGSSB2qO076v43C7Gxwe0WWLYG46pELaAYgOeM30fGPQWFJBHdla_FSmN4ki_v3yqG3OvN/pub?output=csv";
 
-        // Daftar provider video embed
+        // URL server khusus untuk konten pustaka
+        const PUSTAKA_SERVER_2 = "https://paceboook21.blogspot.com/p/video-preview-body-margin-0-padding-0_0619822090.html";
+        const PUSTAKA_SERVER_3 = "https://paceboook21.blogspot.com/p/live-hot-box-sizing-border-box-margin-0.html";
+
+        // Daftar provider video embed (untuk TMDB)
         const VIDEO_PROVIDERS = [
             { name: 'Vidsrc', movie: (id) => `https://vidsrc.to/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` },
             { name: 'Vidsrc CC', movie: (id) => `https://vidsrc.cc/v2/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}` },
@@ -1391,16 +1395,30 @@
                 } catch(e) {}
             }
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            startAdInterval(); // mulai interval iklan
+            startAdInterval();
             setTimeout(updateTvFocusables, 200);
+        }
+        function getPustakaVideoUrl(serverNum, item) {
+            if (serverNum === 1) {
+                if (item.link && item.link !== '#') return formatEmbedUrl(item.link);
+                const baseTitle = extractBaseTitle(item.title);
+                const alternatives = state.libraryData.filter(d => extractBaseTitle(d.Judul) === baseTitle && d.Link && d.Link !== '#');
+                if (alternatives.length > 0) return formatEmbedUrl(alternatives[0].Link);
+                return 'about:blank';
+            }
+            if (serverNum === 2) return PUSTAKA_SERVER_2;
+            if (serverNum === 3) return PUSTAKA_SERVER_3;
+            return 'about:blank';
         }
         function setupVideoSource(item) {
             const iframe = document.getElementById('video-iframe');
             if (!iframe) return;
             updateServerButtons();
-            if (item.isLibraryItem && item.link) iframe.src = formatEmbedUrl(item.link);
-            else if (item.isLibraryItem) { iframe.src = 'about:blank'; showToast('Link video tidak tersedia untuk item ini', '⚠️'); }
-            else updateIframeSource();
+            if (item.isLibraryItem) {
+                iframe.src = getPustakaVideoUrl(state.currentServer, item);
+            } else {
+                updateIframeSource();
+            }
         }
         function formatEmbedUrl(url) {
             if (!url) return 'about:blank';
@@ -1418,7 +1436,10 @@
             if (!item) return;
             const iframe = document.getElementById('video-iframe');
             if (!iframe) return;
-            if (item.isLibraryItem) { if (item.link) iframe.src = formatEmbedUrl(item.link); else iframe.src = 'about:blank'; return; }
+            if (item.isLibraryItem) {
+                iframe.src = getPustakaVideoUrl(state.currentServer, item);
+                return;
+            }
             const provider = VIDEO_PROVIDERS[(state.currentServer - 1) % VIDEO_PROVIDERS.length];
             if (!provider) { iframe.src = 'about:blank'; return; }
             let url = item.type === 'tv' ? provider.tv(item.id, state.currentSeason, state.currentEpisode) : provider.movie(item.id);
@@ -1429,24 +1450,35 @@
             for (let i = 1; i <= 3; i++) {
                 const btn = document.getElementById(`server-btn-${i}`);
                 if (btn) {
-                    if (i === state.currentServer) { btn.className = "focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target"; btn.innerHTML = `Server ${i} (${VIDEO_PROVIDERS[i-1]?.name || 'N/A'})`; }
-                    else { btn.className = "focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target"; btn.innerHTML = `Server ${i}`; }
+                    if (i === state.currentServer) {
+                        btn.className = "focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target";
+                        if (state.currentMedia && state.currentMedia.isLibraryItem) {
+                            btn.innerHTML = (i === 1) ? 'Server Original' : (i === 2) ? 'Server Pustaka 2' : 'Server Pustaka 3';
+                        } else {
+                            btn.innerHTML = `Server ${i} (${VIDEO_PROVIDERS[i-1]?.name || 'N/A'})`;
+                        }
+                    } else {
+                        btn.className = "focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target";
+                        if (state.currentMedia && state.currentMedia.isLibraryItem) {
+                            btn.innerHTML = (i === 1) ? 'Server Original' : (i === 2) ? 'Server Pustaka 2' : 'Server Pustaka 3';
+                        } else {
+                            btn.innerHTML = `Server ${i}`;
+                        }
+                    }
                 }
             }
         }
         function switchServer(serverNum) {
             state.currentServer = serverNum;
             if (state.currentMedia && state.currentMedia.isLibraryItem) {
-                if (serverNum === 1) setupVideoSource(state.currentMedia);
-                else {
-                    const baseTitle = extractBaseTitle(state.currentMedia.title);
-                    const alternatives = state.libraryData.filter(item => extractBaseTitle(item.Judul) === baseTitle && item.Link !== state.currentMedia.link);
-                    if (alternatives.length > 0 && alternatives[serverNum - 2]) {
-                        document.getElementById('video-iframe').src = formatEmbedUrl(alternatives[serverNum - 2].Link);
-                        showToast(`Menggunakan server ${serverNum} (alternative)`, '🔄');
-                    } else showToast(`Server ${serverNum} tidak tersedia untuk konten ini`, '⚠️');
+                const iframe = document.getElementById('video-iframe');
+                if (iframe) {
+                    iframe.src = getPustakaVideoUrl(serverNum, state.currentMedia);
+                    showToast(`Server ${serverNum} dipilih`, '🔄');
                 }
-            } else updateIframeSource();
+            } else {
+                updateIframeSource();
+            }
         }
         function switchEpisode(epNum) {
             state.currentEpisode = epNum;
@@ -1505,7 +1537,6 @@
         }
         function closeDetailPage() {
             document.getElementById('detail-section').classList.add('hidden');
-            // Hentikan interval iklan
             if (adPopupInterval) { clearInterval(adPopupInterval); adPopupInterval = null; }
             const sections = { home: ['hero-section', 'trending-section', 'movies-section', 'series-section', 'thriller-section'], movies: ['movies-section'], tv: ['series-section'], watchlist: ['watchlist-section'] };
             const toShow = sections[state.activeTab] || sections.home;
