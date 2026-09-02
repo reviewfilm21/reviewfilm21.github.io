@@ -33,12 +33,41 @@
     <meta property="og:site_name" content="ReviewFilm21">
     <meta property="og:locale" content="id_ID">
     <meta property="og:image" content="https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg">
+    <meta property="og:url" content="https://reviewfilm21.github.io/">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="ReviewFilm21 - Nonton Film Sub Indo Gratis">
     <meta name="twitter:description" content="Nonton film sub indo gratis, streaming movie terbaru 2026.">
     <meta name="twitter:image" content="https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg">
+
+    <!-- Structured Data - JSON-LD untuk SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "ReviewFilm21",
+        "url": "https://reviewfilm21.github.io/",
+        "description": "Nonton film bioskop, drama korea, anime, dan TV series subtitle Indonesia gratis dengan pemutar multi-server cepat dan jernih.",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://reviewfilm21.github.io/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "inLanguage": "id-ID"
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "ReviewFilm21",
+        "url": "https://reviewfilm21.github.io/",
+        "logo": "https://reviewfilm21.github.io/favicon.svg",
+        "sameAs": []
+    }
+    </script>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -281,6 +310,23 @@
                 display: none !important;
             }
         }
+
+        /* Breadcrumb untuk SEO */
+        .breadcrumb {
+            font-size: 0.75rem;
+            color: #71717a;
+            padding: 0.5rem 0;
+        }
+        .breadcrumb a {
+            color: #a1a1aa;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover {
+            color: #ff5c00;
+        }
+        .breadcrumb .separator {
+            margin: 0 0.5rem;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-16 lg:pb-0">
@@ -298,7 +344,7 @@
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-14 sm:h-20 gap-2 sm:gap-4">
                 
-                <a href="#/" onclick="event.preventDefault(); navigateTo('home')" class="focusable flex items-center gap-2 group shrink-0 rounded-xl p-1 focus:outline-none touch-target" aria-label="ReviewFilm21 Beranda">
+                <a href="/" onclick="event.preventDefault(); navigateTo('home')" class="focusable flex items-center gap-2 group shrink-0 rounded-xl p-1 focus:outline-none touch-target" aria-label="ReviewFilm21 Beranda">
                     <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform text-lg sm:text-xl">
                         🎬
                     </div>
@@ -309,9 +355,9 @@
                 </a>
 
                 <nav class="hidden lg:flex items-center gap-1 xl:gap-2 text-xs xl:text-sm font-medium" aria-label="Navigasi Utama">
-                    <button onclick="navigateTo('home')" id="nav-home" class="focusable px-3 py-2 rounded-lg text-white bg-zinc-800/80 hover:text-brand-500 transition-colors focus:outline-none">Beranda</button>
-                    <button onclick="navigateTo('movies')" id="nav-movies" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors focus:outline-none">Film Bioskop</button>
-                    <button onclick="navigateTo('tv')" id="nav-tv" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors focus:outline-none">TV Series</button>
+                    <a href="/" onclick="event.preventDefault(); navigateTo('home')" id="nav-home" class="focusable px-3 py-2 rounded-lg text-white bg-zinc-800/80 hover:text-brand-500 transition-colors focus:outline-none">Beranda</a>
+                    <a href="/movies" onclick="event.preventDefault(); navigateTo('movies')" id="nav-movies" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors focus:outline-none">Film Bioskop</a>
+                    <a href="/tv" onclick="event.preventDefault(); navigateTo('tv')" id="nav-tv" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors focus:outline-none">TV Series</a>
                     
                     <div class="relative dropdown" id="desktop-dropdown">
                         <button onclick="toggleDesktopDropdown()" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors flex items-center gap-1 focus:outline-none">
@@ -339,10 +385,10 @@
                         </div>
                     </div>
                     
-                    <button onclick="navigateTo('watchlist')" id="nav-watchlist" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors flex items-center gap-1.5 focus:outline-none">
+                    <a href="/watchlist" onclick="event.preventDefault(); navigateTo('watchlist')" id="nav-watchlist" class="focusable px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors flex items-center gap-1.5 focus:outline-none">
                         <span>⭐ Favorit</span>
                         <span id="watchlist-count-badge" class="bg-brand-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">0</span>
-                    </button>
+                    </a>
                 </nav>
 
                 <div class="flex items-center gap-1.5 sm:gap-3">
@@ -479,6 +525,13 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 sm:space-y-10 safe-area-padding" id="main-content">
         
+        <!-- Breadcrumb untuk SEO -->
+        <nav class="breadcrumb no-print" aria-label="Breadcrumb">
+            <a href="/" onclick="event.preventDefault(); navigateTo('home')">Beranda</a>
+            <span class="separator">›</span>
+            <span id="breadcrumb-current">Semua Film</span>
+        </nav>
+
         <article id="hero-section" class="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-zinc-900 min-h-[280px] sm:min-h-[420px] lg:min-h-[460px] border border-zinc-800/80 shadow-2xl flex items-end">
             <div id="hero-backdrop" class="absolute inset-0 bg-cover bg-center transition-all duration-700 filter brightness-90" style="background-image: url('https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg')"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent"></div>
@@ -630,6 +683,25 @@
             </div>
         </section>
     </main>
+
+    <footer class="bg-zinc-950 border-t border-zinc-800 py-6 sm:py-8 mt-8 no-print">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 text-center space-y-3">
+            <p class="text-xs sm:text-sm text-zinc-400">© 2026 <span class="text-white font-bold">ReviewFilm21</span> - Nonton Film & TV Series Subtitle Indonesia Gratis</p>
+            <p class="text-[10px] sm:text-xs text-zinc-500">Streaming film bioskop, drakor, anime, dan seni tradisional Indonesia dengan kualitas HD dan multi-server.</p>
+            <div class="flex flex-wrap justify-center gap-3 text-[10px] sm:text-xs text-zinc-500">
+                <a href="/" class="hover:text-brand-500 transition-colors">Beranda</a>
+                <span>•</span>
+                <a href="/movies" class="hover:text-brand-500 transition-colors">Film Bioskop</a>
+                <span>•</span>
+                <a href="/tv" class="hover:text-brand-500 transition-colors">TV Series</a>
+                <span>•</span>
+                <a href="/watchlist" class="hover:text-brand-500 transition-colors">Favorit</a>
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 text-[9px] sm:text-[10px] text-zinc-600">
+                <span>Film Barat</span>•<span>Film Asia</span>•<span>Film Indonesia</span>•<span>Series Korea</span>•<span>Seni Wayang</span>•<span>Seni Ludruk</span>•<span>Seni Ketoprak</span>
+            </div>
+        </div>
+    </footer>
 
     <div id="request-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="request-modal-title">
         <div class="bg-zinc-900 border border-zinc-800 rounded-xl sm:rounded-2xl max-w-md w-full p-4 sm:p-6 space-y-3 sm:space-y-4 shadow-2xl fade-in">
@@ -890,6 +962,13 @@
             
             showCollectionGrid(filteredItems, categoryName);
             
+            // Update URL dengan path yang SEO-friendly
+            const newPath = `/collection/${collectionType}`;
+            window.history.pushState({}, '', newPath);
+            
+            // Update breadcrumb
+            document.getElementById('breadcrumb-current').textContent = categoryName;
+            
             const mobileMenu = document.getElementById('mobile-menu');
             if (mobileMenu) mobileMenu.classList.add('hidden');
         }
@@ -962,6 +1041,11 @@
             const collectionContainer = document.getElementById('collection-container');
             if (collectionContainer) collectionContainer.classList.add('hidden');
             
+            // Kembali ke halaman utama
+            const newPath = '/';
+            window.history.pushState({}, '', newPath);
+            document.getElementById('breadcrumb-current').textContent = 'Semua Film';
+            
             switchTab('home');
         }
 
@@ -988,11 +1072,16 @@
             
             if (!displayTitle) displayTitle = title;
             
+            // Buat slug untuk URL
+            const slug = slugify(displayTitle);
+            const itemId = Math.abs(hashCode(title + link));
+            
             return `
-                <article class="focusable poster-card shrink-0 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative snap-start" 
-                         tabindex="0" onclick="playLibraryItem('${escapeHtml(link)}', '${escapeHtml(title)}', '${escapeHtml(poster)}', '${escapeHtml(rating)}', '${escapeHtml(year)}', '${escapeHtml(description)}', '${escapeHtml(actors)}', '${type}')">
+                <a href="/${type}/${itemId}/${slug}" 
+                   onclick="event.preventDefault(); playLibraryItem('${escapeHtml(link)}', '${escapeHtml(title)}', '${escapeHtml(poster)}', '${escapeHtml(rating)}', '${escapeHtml(year)}', '${escapeHtml(description)}', '${escapeHtml(actors)}', '${type}')"
+                   class="focusable poster-card shrink-0 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative snap-start block">
                     <div class="relative aspect-[2/3] overflow-hidden bg-zinc-950">
-                        <img src="${poster}" alt="Poster ${escapeHtml(title)}" loading="lazy" 
+                        <img src="${poster}" alt="Poster ${escapeHtml(displayTitle)}" loading="lazy" 
                              onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=Gambar+N/A'" 
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-black/70 backdrop-blur-md text-amber-400 font-extrabold text-[8px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/20">★ ${rating}</div>
@@ -1012,8 +1101,18 @@
                         </div>
                         ${actors ? `<div class="text-[7px] sm:text-[9px] text-zinc-500 truncate">${escapeHtml(actors)}</div>` : ''}
                     </div>
-                </article>
+                </a>
             `;
+        }
+
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return Math.abs(hash);
         }
 
         function playLibraryItem(link, title, poster, rating, year, description, actors, type) {
@@ -1040,11 +1139,15 @@
             const key = getMediaKey(mediaItem.type, mediaItem.id);
             mediaCache.set(key, mediaItem);
 
-            openDetailPage(mediaItem);
+            // Update URL dengan path yang SEO-friendly
+            const slug = slugify(mediaItem.title.replace(/^Nonton\s*/i, '').replace(/Sub\s*Indo(?:nesia)?/i, '').trim());
+            const newPath = `/${mediaItem.type}/${mediaItem.id}/${slug}`;
+            window.history.pushState({}, '', newPath);
+            
+            // Update breadcrumb
+            document.getElementById('breadcrumb-current').textContent = mediaItem.title;
 
-            const slug = slugify(mediaItem.title);
-            const hash = `#/${mediaItem.type}/${mediaItem.id}/${slug}`;
-            window.location.hash = hash;
+            openDetailPage(mediaItem);
         }
 
         function showToast(message, icon = 'ℹ️') {
@@ -1088,8 +1191,16 @@
         }
 
         function navigateTo(tab) {
-            const hash = tab === 'home' ? '#/' : `#/${tab}`;
-            window.location.hash = hash;
+            // Update URL dengan path yang SEO-friendly
+            const pathMap = {
+                home: '/',
+                movies: '/movies',
+                tv: '/tv',
+                watchlist: '/watchlist'
+            };
+            const newPath = pathMap[tab] || '/';
+            window.history.pushState({}, '', newPath);
+            
             switchTab(tab);
         }
 
@@ -1111,19 +1222,32 @@
 
             if (tab === 'watchlist') {
                 sections.watchlist.classList.remove('hidden');
+                document.getElementById('breadcrumb-current').textContent = 'Daftar Favorit';
                 renderWatchlistGrid();
             } else if (tab === 'movies') {
                 sections.movies.classList.remove('hidden');
+                document.getElementById('breadcrumb-current').textContent = 'Film Bioskop';
             } else if (tab === 'tv') {
                 sections.series.classList.remove('hidden');
+                document.getElementById('breadcrumb-current').textContent = 'TV Series';
             } else {
                 sections.hero.classList.remove('hidden');
                 sections.trending.classList.remove('hidden');
                 sections.movies.classList.remove('hidden');
                 sections.series.classList.remove('hidden');
                 sections.thriller.classList.remove('hidden');
+                document.getElementById('breadcrumb-current').textContent = 'Semua Film';
                 renderAllSections();
             }
+
+            // Update document title untuk SEO
+            const titleMap = {
+                home: 'ReviewFilm21 - Nonton Film & TV Series Subtitle Indonesia Gratis',
+                movies: 'Nonton Film Bioskop Sub Indo Gratis - ReviewFilm21',
+                tv: 'Nonton TV Series & Drakor Sub Indo Gratis - ReviewFilm21',
+                watchlist: 'Daftar Favorit Saya - ReviewFilm21'
+            };
+            document.title = titleMap[tab] || titleMap.home;
 
             document.querySelectorAll('[id^="nav-"], [id^="mob-nav-"]').forEach(btn => {
                 const tabName = btn.id.replace('nav-', '').replace('mob-nav-', '');
@@ -1162,16 +1286,19 @@
             const isFav = isWatchlisted(item.id);
             const key = getMediaKey(item.type, item.id);
             mediaCache.set(key, item);
+            const slug = slugify(item.title);
+            
             return `
-                <article class="focusable poster-card shrink-0 w-24 sm:w-36 md:w-44 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative snap-start" 
-                         tabindex="0" data-media-key="${key}" onclick="navigateToDetail('${key}')">
+                <a href="/${item.type}/${item.id}/${slug}" 
+                   onclick="event.preventDefault(); navigateToDetail('${key}')"
+                   class="focusable poster-card shrink-0 w-24 sm:w-36 md:w-44 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative snap-start block">
                     <div class="relative aspect-[2/3] overflow-hidden bg-zinc-950">
                         <img src="${item.poster_path}" alt="Poster ${escapeHtml(item.title)}" loading="lazy" 
                              onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=Gambar+N/A'" 
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         <div class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-black/70 backdrop-blur-md text-amber-400 font-extrabold text-[8px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/20">★ ${item.rating}</div>
                         <div class="absolute top-1 sm:top-2 right-1 sm:right-2 z-10">
-                            <button onclick="event.stopPropagation(); toggleFavoriteFromKey('${key}')" 
+                            <button onclick="event.preventDefault(); event.stopPropagation(); toggleFavoriteFromKey('${key}')" 
                                     class="focusable p-2 sm:p-1.5 rounded-full bg-black/70 hover:bg-brand-500 text-white transition-all text-[8px] sm:text-xs touch-target" 
                                     aria-label="Simpan Favorit">${isFav ? '⭐' : '☆'}</button>
                         </div>
@@ -1189,7 +1316,7 @@
                             <span class="uppercase border border-zinc-700 px-0.5 sm:px-1 rounded text-[7px] sm:text-[9px]">${item.type === 'tv' ? 'Series' : 'HD'}</span>
                         </div>
                     </div>
-                </article>
+                </a>
             `;
         }
 
@@ -1197,8 +1324,12 @@
             const item = mediaCache.get(key);
             if (!item) return;
             const slug = slugify(item.title);
-            const hash = `#/${item.type}/${item.id}/${slug}`;
-            window.location.hash = hash;
+            const newPath = `/${item.type}/${item.id}/${slug}`;
+            window.history.pushState({}, '', newPath);
+            
+            // Update breadcrumb
+            document.getElementById('breadcrumb-current').textContent = item.title;
+            
             openDetailPage(item);
         }
 
@@ -1466,8 +1597,17 @@
                 const sec = document.getElementById(id);
                 if (sec) sec.classList.remove('hidden');
             });
-            const hash = state.activeTab === 'home' ? '#/' : `#/${state.activeTab}`;
-            window.location.hash = hash;
+            
+            const pathMap = {
+                home: '/',
+                movies: '/movies',
+                tv: '/tv',
+                watchlist: '/watchlist'
+            };
+            const newPath = pathMap[state.activeTab] || '/';
+            window.history.pushState({}, '', newPath);
+            
+            document.getElementById('breadcrumb-current').textContent = 'Semua Film';
             document.title = 'ReviewFilm21 - Nonton Film & TV Series Subtitle Indonesia Gratis';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1913,13 +2053,18 @@
         }
 
         function handleRoute() {
-            const hash = window.location.hash || '#/';
-            const path = hash.substring(1);
+            const path = window.location.pathname;
             
             if (path === '/' || path === '') { switchTab('home'); return; }
             if (path === '/movies') { switchTab('movies'); return; }
             if (path === '/tv') { switchTab('tv'); return; }
             if (path === '/watchlist') { switchTab('watchlist'); return; }
+            
+            const collectionMatch = path.match(/^\/collection\/(.+)$/);
+            if (collectionMatch) { 
+                navigateToCollection(collectionMatch[1]); 
+                return; 
+            }
 
             const movieMatch = path.match(/^\/movie\/(\d+)(?:\/[^/]+)?$/);
             if (movieMatch) { openMediaById(movieMatch[1], 'movie'); return; }
@@ -1956,6 +2101,7 @@
                 } catch(e) {}
             }
             if (item) {
+                document.getElementById('breadcrumb-current').textContent = item.title;
                 openDetailPage(item);
             } else {
                 showToast('Konten tidak ditemukan', '⚠️');
@@ -2023,7 +2169,7 @@
             }
         }
 
-        window.addEventListener('hashchange', handleRoute);
+        window.addEventListener('popstate', handleRoute);
 
         window.onload = function () {
             updateWatchlistBadge();
