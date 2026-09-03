@@ -1,0 +1,26 @@
+name: Update Movie Data
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # setiap hari
+  workflow_dispatch:       # bisa dijalankan manual
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Fetch TMDB data
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+        run: node fetch-tmdb.js
+      - name: Generate static pages
+        run: node generate-static.js
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
