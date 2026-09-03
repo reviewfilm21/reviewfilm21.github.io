@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>https://reviewfilm21.github.io/</loc></url>
-<url><loc>https://reviewfilm21.github.io/movies</loc></url>
-<url><loc>https://reviewfilm21.github.io/tv</loc></url>
-<url><loc>https://reviewfilm21.github.io/watchlist</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/film-barat</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/film-asia</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/film-indonesia</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/film-superhero</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/series-korea</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/series-asia</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/series-indonesia</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/series-barat</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/series-india</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/seni-wayang</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/seni-ludruk</loc></url>
-<url><loc>https://reviewfilm21.github.io/collection/seni-ketoprak</loc></url>
+  <url><loc>https://reviewfilm21.github.io/</loc></url>
+  <url><loc>https://reviewfilm21.github.io/movie/939243/avatar-fire-and-ash</loc></url>
+  <url><loc>https://reviewfilm21.github.io/movie/533535/deadpool-wolverine</loc></url>
 </urlset>
