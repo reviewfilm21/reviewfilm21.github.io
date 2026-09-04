@@ -1,291 +1,32 @@
 name: Update Movie Data
 
 on:
-  # ============ SCHEDULE TRIGGERS ============
   schedule:
-    # Update setiap 3 jam
-    - cron: '0 */3 * * *'
-    # Update setiap hari jam 00:00 UTC (pagi)
-    - cron: '0 0 * * *'
-    # Update setiap hari jam 06:00 UTC (siang WIB)
-    - cron: '0 6 * * *'
-    # Update setiap hari jam 12:00 UTC (malam WIB)
-    - cron: '0 12 * * *'
-    # Update setiap hari jam 18:00 UTC (subuh WIB)
-    - cron: '0 18 * * *'
-  
-  # ============ MANUAL TRIGGER ============
+    - cron: '0 */6 * * *'  # Setiap 6 jam
   workflow_dispatch:
-    inputs:
-      update_type:
-        description: 'Jenis update'
-        required: true
-        default: 'full'
-        type: choice
-        options:
-          - full
-          - movies-only
-          - tv-only
-          - trending-only
-  
-  # ============ PUSH TRIGGER ============
-  push:
-    branches:
-      - main
-      - master
-    paths:
-      - 'update-movies.js'
-      - 'package.json'
-      - '.github/workflows/update.yml'
-  
-  # ============ PULL REQUEST TRIGGER ============
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'update-movies.js'
-      - 'movies.json'
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "movie-update"
-  cancel-in-progress: true
-
-env:
-  NODE_VERSION: '18'
-  TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
 
 jobs:
-  # ============ JOB 1: UPDATE DATA ============
-  update-data:
+  update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    
     steps:
-    # Step 1: Checkout repository
-    - name: 📥 Checkout repository
-      uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
       with:
-        fetch-depth: 0
-        token: ${{ secrets.GITHUB_TOKEN }}
-    
-    # Step 2: Setup Node.js
-    - name: 🔧 Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-        cache: 'npm'
-    
-    # Step 3: Cache dependencies
-    - name: 📦 Cache npm dependencies
-      uses: actions/cache@v3
-      with:
-        path: ~/.npm
-        key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    
-    # Step 4: Install dependencies
-    - name: 📥 Install dependencies
-      run: |
-        echo "📦 Installing dependencies..."
-        npm install --no-audit --no-fund
-      continue-on-error: true
-    
-    # Step 5: Verify TMDB API Key
-    - name: 🔑 Verify TMDB API Key
-      run: |
-        if [ -z "$TMDB_API_KEY" ]; then
-          echo "❌ TMDB_API_KEY is not set!"
-          echo "Please add it to GitHub Secrets"
-          exit 1
-        fi
-        echo "✅ TMDB API Key found"
-    
-    # Step 6: Run update script
-    - name: 🔄 Update movie data
-      run: |
-        echo "🔄 Starting data update..."
-        echo "📅 Timestamp: $(date)"
-        node update-movies.js
-      env:
-        TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-    
-    # Step 7: Verify movies.json
-    - name: ✅ Verify movies.json
-      run: |
-        if [ ! -f "movies.json" ]; then
-          echo "❌ movies.json not found!"
-          exit 1
-        fi
+        node-version: '18'
         
-        echo "📊 movies.json info:"
-        echo "   - Size: $(wc -c < movies.json) bytes"
-        echo "   - Items: $(grep -o '"id"' movies.json | wc -l)"
-        echo "   - Last updated: $(grep -o '"lastUpdated":"[^"]*"' movies.json | cut -d'"' -f4)"
-    
-    # Step 8: Check if data changed
-    - name: 🔍 Check for changes
-      id: check_changes
-      run: |
-        if git diff --quiet movies.json; then
-          echo "📭 No changes detected in movies.json"
-          echo "changed=false" >> $GITHUB_OUTPUT
-        else
-          echo "✅ Changes detected in movies.json"
-          echo "changed=true" >> $GITHUB_OUTPUT
-        fi
-    
-    # Step 9: Commit and push changes
-    - name: 💾 Commit and push changes
-      if: steps.check_changes.outputs.changed == 'true'
+    - name: Update movies.json
+      run: node update-movies.js
+      
+    - name: Commit changes
       run: |
         git config --global user.name 'github-actions[bot]'
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         git add movies.json
-        git commit -m "🔄 Auto-update: Refresh movie data [$(date +'%Y-%m-%d %H:%M:%S UTC')]"
+        git commit -m "🔄 Update movies.json: $(date)" || echo "No changes"
         git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
-    # Step 10: Upload artifact
-    - name: 📤 Upload movies.json as artifact
-      if: steps.check_changes.outputs.changed == 'true'
-      uses: actions/upload-artifact@v3
-      with:
-        name: movies-data
-        path: movies.json
-        retention-days: 7
-
-  # ============ JOB 2: GENERATE STATIC PAGES ============
-  generate-pages:
-    needs: update-data
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    if: needs.update-data.result == 'success'
-    
-    steps:
-    # Step 1: Checkout repository
-    - name: 📥 Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        token: ${{ secrets.GITHUB_TOKEN }}
-    
-    # Step 2: Setup Node.js
-    - name: 🔧 Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
-    
-    # Step 3: Download movies.json from previous job
-    - name: 📥 Download movies.json
-      uses: actions/download-artifact@v3
-      with:
-        name: movies-data
-      continue-on-error: true
-    
-    # Step 4: Generate static pages
-    - name: 🔨 Generate static pages
-      run: |
-        echo "🔨 Generating static pages..."
-        node generate-static.js
-      continue-on-error: true
-    
-    # Step 5: Check generated files
-    - name: ✅ Check generated files
-      run: |
-        echo "📊 Generated files:"
-        echo "   - Movie pages: $(find movie -type f 2>/dev/null | wc -l)"
-        echo "   - TV pages: $(find tv -type f 2>/dev/null | wc -l)"
-        echo "   - Sitemap size: $(wc -c < sitemap.xml 2>/dev/null || echo '0') bytes"
-    
-    # Step 6: Commit static pages
-    - name: 💾 Commit static pages
-      run: |
-        git config --global user.name 'github-actions[bot]'
-        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-        git add movie/ tv/ sitemap.xml 2>/dev/null || true
-        git commit -m "🔨 Auto-generate: Update static pages [$(date +'%Y-%m-%d %H:%M:%S UTC')]" || echo "No changes to commit"
-        git push
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  # ============ JOB 3: DEPLOY ============
-  deploy:
-    needs: [update-data, generate-pages]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    if: needs.update-data.result == 'success'
-    
-    steps:
-    # Step 1: Checkout repository
-    - name: 📥 Checkout repository
-      uses: actions/checkout@v4
-      with:
-        ref: main
-        fetch-depth: 0
-        token: ${{ secrets.GITHUB_TOKEN }}
-    
-    # Step 2: Deploy to GitHub Pages
-    - name: 🚀 Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./
-        publish_branch: gh-pages
-        force_orphan: true
-        enable_jekyll: false
-        commit_message: "🚀 Deploy: Update website [$(date +'%Y-%m-%d %H:%M:%S UTC')]"
-    
-    # Step 3: Trigger Pages rebuild
-    - name: 🔄 Trigger Pages rebuild
-      run: |
-        curl -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/${{ github.repository }}/pages/builds
-      continue-on-error: true
-
-  # ============ JOB 4: NOTIFICATION ============
-  notify:
-    needs: [update-data, generate-pages, deploy]
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    if: always()
-    
-    steps:
-    # Step 1: Check status
-    - name: 📊 Check workflow status
-      run: |
-        echo "📊 Workflow Status:"
-        echo "   - Update Data: ${{ needs.update-data.result }}"
-        echo "   - Generate Pages: ${{ needs.generate-pages.result }}"
-        echo "   - Deploy: ${{ needs.deploy.result }}"
-        
-        if [ "${{ needs.update-data.result }}" == "success" ]; then
-          echo "✅ Update data berhasil!"
-        else
-          echo "❌ Update data gagal!"
-        fi
-    
-    # Step 2: Create summary
-    - name: 📝 Create workflow summary
-      run: |
-        echo "## 📊 Update Movie Data Summary" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "- **Timestamp**: $(date +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
-        echo "- **Update Data**: ${{ needs.update-data.result }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Generate Pages**: ${{ needs.generate-pages.result }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Deploy**: ${{ needs.deploy.result }}" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        
-        if [ -f "movies.json" ]; then
-          echo "### 📊 Data Statistics:" >> $GITHUB_STEP_SUMMARY
-          echo "- **File Size**: $(wc -c < movies.json) bytes" >> $GITHUB_STEP_SUMMARY
-          echo "- **Total Items**: $(grep -o '"id"' movies.json | wc -l)" >> $GITHUB_STEP_SUMMARY
-        fi
