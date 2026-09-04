@@ -2,25 +2,63 @@ name: Update Movie Data
 
 on:
   schedule:
-    - cron: '0 0 * * *'   # setiap hari
-  workflow_dispatch:       # bisa dijalankan manual
+    # Update setiap hari jam 00:00 UTC
+    - cron: '0 0 * * *'
+    # Update setiap 6 jam
+    - cron: '0 */6 * * *'
+  workflow_dispatch: # Memungkinkan manual trigger
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
-  build:
+  update-data:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - name: Fetch TMDB data
-        env:
-          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
-        run: node fetch-tmdb.js
-      - name: Generate static pages
-        run: node generate-static.js
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm install axios
+        npm install cheerio
+      continue-on-error: true
+      
+    - name: Fetch TMDB Data
+      env:
+        TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+      run: |
+        node update-movies.js
+        
+    - name: Generate Static Pages
+      run: |
+        node generate-static.js
+        
+    - name: Commit and push changes
+      run: |
+        git config --global user.name 'github-actions[bot]'
+        git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+        git add movies.json index.html sitemap.xml
+        git add movie/ tv/ 2>/dev/null || true
+        git commit -m "Auto-update: Refresh movie data $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+        git push
+        
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./
+        publish_branch: gh-pages
+        force_orphan: true
+        enable_jekyll: false
