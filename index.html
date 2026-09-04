@@ -1,7 +1,7 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id" class="dark">
 <head>
-   <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, user-scalable=yes">
     <meta name="theme-color" content="#09090b">
     <meta name="mobile-web-app-capable" content="yes">
@@ -22,7 +22,7 @@
 
     <!-- Verifikasi Search Engine -->
     <meta name="google-site-verification" content="NawKeEqOgbxUWIDbLPlpPYTFmbnMEZ9TEkHTEia3nts" />
-   <meta name="msvalidate.01" content="C34B61F3D297CB00DCDD5EC9D1D20C25" />
+    <meta name="msvalidate.01" content="C34B61F3D297CB00DCDD5EC9D1D20C25" />
     
     <link rel="canonical" href="https://reviewfilm21.github.io/" />
     
@@ -374,6 +374,18 @@
         .comment-item:hover {
             background-color: #18181b;
         }
+
+        /* Loading overlay minimal */
+        #loading-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            background: rgba(9, 9, 11, 0.9);
+            backdrop-filter: blur(2px);
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-16 lg:pb-0">
@@ -383,7 +395,7 @@
         <span id="toast-message">Notifikasi</span>
     </div>
 
-    <div id="loading-overlay" class="fixed inset-0 z-[99] bg-zinc-950/90 backdrop-blur-sm hidden flex items-center justify-center">
+    <div id="loading-overlay">
         <div class="spinner"></div>
     </div>
 
@@ -465,6 +477,12 @@
                             <option value="2022">2022</option>
                         </select>
                     </div>
+
+                    <button onclick="manualUpdateTMDB()" class="focusable hidden md:flex items-center gap-1.5 px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 hover:bg-zinc-900/80 transition-colors focus:outline-none touch-target" title="Update Data Film" aria-label="Update Data Film">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                    </button>
 
                     <div class="relative hidden sm:block w-32 md:w-56">
                         <input type="text" id="search-input" oninput="handleSearchInput(event)" placeholder="Cari film..." 
@@ -922,8 +940,14 @@
                 toast.classList.add('translate-y-[-100px]', 'opacity-0');
             }, 3000);
         }
-        function showLoading() { document.getElementById('loading-overlay').classList.remove('hidden'); }
-        function hideLoading() { document.getElementById('loading-overlay').classList.add('hidden'); }
+        function showLoading() { 
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) overlay.style.display = 'flex';
+        }
+        function hideLoading() { 
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) overlay.style.display = 'none';
+        }
         async function fetchWithRetry(url, retries = 2) {
             for (let i = 0; i <= retries; i++) {
                 try {
@@ -936,12 +960,21 @@
                 }
             }
         }
+        async function fetchWithTimeout(url, timeout = 10000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            try {
+                const response = await fetch(url, { signal: controller.signal });
+                return response;
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        }
         function updateTvFocusables() { tvFocusables = Array.from(document.querySelectorAll('.focusable:not(.hidden)')); }
 
-        // ================= LOAD LIBRARY =================
+        // ================= LOAD LIBRARY (TANPA NOTIFIKASI) =================
         async function loadLibraryFromGoogleSheets() {
             try {
-                showToast('Memuat data pustaka dari Google Sheets...', '⏳');
                 const response = await fetchWithRetry(GOOGLE_SHEETS_CSV_URL, 2);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const csvText = await response.text();
@@ -949,7 +982,7 @@
                 if (parsedData.length === 0) throw new Error('Data CSV kosong atau tidak valid');
                 state.libraryData = parsedData;
                 state.isLibraryLoaded = true;
-                console.log(`✅ Data pustaka dimuat: ${state.libraryData.length} item`);
+                console.log(`✅ Data pustaka dimuat: ${state.libraryData.length} item (tanpa notifikasi)`);
                 return true;
             } catch (error) {
                 console.error('Error loading library:', error);
@@ -997,6 +1030,227 @@
             state.isLibraryLoaded = true;
             console.log(`⚠️ Menggunakan data cadangan: ${state.libraryData.length} item`);
         }
+
+        // ================= FUNGSI TMDB & AUTO-UPDATE =================
+        const TMDB_UPDATE_INTERVAL = 30 * 60 * 1000; // 30 menit
+        let tmdbUpdateInterval = null;
+
+        async function fetchTMDBCatalogs() {
+            try {
+                const genreEl = document.getElementById('genre-filter');
+                const yearEl = document.getElementById('year-filter');
+                const genreId = genreEl ? genreEl.value : '';
+                const yearVal = yearEl ? yearEl.value : '';
+                let endpointAppend = '';
+                if (genreId) endpointAppend += `&with_genres=${genreId}`;
+                if (yearVal) endpointAppend += `&primary_release_year=${yearVal}&first_air_date_year=${yearVal}`;
+                let fetchedAny = false;
+
+                // Fetch Trending
+                try {
+                    const resTrending = await fetchWithTimeout(
+                        `https://api.themoviedb.org/3/trending/all/week?language=id-ID${endpointAppend}&api_key=${DEFAULT_API_KEY}`,
+                        10000
+                    );
+                    if (resTrending.ok) {
+                        const data = await resTrending.json();
+                        if (data?.results?.length) {
+                            state.trendingData = data.results.map(normalizeTMDBItem).filter(Boolean);
+                            state.heroItems = state.trendingData.slice(0, 5);
+                            fetchedAny = true;
+                        }
+                    }
+                } catch(e) {
+                    console.warn('⚠️ Gagal fetch trending:', e);
+                }
+
+                // Fetch Movies
+                try {
+                    const resMovies = await fetchWithTimeout(
+                        `https://api.themoviedb.org/3/discover/movie?language=id-ID&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`,
+                        10000
+                    );
+                    if (resMovies.ok) {
+                        const data = await resMovies.json();
+                        if (data?.results?.length) {
+                            state.moviesData = data.results.map(normalizeTMDBItem).filter(Boolean);
+                            fetchedAny = true;
+                        }
+                    }
+                } catch(e) {
+                    console.warn('⚠️ Gagal fetch movies:', e);
+                }
+
+                // Fetch TV Series
+                try {
+                    const resTV = await fetchWithTimeout(
+                        `https://api.themoviedb.org/3/discover/tv?language=id-ID&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`,
+                        10000
+                    );
+                    if (resTV.ok) {
+                        const data = await resTV.json();
+                        if (data?.results?.length) {
+                            state.seriesData = data.results.map(normalizeTMDBItem).filter(Boolean);
+                            fetchedAny = true;
+                        }
+                    }
+                } catch(e) {
+                    console.warn('⚠️ Gagal fetch TV series:', e);
+                }
+
+                // Fetch Thriller
+                try {
+                    const resThriller = await fetchWithTimeout(
+                        `https://api.themoviedb.org/3/discover/movie?language=id-ID&with_genres=53&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`,
+                        10000
+                    );
+                    if (resThriller.ok) {
+                        const data = await resThriller.json();
+                        if (data?.results?.length) {
+                            state.thrillerData = data.results.map(normalizeTMDBItem).filter(Boolean);
+                            fetchedAny = true;
+                        }
+                    }
+                } catch(e) {
+                    console.warn('⚠️ Gagal fetch thriller:', e);
+                }
+
+                // Simpan timestamp update terakhir
+                localStorage.setItem('last_tmdb_update', Date.now().toString());
+
+                // Simpan cache
+                if (state.trendingData.length > 0) cacheTMDBData('trending', state.trendingData);
+                if (state.moviesData.length > 0) cacheTMDBData('movies', state.moviesData);
+                if (state.seriesData.length > 0) cacheTMDBData('series', state.seriesData);
+                if (state.thrillerData.length > 0) cacheTMDBData('thriller', state.thrillerData);
+
+                if (fetchedAny) {
+                    setupHeroCarousel();
+                    renderAllSections();
+                    console.log('✅ TMDB data updated at:', new Date().toLocaleString('id-ID'));
+                }
+            } catch (err) {
+                console.error('❌ Error fetching TMDB:', err);
+                renderAllSections();
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function normalizeTMDBItem(item) {
+            if (!item) return null;
+            const title = item.title || item.name || 'Tanpa Judul';
+            const releaseDate = item.release_date || item.first_air_date || new Date().getFullYear().toString();
+            const year = releaseDate ? (releaseDate.split('-')[0] || new Date().getFullYear().toString()) : new Date().getFullYear().toString();
+            const type = item.media_type || (item.title ? 'movie' : 'tv');
+            return {
+                id: item.id,
+                title: title,
+                type: type,
+                rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0',
+                year: year,
+                genre: item.genre_ids ? getGenreNames(item.genre_ids) : (type === 'movie' ? 'Bioskop' : 'TV Series'),
+                overview: item.overview || 'Tidak ada deskripsi tersedia.',
+                poster_path: item.poster_path ? enforceHttps(`https://image.tmdb.org/t/p/w500${item.poster_path}`) : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
+                backdrop_path: item.backdrop_path ? enforceHttps(`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`) : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover',
+                vote_count: item.vote_count || 0,
+                popularity: item.popularity || 0,
+                original_language: item.original_language || 'en',
+                media_type: type
+            };
+        }
+
+        function getGenreNames(genreIds) {
+            const genreMap = {
+                28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy',
+                80: 'Crime', 99: 'Documentary', 18: 'Drama', 10751: 'Family',
+                14: 'Fantasy', 36: 'History', 27: 'Horror', 10402: 'Music',
+                9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi', 10770: 'TV Movie',
+                53: 'Thriller', 10752: 'War', 37: 'Western'
+            };
+            if (!genreIds || genreIds.length === 0) return 'Bioskop';
+            return genreIds.slice(0, 3).map(id => genreMap[id] || 'Bioskop').join(', ');
+        }
+
+        function cacheTMDBData(key, data) {
+            try {
+                const cacheData = {
+                    timestamp: Date.now(),
+                    data: data
+                };
+                localStorage.setItem(`tmdb_cache_${key}`, JSON.stringify(cacheData));
+            } catch (e) {
+                console.warn('⚠️ Gagal cache TMDB data:', e);
+            }
+        }
+
+        function loadTMDBFromCache(key, maxAge = 30 * 60 * 1000) {
+            try {
+                const cached = localStorage.getItem(`tmdb_cache_${key}`);
+                if (cached) {
+                    const cacheData = JSON.parse(cached);
+                    if (Date.now() - cacheData.timestamp < maxAge) {
+                        return cacheData.data;
+                    }
+                }
+            } catch (e) {
+                console.warn('⚠️ Gagal load cache TMDB:', e);
+            }
+            return null;
+        }
+
+        async function autoUpdateTMDBData() {
+            console.log('🔄 Auto-update TMDB data...');
+            try {
+                await fetchTMDBCatalogs();
+                console.log('✅ TMDB data updated at:', new Date().toLocaleString('id-ID'));
+            } catch (error) {
+                console.error('❌ Error updating TMDB data:', error);
+            }
+        }
+
+        function startAutoUpdateTMDB() {
+            if (tmdbUpdateInterval) {
+                clearInterval(tmdbUpdateInterval);
+            }
+            setTimeout(() => {
+                autoUpdateTMDBData();
+                tmdbUpdateInterval = setInterval(autoUpdateTMDBData, TMDB_UPDATE_INTERVAL);
+            }, 5000);
+            console.log(`✅ Auto-update TMDB aktif (setiap ${TMDB_UPDATE_INTERVAL / 60000} menit)`);
+        }
+
+        function stopAutoUpdateTMDB() {
+            if (tmdbUpdateInterval) {
+                clearInterval(tmdbUpdateInterval);
+                tmdbUpdateInterval = null;
+                console.log('⏹️ Auto-update TMDB dihentikan');
+            }
+        }
+
+        async function manualUpdateTMDB() {
+            showToast('Memperbarui data film...', '🔄');
+            showLoading();
+            await fetchTMDBCatalogs();
+            hideLoading();
+            showToast('Data film berhasil diperbarui!', '✅');
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) {
+                console.log('👁️ Tab aktif, cek update TMDB...');
+                const lastUpdate = localStorage.getItem('last_tmdb_update');
+                const now = Date.now();
+                if (!lastUpdate || (now - parseInt(lastUpdate)) > TMDB_UPDATE_INTERVAL) {
+                    autoUpdateTMDBData();
+                }
+            }
+        });
+
+        window.addEventListener('online', () => {
+            console.log('🌐 Koneksi online, update TMDB...');
+            autoUpdateTMDBData();
+        });
 
         // ================= NAVIGASI =================
         function navigateTo(tab) {
@@ -1177,7 +1431,6 @@
         // ================= KOLEKSI =================
         function navigateToCollection(collectionType) {
             if (!state.isLibraryLoaded) {
-                showToast('Data pustaka sedang dimuat...', '⏳');
                 loadLibraryFromGoogleSheets().then(() => { if (state.isLibraryLoaded) navigateToCollection(collectionType); });
                 return;
             }
@@ -1298,19 +1551,16 @@
             document.getElementById('search-query-text').textContent = `"${query}"`;
             let tmdbMatches = [];
             try {
-                const res = await fetch(`https://api.themoviedb.org/3/search/multi?language=id-ID&query=${encodeURIComponent(query)}&api_key=${DEFAULT_API_KEY}`);
+                const res = await fetchWithTimeout(`https://api.themoviedb.org/3/search/multi?language=id-ID&query=${encodeURIComponent(query)}&api_key=${DEFAULT_API_KEY}`, 10000);
                 if (res.ok) {
                     const data = await res.json();
                     if (data?.results) {
-                        tmdbMatches = data.results.filter(x => x.media_type === 'movie' || x.media_type === 'tv').map(item => {
-                            const title = item.title || item.name || 'Tanpa Judul';
-                            const releaseDate = item.release_date || item.first_air_date || '2026';
-                            const year = releaseDate ? (releaseDate.split('-')[0] || '2026') : '2026';
-                            return { id: item.id, title, type: item.media_type, rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0', year, genre: 'Bioskop', overview: item.overview || 'Tidak ada deskripsi tersedia.', poster_path: item.poster_path ? enforceHttps(`https://image.tmdb.org/t/p/w500${item.poster_path}`) : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster', backdrop_path: item.backdrop_path ? enforceHttps(`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`) : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover' };
-                        }).filter(Boolean);
+                        tmdbMatches = data.results.filter(x => x.media_type === 'movie' || x.media_type === 'tv').map(item => normalizeTMDBItem(item)).filter(Boolean);
                     }
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.warn('⚠️ Gagal search TMDB:', e);
+            }
             if (tmdbMatches.length === 0) {
                 const qLower = query.toLowerCase();
                 tmdbMatches = [...FALLBACK_MOVIES, ...FALLBACK_SERIES].filter(item => item.title.toLowerCase().includes(qLower));
@@ -1423,7 +1673,6 @@
             document.getElementById('detail-genres').textContent = item.genre || 'Pustaka Film';
             document.getElementById('detail-overview').textContent = item.overview || 'Tidak ada deskripsi tersedia.';
             document.getElementById('detail-poster').src = enforceHttps(item.poster_path) || 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster';
-            // Tambahan info metadata default
             document.getElementById('detail-duration').textContent = '1h 55m';
             document.getElementById('detail-country').textContent = 'United States';
             document.getElementById('detail-users').textContent = '820.816 pengguna';
@@ -1456,15 +1705,16 @@
             setupVideoSource(item);
             if (!item.isLibraryItem) {
                 try {
-                    const res = await fetch(`https://api.themoviedb.org/3/${item.type}/${item.id}/videos?language=id-ID&api_key=${DEFAULT_API_KEY}`);
+                    const res = await fetchWithTimeout(`https://api.themoviedb.org/3/${item.type}/${item.id}/videos?language=id-ID&api_key=${DEFAULT_API_KEY}`, 10000);
                     if (res.ok) {
                         const data = await res.json();
                         let officialTrailer = data.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube') || data.results?.find(v => v.site === 'YouTube');
                         if (officialTrailer) state.trailerKey = officialTrailer.key;
                     }
-                } catch(e) {}
+                } catch(e) {
+                    console.warn('⚠️ Gagal fetch trailer:', e);
+                }
             }
-            // Muat interaksi (rating, reaksi, komentar)
             loadDetailInteractions(item.id);
             window.scrollTo({ top: 0, behavior: 'smooth' });
             startAdInterval();
@@ -1628,7 +1878,6 @@
 
         // ================= FITUR RATING, REAKSI, KOMENTAR =================
         function loadDetailInteractions(mediaId) {
-            // Rating
             const userRatingKey = `rating_${mediaId}`;
             const savedRating = localStorage.getItem(userRatingKey);
             if (savedRating) {
@@ -1638,9 +1887,7 @@
                 document.getElementById('user-rating-message').textContent = '';
                 renderStars(0, false);
             }
-            // Reaksi
             renderReactions(mediaId);
-            // Komentar
             renderComments(mediaId);
         }
         function renderStars(selected, disabled) {
@@ -1742,76 +1989,10 @@
             showToast('Komentar berhasil dikirim!', '💬');
         }
 
-        // ================= FILTER & TMDB =================
-        function applyFilters() { showToast('Filter genre & tahun diterapkan', '🔍'); fetchTMDBCatalogs(); }
-        async function fetchTMDBCatalogs() {
-            try {
-                const genreEl = document.getElementById('genre-filter');
-                const yearEl = document.getElementById('year-filter');
-                const genreId = genreEl ? genreEl.value : '';
-                const yearVal = yearEl ? yearEl.value : '';
-                let endpointAppend = '';
-                if (genreId) endpointAppend += `&with_genres=${genreId}`;
-                if (yearVal) endpointAppend += `&primary_release_year=${yearVal}&first_air_date_year=${yearVal}`;
-                let fetchedAny = false;
-                try {
-                    const resTrending = await fetch(`https://api.themoviedb.org/3/trending/all/week?language=id-ID${endpointAppend}&api_key=${DEFAULT_API_KEY}`);
-                    if (resTrending.ok) {
-                        const data = await resTrending.json();
-                        if (data?.results?.length) {
-                            state.trendingData = data.results.map(item => {
-                                const title = item.title || item.name || 'Tanpa Judul';
-                                const releaseDate = item.release_date || item.first_air_date || '2026';
-                                const year = releaseDate ? (releaseDate.split('-')[0] || '2026') : '2026';
-                                return { id: item.id, title, type: item.media_type || (item.title ? 'movie' : 'tv'), rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0', year, genre: 'Bioskop', overview: item.overview || 'Tidak ada deskripsi tersedia.', poster_path: item.poster_path ? enforceHttps(`https://image.tmdb.org/t/p/w500${item.poster_path}`) : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster', backdrop_path: item.backdrop_path ? enforceHttps(`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`) : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover' };
-                            }).filter(Boolean);
-                            state.heroItems = state.trendingData.slice(0, 5);
-                            fetchedAny = true;
-                        }
-                    }
-                } catch(e) {}
-                try {
-                    const resMovies = await fetch(`https://api.themoviedb.org/3/discover/movie?language=id-ID&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`);
-                    if (resMovies.ok) {
-                        const data = await resMovies.json();
-                        if (data?.results?.length) {
-                            state.moviesData = data.results.map(item => {
-                                const year = item.release_date ? (item.release_date.split('-')[0] || '2026') : '2026';
-                                return { id: item.id, title: item.title || 'Tanpa Judul', type: 'movie', rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0', year, genre: 'Bioskop', overview: item.overview || 'Tidak ada deskripsi tersedia.', poster_path: item.poster_path ? enforceHttps(`https://image.tmdb.org/t/p/w500${item.poster_path}`) : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster', backdrop_path: item.backdrop_path ? enforceHttps(`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`) : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover' };
-                            }).filter(Boolean);
-                            fetchedAny = true;
-                        }
-                    }
-                } catch(e) {}
-                try {
-                    const resTV = await fetch(`https://api.themoviedb.org/3/discover/tv?language=id-ID&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`);
-                    if (resTV.ok) {
-                        const data = await resTV.json();
-                        if (data?.results?.length) {
-                            state.seriesData = data.results.map(item => {
-                                const year = item.first_air_date ? (item.first_air_date.split('-')[0] || '2026') : '2026';
-                                return { id: item.id, title: item.name || 'Tanpa Judul', type: 'tv', rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0', year, genre: 'TV Series', overview: item.overview || 'Tidak ada deskripsi tersedia.', poster_path: item.poster_path ? enforceHttps(`https://image.tmdb.org/t/p/w500${item.poster_path}`) : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster', backdrop_path: item.backdrop_path ? enforceHttps(`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`) : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover' };
-                            }).filter(Boolean);
-                            fetchedAny = true;
-                        }
-                    }
-                } catch(e) {}
-                try {
-                    const resThriller = await fetch(`https://api.themoviedb.org/3/discover/movie?language=id-ID&with_genres=53&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`);
-                    if (resThriller.ok) {
-                        const data = await resThriller.json();
-                        if (data?.results?.length) {
-                            state.thrillerData = data.results.map(item => {
-                                const year = item.release_date ? (item.release_date.split('-')[0] || '2026') : '2026';
-                                return { id: item.id, title: item.title || 'Tanpa Judul', type: 'movie', rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0', year, genre: 'Thriller', overview: item.overview || 'Tidak ada deskripsi tersedia.', poster_path: item.poster_path ? enforceHttps(`https://image.tmdb.org/t/p/w500${item.poster_path}`) : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster', backdrop_path: item.backdrop_path ? enforceHttps(`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`) : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover' };
-                            }).filter(Boolean);
-                            fetchedAny = true;
-                        }
-                    }
-                } catch(e) {}
-                if (fetchedAny) setupHeroCarousel();
-                renderAllSections();
-            } catch (err) { renderAllSections(); }
+        // ================= FILTER =================
+        function applyFilters() { 
+            showToast('Filter genre & tahun diterapkan', '🔍'); 
+            fetchTMDBCatalogs(); 
         }
 
         // ================= ROUTING =================
@@ -1834,16 +2015,15 @@
             let item = mediaCache.get(key);
             if (!item) {
                 try {
-                    const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}?language=id-ID&api_key=${DEFAULT_API_KEY}`);
+                    const res = await fetchWithTimeout(`https://api.themoviedb.org/3/${type}/${id}?language=id-ID&api_key=${DEFAULT_API_KEY}`, 10000);
                     if (res.ok) {
                         const data = await res.json();
-                        const title = data.title || data.name || 'Tanpa Judul';
-                        const releaseDate = data.release_date || data.first_air_date || '2026';
-                        const year = releaseDate ? (releaseDate.split('-')[0] || '2026') : '2026';
-                        item = { id: data.id, title, type, rating: data.vote_average ? data.vote_average.toFixed(1) : '8.0', year, genre: 'Bioskop', overview: data.overview || 'Tidak ada deskripsi tersedia.', poster_path: data.poster_path ? enforceHttps(`https://image.tmdb.org/t/p/w500${data.poster_path}`) : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster', backdrop_path: data.backdrop_path ? enforceHttps(`https://image.tmdb.org/t/p/w1280${data.backdrop_path}`) : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover' };
+                        item = normalizeTMDBItem({...data, media_type: type});
                         mediaCache.set(key, item);
                     }
-                } catch(e) {}
+                } catch(e) {
+                    console.warn('⚠️ Gagal fetch media by ID:', e);
+                }
             }
             if (item) { document.getElementById('breadcrumb-current').textContent = item.title; openDetailPage(item); }
             else { showToast('Konten tidak ditemukan', '⚠️'); navigateTo('home'); }
@@ -1903,7 +2083,7 @@
             adPopupInterval = setInterval(function () {
                 const popup = document.getElementById('popup-overlay');
                 if (popup) popup.style.display = 'flex';
-            }, 15 * 60 * 1000); // 15 menit
+            }, 15 * 60 * 1000);
         }
         function closePopup() {
             document.getElementById('popup-overlay').style.display = 'none';
@@ -1925,13 +2105,37 @@
 
         window.onload = function () {
             updateWatchlistBadge();
+            
+            // Load dari cache terlebih dahulu untuk tampilan cepat
+            const cachedTrending = loadTMDBFromCache('trending');
+            const cachedMovies = loadTMDBFromCache('movies');
+            const cachedSeries = loadTMDBFromCache('series');
+            const cachedThriller = loadTMDBFromCache('thriller');
+            
+            if (cachedTrending) {
+                state.trendingData = cachedTrending;
+                state.heroItems = cachedTrending.slice(0, 5);
+            }
+            if (cachedMovies) state.moviesData = cachedMovies;
+            if (cachedSeries) state.seriesData = cachedSeries;
+            if (cachedThriller) state.thrillerData = cachedThriller;
+            
             setupHeroCarousel();
             renderAllSections();
+            
+            // Fetch data terbaru dari TMDB (tanpa loading overlay)
             fetchTMDBCatalogs();
+            
+            // Mulai auto-update
+            startAutoUpdateTMDB();
+            
             initSmartTvControls();
             handleRoute();
             setTimeout(updateTvFocusables, 500);
+            
+            // Load library tanpa notifikasi
             loadLibraryFromGoogleSheets();
+            
             hideLoading();
         };
 
