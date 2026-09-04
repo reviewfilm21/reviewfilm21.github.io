@@ -1,0 +1,35 @@
+{
+  "name": "reviewfilm21",
+  "version": "1.0.0",
+  "description": "ReviewFilm21 - Streaming Film Sub Indo Gratis",
+  "main": "index.html",
+  "scripts": {
+    "update": "node update-movies.js && node generate-static.js",
+    "update-movies": "node update-movies.js",
+    "generate": "node generate-static.js",
+    "build": "node generate-static.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "streaming",
+    "film",
+    "movie",
+    "subtitle",
+    "indonesia",
+    "nonton",
+    "bioskop"
+  ],
+  "author": "ReviewFilm21",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reviewfilm21/reviewfilm21.github.io.git"
+  }
+}
