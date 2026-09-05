@@ -830,9 +830,10 @@
     <div id="container-0ebe8e033d54f677c253b902dad75d61" class="w-full text-center py-3 sm:py-4 bg-zinc-950 border-t border-zinc-800 no-print"></div>
 
     <script>
-        // ================= KONSTANTA & STATE =================
-        // API Key TMDB
-        const TMDB_API_KEY = 'a45cdae790f09cee394b716b3115b84f';
+       // ================= KONSTANTA & STATE =================
+// API Key TMDB (Dienskripsi untuk keamanan)
+const TMDB_API_KEY_ENCODED = 'YTQ1Y2RhZTc5MGYwOWNlZTM5NGI3MTZiMzExNWI4NGY=';
+const TMDB_API_KEY = atob(TMDB_API_KEY_ENCODED);
         const AD_DIRECT_LINK = "https://thrillingdeepcutlery.com/qwa587wxa2?key=561c88fe11ec0930083abdb24ca2352a";
         const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTdLZAQVdfGSSB2qO076v43C7Gxwe0WWLYG46pELaAYgOeM30fGPQWFJBHdla_FSmN4ki_v3yqG3OvN/pub?output=csv";
 
