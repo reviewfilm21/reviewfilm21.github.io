@@ -72,6 +72,10 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,10 +83,6 @@
     
     <!-- Skrip Iklan Adsterra -->
     <script async="async" data-cfasync="false" src="https://thrillingdeepcutlery.com/0ebe8e033d54f677c253b902dad75d61/invoke.js" onerror="console.warn('Ad script blocked or failed to load safely.');"></script>
-
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
     <script>
         tailwind.config = {
@@ -841,16 +841,16 @@
             projectId: "reviewfilm21-16bce",
             storageBucket: "reviewfilm21-16bce.firebasestorage.app",
             messagingSenderId: "522045066841",
-            appId: "1:522045066841:web:b1e3509de388fe2adf6b48",
-            measurementId: "G-L34HRZ2MVY"
+            appId: "1:522045066841:web:7b44b1de5f7afb5fdf6b48",
+            measurementId: "G-4TX0X24WN2"
         };
 
         let db = null;
         let firebaseLoaded = false;
 
         function initFirebase() {
-            if (typeof firebase !== 'undefined') {
-                try {
+            try {
+                if (typeof firebase !== 'undefined') {
                     if (!firebase.apps.length) {
                         firebase.initializeApp(firebaseConfig);
                     }
@@ -858,18 +858,17 @@
                     firebaseLoaded = true;
                     console.log('✅ Firebase terhubung');
                     return true;
-                } catch (e) {
-                    console.warn('⚠️ Gagal inisialisasi Firebase:', e);
+                } else {
+                    console.warn('⚠️ Firebase SDK belum dimuat');
                     return false;
                 }
-            } else {
-                console.warn('⚠️ Firebase SDK belum dimuat');
+            } catch (e) {
+                console.warn('⚠️ Gagal inisialisasi Firebase:', e);
                 return false;
             }
         }
 
         // ================= KONSTANTA & STATE =================
-        // API Key TMDB (Dienskripsi untuk keamanan)
         const TMDB_API_KEY_ENCODED = 'YTQ1Y2RhZTc5MGYwOWNlZTM5NGI3MTZiMzExNWI4NGY=';
         const TMDB_API_KEY = atob(TMDB_API_KEY_ENCODED);
         const AD_DIRECT_LINK = "https://thrillingdeepcutlery.com/qwa587wxa2?key=561c88fe11ec0930083abdb24ca2352a";
@@ -1971,7 +1970,7 @@
         function toggleDetailFavorite() { if (state.currentMedia) toggleWatchlistDirect(state.currentMedia); }
 
         // ================= FITUR RATING, REAKSI, KOMENTAR =================
-        function loadDetailInteractions(mediaId) {
+        async function loadDetailInteractions(mediaId) {
             const userRatingKey = `rating_${mediaId}`;
             const savedRating = localStorage.getItem(userRatingKey);
             if (savedRating) {
@@ -2048,7 +2047,7 @@
                     const snapshot = await db.collection('comments')
                         .where('mediaId', '==', mediaId)
                         .orderBy('timestamp', 'desc')
-                        .limit(50)
+                        .limit(100)
                         .get();
                     
                     comments = snapshot.docs.map(doc => {
@@ -2056,7 +2055,8 @@
                         return {
                             name: data.name || 'Anonim',
                             text: data.text,
-                            date: data.date || 'Baru saja'
+                            date: data.date || '',
+                            time: data.time || ''
                         };
                     });
                     
@@ -2085,7 +2085,7 @@
                     <div class="space-y-1">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-xs sm:text-sm font-bold text-white">${escapeHtml(comment.name || 'Anonim')}</span>
-                            <span class="text-[10px] text-zinc-500">${escapeHtml(comment.date || '')}</span>
+                            <span class="text-[10px] text-zinc-500">${escapeHtml(comment.date || '')} ${escapeHtml(comment.time || '')}</span>
                         </div>
                         <p class="text-xs sm:text-sm text-zinc-300">${escapeHtml(comment.text)}</p>
                     </div>
@@ -2106,33 +2106,26 @@
                 return;
             }
             
-            if (text.length > 500) {
-                showToast('Komentar maksimal 500 karakter', '⚠️');
-                return;
-            }
-            
             const mediaId = state.currentMedia.id;
             const mediaTitle = state.currentMedia.title;
             const mediaType = state.currentMedia.type;
             
-            const submitBtn = document.querySelector('#detail-section button[onclick="submitComment()"]');
-            if (submitBtn) {
-                submitBtn.disabled = true;
-                submitBtn.textContent = 'Mengirim...';
-            }
+            const commentData = {
+                mediaId: mediaId,
+                mediaTitle: mediaTitle,
+                mediaType: mediaType,
+                name: name || 'Anonim',
+                text: text.substring(0, 500),
+                timestamp: firebaseLoaded ? firebase.firestore.FieldValue.serverTimestamp() : null,
+                date: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }),
+                time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
+            };
             
             try {
                 if (firebaseLoaded && db) {
-                    await db.collection('comments').add({
-                        mediaId: mediaId,
-                        mediaTitle: mediaTitle,
-                        mediaType: mediaType,
-                        name: name || 'Anonim',
-                        text: text,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        date: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-                    });
-                    
+                    showLoading('Mengirim komentar...');
+                    await db.collection('comments').add(commentData);
+                    hideLoading();
                     showToast('Komentar berhasil dikirim!', '💬');
                 } else {
                     const commentsKey = `comments_${mediaId}`;
@@ -2140,25 +2133,21 @@
                     comments.push({
                         name: name || 'Anonim',
                         text: text,
-                        date: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                        date: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }),
+                        time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
                     });
                     localStorage.setItem(commentsKey, JSON.stringify(comments));
-                    showToast('Komentar tersimpan lokal (offline)', '💬');
+                    showToast('Komentar tersimpan lokal (offline mode)', '💬');
                 }
                 
                 nameInput.value = '';
                 textInput.value = '';
-                
-                await renderComments(mediaId);
+                renderComments(mediaId);
                 
             } catch (error) {
                 console.error('❌ Gagal kirim komentar:', error);
+                hideLoading();
                 showToast('Gagal mengirim komentar. Coba lagi.', '⚠️');
-            } finally {
-                if (submitBtn) {
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = 'Kirim Komentar';
-                }
             }
         }
 
