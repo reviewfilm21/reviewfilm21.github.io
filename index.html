@@ -311,7 +311,6 @@
             }
         }
 
-        /* Breadcrumb untuk SEO */
         .breadcrumb {
             font-size: 0.75rem;
             color: #71717a;
@@ -328,7 +327,6 @@
             margin: 0 0.5rem;
         }
 
-        /* Popup iklan */
         #popup-overlay {
             display: none;
             position: fixed;
@@ -341,7 +339,6 @@
             padding: 1rem;
         }
 
-        /* Rating bintang */
         .star-rating {
             font-size: 1.5rem;
             cursor: pointer;
@@ -355,7 +352,6 @@
             color: #fbbf24;
         }
 
-        /* Reaksi */
         .reaction-btn {
             transition: all 0.2s;
             cursor: pointer;
@@ -367,7 +363,6 @@
             color: #fff;
         }
 
-        /* Komentar */
         .comment-item {
             transition: background 0.2s;
         }
@@ -375,7 +370,6 @@
             background-color: #18181b;
         }
 
-        /* Loading overlay - tampilan profesional */
         #loading-overlay {
             display: none;
             position: fixed;
@@ -837,17 +831,14 @@
 
     <script>
         // ================= KONSTANTA & STATE =================
-        // API Key TMDB Terbaru (September 2026)
-        const DEFAULT_API_KEY_ENCODED = "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhaR1FpT2lJeFlqRmtNbU5tTVdSbU1EVTNZekpsTm1FeE1UQTRPR1kzTlRCa01EQTFOU0lzSW01aVppSTZNVGM0T0RVeE9UQTJOaTQzTURVNU9UazVMQ0p6ZFdJaU9pSTJZVGxoWVRJNVlUQXlNREZrTmpnelVURTJaVFpsWldZaUxDSnpZMjl3WlhKeklqcGJJaUZ3YVY5eVpXRmtJaXdpWlhKemFXNW5aWE1pTENKcGJtbDBhVzl1SWl3aVpXMXBibWx1WnlKZC5NMUUwbkl0d2pmdkczN1Z2bFlfR2EtdGFySTF2eEtWU2t4ZkpMWmV2ZHhUOA==";
-        const DEFAULT_API_KEY = atob(DEFAULT_API_KEY_ENCODED);
+        // API Key TMDB
+        const TMDB_API_KEY = 'a45cdae790f09cee394b716b3115b84f';
         const AD_DIRECT_LINK = "https://thrillingdeepcutlery.com/qwa587wxa2?key=561c88fe11ec0930083abdb24ca2352a";
         const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTdLZAQVdfGSSB2qO076v43C7Gxwe0WWLYG46pELaAYgOeM30fGPQWFJBHdla_FSmN4ki_v3yqG3OvN/pub?output=csv";
 
-        // URL server khusus untuk konten pustaka
         const PUSTAKA_SERVER_2 = "https://paceboook21.blogspot.com/p/video-preview-body-margin-0-padding-0_0619822090.html";
         const PUSTAKA_SERVER_3 = "https://paceboook21.blogspot.com/p/live-hot-box-sizing-border-box-margin-0.html";
 
-        // Daftar provider video embed (untuk TMDB)
         const VIDEO_PROVIDERS = [
             { name: 'Vidsrc', movie: (id) => `https://vidsrc.to/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` },
             { name: 'Vidsrc CC', movie: (id) => `https://vidsrc.cc/v2/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}` },
@@ -856,7 +847,6 @@
             { name: 'SuperEmbed', movie: (id) => `https://multiembed.mov/direct.php?video_id=${id}&tmdb=1`, tv: (id, season, episode) => `https://multiembed.mov/direct.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}` }
         ];
 
-        // Fallback data
         const FALLBACK_MOVIES = [
             { id: 939243, title: "Avatar: Fire and Ash", type: "movie", rating: "8.9", year: "2026", genre: "Sci-Fi, Adventure", overview: "Lanjutan epik petualangan di Pandora dengan visual memukau dan pertempuran klan baru.", poster_path: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg" },
             { id: 533535, title: "Deadpool & Wolverine", type: "movie", rating: "8.1", year: "2024", genre: "Action, Comedy", overview: "Duet kocak dan brutal antara Wade Wilson dan Logan menyelamatkan multiverse.", poster_path: "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg", backdrop_path: "https://image.tmdb.org/t/p/w1280/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" },
@@ -980,7 +970,7 @@
         }
         function updateTvFocusables() { tvFocusables = Array.from(document.querySelectorAll('.focusable:not(.hidden)')); }
 
-        // ================= LOAD LIBRARY (SILENT - TANPA NOTIFIKASI) =================
+        // ================= LOAD LIBRARY =================
         async function loadLibraryFromGoogleSheets() {
             try {
                 const response = await fetchWithRetry(GOOGLE_SHEETS_CSV_URL, 2);
@@ -990,7 +980,6 @@
                 if (parsedData.length === 0) throw new Error('Data CSV kosong atau tidak valid');
                 state.libraryData = parsedData;
                 state.isLibraryLoaded = true;
-                // Hanya log ke console untuk debugging, TANPA toast/notifikasi
                 console.log(`✅ Data pustaka dimuat: ${state.libraryData.length} item`);
                 return true;
             } catch (error) {
@@ -1031,7 +1020,7 @@
                 { Judul: "The Gentleman Thief (2026) sub indonesia", Poster: "https://ik.imagekit.io/yhhmgwam7/The%20Gentleman%20Thief%20(2026)%20Sub%20Indo.jpg", Link: "//mxdrop.sx/e/dkqdx163he1xm7", Genre: "film barat", Tahun: "2026", Rating: "8,8", Aktor: "", Deskripsi: "" },
                 { Judul: "NONTON Colony (2026) Sub Indo", Poster: "https://ik.imagekit.io/yhhmgwam7/images.jpg", Link: "//mxdrop.sx/e/36n3pn3wf668gw", Genre: "film asia", Tahun: "2026", Rating: "8,8", Aktor: "", Deskripsi: "" },
                 { Judul: "ANTRI DONG (1990) FULL MOVIE HD", Poster: "https://ik.imagekit.io/yhhmgwam7/images%20(1).jpg", Link: "//mxdrop.sx/e/jd9keqdnimnm7k", Genre: "film indonesia", Tahun: "1990", Rating: "8.6", Aktor: "", Deskripsi: "" },
-                { Judul: "[1] CAK KARTOLO NYETRIP bag [1]", Poster: "https://ik.imagekit.io/yhhmgwam7/cak.jpg", Link: "https://www.youtube-nocookie.com/embed/2geBf7LuZSc?si=flYfM0SPNGOZ2TPZ&controls=0&start=5", Genre: "ludruk", Tahun: "1980", Rating: "1", Aktor: "cak kartolo", Deskripsi: "• Ning Tini • Ning Suzi • Cak Sapari • Cak Basman • Cak Bagong • Cak Yayuk" },
+                { Judul: "[1] CAK KARTOLO NYETRIP bag [1]", Poster: "https://ik.imagekit.io/yhhmgwam7/cak.jpg", Link: "https://www.youtube-nocookie.com/embed/2geBf7LuZSc?si=flYfM0SPNGOZ2TPZ&controls=0&start=5", Genre: "ludruk", Tahun: "1980", Rating: "1", Aktor: "cak kartolo", Deskripsi: "" },
                 { Judul: "Wayang Golek-Asep Sunandar - Panca Tunggal", Poster: "https://ik.imagekit.io/yhhmgwam7/sddefault.jpg", Link: "https://www.youtube-nocookie.com/embed/Bkp60lq8I4k?si=0o8FU3kmxW1VbvGX&controls=0&start=200", Genre: "wayang", Tahun: "2026", Rating: "8,8", Aktor: "Asep Sunanda", Deskripsi: "" },
                 { Judul: "JOKO KENDIL VIRAL TIKTOK- KETHOPRAK MINI SLAMET BUDOYO", Poster: "https://ik.imagekit.io/yhhmgwam7/k%20emdil%20(1).jpg", Link: "https://www.youtube-nocookie.com/embed/1p9AnYGAv2s?si=YK3HcUXS8Llbd1yj&start=60", Genre: "ketoprak, drama", Tahun: "2023", Rating: "8,8", Aktor: "", Deskripsi: "" }
             ];
@@ -1041,7 +1030,7 @@
         }
 
         // ================= FUNGSI TMDB & AUTO-UPDATE =================
-        const TMDB_UPDATE_INTERVAL = 30 * 60 * 1000; // 30 menit
+        const TMDB_UPDATE_INTERVAL = 30 * 60 * 1000;
         let tmdbUpdateInterval = null;
 
         async function fetchTMDBCatalogs() {
@@ -1057,7 +1046,7 @@
 
                 try {
                     const resTrending = await fetchWithTimeout(
-                        `https://api.themoviedb.org/3/trending/all/week?language=id-ID${endpointAppend}&api_key=${DEFAULT_API_KEY}`,
+                        `https://api.themoviedb.org/3/trending/all/week?language=id-ID${endpointAppend}&api_key=${TMDB_API_KEY}`,
                         10000
                     );
                     if (resTrending.ok) {
@@ -1074,7 +1063,7 @@
 
                 try {
                     const resMovies = await fetchWithTimeout(
-                        `https://api.themoviedb.org/3/discover/movie?language=id-ID&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`,
+                        `https://api.themoviedb.org/3/discover/movie?language=id-ID&sort_by=popularity.desc${endpointAppend}&api_key=${TMDB_API_KEY}`,
                         10000
                     );
                     if (resMovies.ok) {
@@ -1090,7 +1079,7 @@
 
                 try {
                     const resTV = await fetchWithTimeout(
-                        `https://api.themoviedb.org/3/discover/tv?language=id-ID&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`,
+                        `https://api.themoviedb.org/3/discover/tv?language=id-ID&sort_by=popularity.desc${endpointAppend}&api_key=${TMDB_API_KEY}`,
                         10000
                     );
                     if (resTV.ok) {
@@ -1106,7 +1095,7 @@
 
                 try {
                     const resThriller = await fetchWithTimeout(
-                        `https://api.themoviedb.org/3/discover/movie?language=id-ID&with_genres=53&sort_by=popularity.desc${endpointAppend}&api_key=${DEFAULT_API_KEY}`,
+                        `https://api.themoviedb.org/3/discover/movie?language=id-ID&with_genres=53&sort_by=popularity.desc${endpointAppend}&api_key=${TMDB_API_KEY}`,
                         10000
                     );
                     if (resThriller.ok) {
@@ -1177,10 +1166,7 @@
 
         function cacheTMDBData(key, data) {
             try {
-                const cacheData = {
-                    timestamp: Date.now(),
-                    data: data
-                };
+                const cacheData = { timestamp: Date.now(), data: data };
                 localStorage.setItem(`tmdb_cache_${key}`, JSON.stringify(cacheData));
             } catch (e) {
                 console.warn('⚠️ Gagal cache TMDB data:', e);
@@ -1212,22 +1198,12 @@
         }
 
         function startAutoUpdateTMDB() {
-            if (tmdbUpdateInterval) {
-                clearInterval(tmdbUpdateInterval);
-            }
+            if (tmdbUpdateInterval) clearInterval(tmdbUpdateInterval);
             setTimeout(() => {
                 autoUpdateTMDBData();
                 tmdbUpdateInterval = setInterval(autoUpdateTMDBData, TMDB_UPDATE_INTERVAL);
             }, 5000);
             console.log(`✅ Auto-update TMDB aktif (setiap ${TMDB_UPDATE_INTERVAL / 60000} menit)`);
-        }
-
-        function stopAutoUpdateTMDB() {
-            if (tmdbUpdateInterval) {
-                clearInterval(tmdbUpdateInterval);
-                tmdbUpdateInterval = null;
-                console.log('⏹️ Auto-update TMDB dihentikan');
-            }
         }
 
         async function manualUpdateTMDB() {
@@ -1523,7 +1499,7 @@
             switchTab('home');
         }
 
-        // ================= PENCARIAN (HANYA TMDB) =================
+        // ================= PENCARIAN =================
         let searchDebounce = null;
         
         function handleSearchInput(e) {
@@ -1585,11 +1561,11 @@
                 
                 const [resMovies, resTV] = await Promise.all([
                     fetchWithTimeout(
-                        `https://api.themoviedb.org/3/search/movie?language=id-ID&query=${encodeURIComponent(query)}&page=1&include_adult=false&api_key=${DEFAULT_API_KEY}`,
+                        `https://api.themoviedb.org/3/search/movie?language=id-ID&query=${encodeURIComponent(query)}&page=1&include_adult=false&api_key=${TMDB_API_KEY}`,
                         10000
                     ),
                     fetchWithTimeout(
-                        `https://api.themoviedb.org/3/search/tv?language=id-ID&query=${encodeURIComponent(query)}&page=1&include_adult=false&api_key=${DEFAULT_API_KEY}`,
+                        `https://api.themoviedb.org/3/search/tv?language=id-ID&query=${encodeURIComponent(query)}&page=1&include_adult=false&api_key=${TMDB_API_KEY}`,
                         10000
                     )
                 ]);
@@ -1784,7 +1760,7 @@
             setupVideoSource(item);
             if (!item.isLibraryItem) {
                 try {
-                    const res = await fetchWithTimeout(`https://api.themoviedb.org/3/${item.type}/${item.id}/videos?language=id-ID&api_key=${DEFAULT_API_KEY}`, 10000);
+                    const res = await fetchWithTimeout(`https://api.themoviedb.org/3/${item.type}/${item.id}/videos?language=id-ID&api_key=${TMDB_API_KEY}`, 10000);
                     if (res.ok) {
                         const data = await res.json();
                         let officialTrailer = data.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube') || data.results?.find(v => v.site === 'YouTube');
@@ -2094,7 +2070,7 @@
             let item = mediaCache.get(key);
             if (!item) {
                 try {
-                    const res = await fetchWithTimeout(`https://api.themoviedb.org/3/${type}/${id}?language=id-ID&api_key=${DEFAULT_API_KEY}`, 10000);
+                    const res = await fetchWithTimeout(`https://api.themoviedb.org/3/${type}/${id}?language=id-ID&api_key=${TMDB_API_KEY}`, 10000);
                     if (res.ok) {
                         const data = await res.json();
                         item = normalizeTMDBItem({...data, media_type: type});
@@ -2185,7 +2161,6 @@
         window.onload = function () {
             updateWatchlistBadge();
             
-            // Load dari cache terlebih dahulu untuk tampilan cepat
             const cachedTrending = loadTMDBFromCache('trending');
             const cachedMovies = loadTMDBFromCache('movies');
             const cachedSeries = loadTMDBFromCache('series');
@@ -2202,17 +2177,14 @@
             setupHeroCarousel();
             renderAllSections();
             
-            // Fetch data terbaru dari TMDB (di background, tanpa loading overlay)
             fetchTMDBCatalogs();
             
-            // Mulai auto-update
             startAutoUpdateTMDB();
             
             initSmartTvControls();
             handleRoute();
             setTimeout(updateTvFocusables, 500);
             
-            // Load library Google Sheets secara silent (tanpa notifikasi)
             loadLibraryFromGoogleSheets();
             
             hideLoading();
