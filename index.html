@@ -102,12 +102,17 @@
             flex-direction: column;
             margin: 0;
             padding-bottom: env(safe-area-inset-bottom);
+            font-size: 14px;
         }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #09090b; }
         ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #ff5c00; }
 
+        img, iframe, video {
+            max-width: 100%;
+        }
+        
         .poster-card {
             transition: transform 0.25s, box-shadow 0.25s;
             cursor: pointer;
@@ -115,6 +120,10 @@
         .poster-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 24px -8px rgba(255, 92, 0, 0.35);
+        }
+        .poster-card:focus-visible {
+            outline: 2px solid #ff5c00;
+            outline-offset: 2px;
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -146,9 +155,11 @@
             background: transparent;
             border: none;
         }
-        .dropdown-menu button:hover {
+        .dropdown-menu button:hover,
+        .dropdown-menu button:focus-visible {
             background-color: #27272a;
             color: #ff5c00;
+            outline: none;
         }
         .spinner {
             border: 3px solid #27272a;
@@ -180,14 +191,16 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             border: 0;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
         }
         .breadcrumb {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: #71717a;
             padding: 0.5rem 0;
         }
         .breadcrumb a { color: #a1a1aa; text-decoration: none; }
-        .breadcrumb a:hover { color: #ff5c00; }
+        .breadcrumb a:hover, .breadcrumb a:focus-visible { color: #ff5c00; }
         .breadcrumb .separator { margin: 0 0.5rem; }
         .star-rating { font-size: 1.5rem; cursor: pointer; color: #52525b; }
         .star-rating .star.active { color: #f59e0b; }
@@ -207,64 +220,153 @@
         }
         #loading-overlay .loading-text {
             color: #a1a1aa;
-            font-size: 0.875rem;
+            font-size: 0.9rem;
             font-weight: 500;
         }
-        @media (max-width: 768px) {
-            button, .focusable { min-height: 44px; min-width: 44px; }
+        
+        /* Perbaikan font untuk mobile */
+        @media (max-width: 640px) {
+            body { font-size: 14px; }
+            .text-\[8px\] { font-size: 10px !important; }
+            .text-\[9px\] { font-size: 11px !important; }
+            .text-\[10px\] { font-size: 12px !important; }
+            .text-\[11px\] { font-size: 13px !important; }
+            .text-xs { font-size: 0.8rem !important; line-height: 1.3rem !important; }
+            .text-sm { font-size: 0.875rem !important; }
+            button, .focusable, a[role="button"] { 
+                min-height: 44px; 
+                min-width: 44px; 
+            }
+        }
+        
+        /* Indikator scroll untuk carousel */
+        .carousel-wrapper {
+            position: relative;
+        }
+        .carousel-wrapper::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            background: linear-gradient(to left, rgba(9,9,11,0.9), transparent);
+            pointer-events: none;
+            border-radius: 0 0.5rem 0.5rem 0;
+            opacity: 0.7;
+        }
+        .carousel-wrapper:hover::after {
+            opacity: 0.3;
+        }
+        
+        /* Badge episode */
+        .episode-badge {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #ff5c00;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid #ff5c00;
+            z-index: 5;
+        }
+        
+        /* Badge NEW */
+        .new-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #22c55e;
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            z-index: 5;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* Perbaikan aksesibilitas */
+        :focus-visible {
+            outline: 2px solid #ff5c00;
+            outline-offset: 2px;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-brand-500 selection:text-white pb-16 lg:pb-0">
 
-    <div id="toast" class="fixed top-5 right-5 z-[100] transform translate-y-[-100px] opacity-0 transition-all duration-300 bg-brand-500 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 font-semibold text-sm pointer-events-none max-w-[90vw]" role="alert">
+    <noscript>
+        <div style="padding: 20px; text-align: center; background: #ff5c00; color: white; font-weight: bold;">
+            ⚠️ Website ini membutuhkan JavaScript. Silakan aktifkan JavaScript di browser Anda.
+        </div>
+    </noscript>
+
+    <div id="toast" class="fixed top-5 right-5 z-[100] transform translate-y-[-100px] opacity-0 transition-all duration-300 bg-brand-500 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 font-semibold text-sm pointer-events-none max-w-[90vw]" role="alert" aria-live="polite">
         <span id="toast-icon">ℹ️</span>
         <span id="toast-message">Notifikasi</span>
     </div>
 
     <div id="loading-overlay">
-        <div class="spinner"></div>
+        <div class="spinner" role="status" aria-label="Memuat"></div>
         <div class="loading-text">Memuat konten...</div>
     </div>
 
     <header class="sticky top-0 z-40 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800/80">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-14 sm:h-20 gap-2">
-                <a href="/" onclick="event.preventDefault(); navigateTo('home')" class="flex items-center gap-2">
-                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white text-lg sm:text-xl">🎬</div>
+                <a href="/" onclick="event.preventDefault(); navigateTo('home')" class="flex items-center gap-2" aria-label="ReviewFilm21 - Beranda">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 flex items-center justify-center text-white text-lg sm:text-xl" aria-hidden="true">🎬</div>
                     <div class="flex flex-col">
                         <span class="text-lg sm:text-2xl font-black text-white leading-none">Review<span class="text-brand-500">Film</span><span class="text-amber-400">21</span></span>
                         <span class="text-[8px] sm:text-[10px] tracking-widest text-zinc-400 font-bold uppercase hidden sm:block">Streaming Film</span>
                     </div>
                 </a>
 
-                <nav class="hidden lg:flex items-center gap-2 text-sm font-medium">
-                    <a href="/" onclick="event.preventDefault(); navigateTo('home')" class="px-3 py-2 rounded-lg text-white bg-zinc-800/80">Beranda</a>
+                <nav class="hidden lg:flex items-center gap-2 text-sm font-medium" aria-label="Navigasi utama">
+                    <a href="/" onclick="event.preventDefault(); navigateTo('home')" class="px-3 py-2 rounded-lg text-white bg-zinc-800/80" aria-current="page">Beranda</a>
                     <a href="/movies" onclick="event.preventDefault(); navigateTo('movies')" class="px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500">Film Bioskop</a>
                     <a href="/tv" onclick="event.preventDefault(); navigateTo('tv')" class="px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500">TV Series</a>
                     
                     <div class="relative dropdown" id="desktop-dropdown">
-                        <button onclick="toggleDesktopDropdown()" class="px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 flex items-center gap-1">
+                        <button onclick="toggleDesktopDropdown()" class="px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 flex items-center gap-1" aria-expanded="false" aria-haspopup="true">
                             Pustaka Film dan Seni ▼
                         </button>
-                        <div class="dropdown-menu">
+                        <div class="dropdown-menu" role="menu">
                             <div class="px-3 py-2 text-xs font-bold text-zinc-500 uppercase">Film</div>
-                            <button onclick="navigateToCollection('film-barat')">Film Barat</button>
-                            <button onclick="navigateToCollection('film-asia')">Film Asia</button>
-                            <button onclick="navigateToCollection('film-indonesia')">Film Indonesia</button>
-                            <button onclick="navigateToCollection('film-superhero')">Film Super Hero</button>
+                            <button onclick="navigateToCollection('film-barat')" role="menuitem">Film Barat</button>
+                            <button onclick="navigateToCollection('film-asia')" role="menuitem">Film Asia</button>
+                            <button onclick="navigateToCollection('film-indonesia')" role="menuitem">Film Indonesia</button>
+                            <button onclick="navigateToCollection('film-superhero')" role="menuitem">Film Super Hero</button>
                             
                             <div class="px-3 py-2 text-xs font-bold text-zinc-500 uppercase border-t border-zinc-700 mt-2 pt-2">Series</div>
-                            <button onclick="navigateToCollection('series-korea')">Series Korea</button>
-                            <button onclick="navigateToCollection('series-asia')">Series Asia</button>
-                            <button onclick="navigateToCollection('series-indonesia')">Series Indonesia</button>
-                            <button onclick="navigateToCollection('series-barat')">Series Barat</button>
-                            <button onclick="navigateToCollection('series-india')">Series India</button>
+                            <button onclick="navigateToCollection('series-korea')" role="menuitem">Series Korea</button>
+                            <button onclick="navigateToCollection('series-asia')" role="menuitem">Series Asia</button>
+                            <button onclick="navigateToCollection('series-indonesia')" role="menuitem">Series Indonesia</button>
+                            <button onclick="navigateToCollection('series-barat')" role="menuitem">Series Barat</button>
+                            <button onclick="navigateToCollection('series-india')" role="menuitem">Series India</button>
                             
                             <div class="px-3 py-2 text-xs font-bold text-zinc-500 uppercase border-t border-zinc-700 mt-2 pt-2">Seni Tradisional</div>
-                            <button onclick="navigateToCollection('seni-wayang')">Seni Wayang</button>
-                            <button onclick="navigateToCollection('seni-ludruk')">Seni Ludruk</button>
-                            <button onclick="navigateToCollection('seni-ketoprak')">Seni Ketoprak</button>
+                            <button onclick="navigateToCollection('seni-wayang')" role="menuitem">Seni Wayang</button>
+                            <button onclick="navigateToCollection('seni-ludruk')" role="menuitem">Seni Ludruk</button>
+                            <button onclick="navigateToCollection('seni-ketoprak')" role="menuitem">Seni Ketoprak</button>
                         </div>
                     </div>
                     
@@ -275,19 +377,20 @@
 
                 <div class="flex items-center gap-2">
                     <div class="relative hidden sm:block w-40 md:w-56">
+                        <label for="search-input" class="sr-only">Cari film</label>
                         <input type="text" id="search-input" oninput="handleSearchInput(event)" placeholder="Cari film..." 
                                class="w-full bg-zinc-900 border border-zinc-800 rounded-full py-2 pl-9 pr-8 text-xs sm:text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-brand-500"
                                autocomplete="off">
-                        <svg class="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <svg class="w-4 h-4 text-zinc-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </div>
-                    <button onclick="manualUpdateTMDB()" class="hidden md:block px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 text-xs">🔄</button>
-                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+                    <button onclick="manualUpdateTMDB()" class="hidden md:block px-3 py-2 rounded-lg text-zinc-300 hover:text-brand-500 text-xs" aria-label="Perbarui data">🔄</button>
+                    <button onclick="toggleMobileMenu()" class="lg:hidden p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300" aria-label="Buka menu navigasi" aria-expanded="false">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
                     </button>
                 </div>
             </div>
 
-            <div id="mobile-menu" class="hidden lg:hidden bg-zinc-950 border-b border-zinc-800 px-4 py-4 space-y-2 text-sm max-h-[70vh] overflow-y-auto">
+            <div id="mobile-menu" class="hidden lg:hidden bg-zinc-950 border-b border-zinc-800 px-4 py-4 space-y-2 text-sm max-h-[70vh] overflow-y-auto" role="navigation" aria-label="Menu mobile">
                 <button onclick="navigateTo('home'); toggleMobileMenu();" class="block w-full text-left px-3 py-3 rounded-lg text-white hover:bg-zinc-900">🏠 Beranda</button>
                 <button onclick="navigateTo('movies'); toggleMobileMenu();" class="block w-full text-left px-3 py-3 rounded-lg text-zinc-300 hover:bg-zinc-900">🎬 Film Bioskop</button>
                 <button onclick="navigateTo('tv'); toggleMobileMenu();" class="block w-full text-left px-3 py-3 rounded-lg text-zinc-300 hover:bg-zinc-900">📺 TV Series</button>
@@ -321,27 +424,27 @@
         </div>
     </header>
 
-    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-800 flex items-center justify-around py-1 text-[10px] font-medium">
-        <button onclick="navigateTo('home')" class="flex flex-col items-center gap-0.5 text-brand-500 p-2"><span class="text-lg">🏠</span>Beranda</button>
-        <button onclick="navigateTo('movies')" class="flex flex-col items-center gap-0.5 text-zinc-400 p-2"><span class="text-lg">🎬</span>Film</button>
-        <button onclick="navigateTo('tv')" class="flex flex-col items-center gap-0.5 text-zinc-400 p-2"><span class="text-lg">📺</span>Series</button>
-        <button onclick="toggleMobileMenu()" class="flex flex-col items-center gap-0.5 text-zinc-400 p-2"><span class="text-lg">📚</span>Pustaka</button>
-        <button onclick="navigateTo('watchlist')" class="flex flex-col items-center gap-0.5 text-zinc-400 p-2 relative">
-            <span class="text-lg">⭐</span>Favorit
+    <nav class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-lg border-t border-zinc-800 flex items-center justify-around py-1 text-[10px] font-medium" aria-label="Navigasi bawah">
+        <button onclick="navigateTo('home')" class="flex flex-col items-center gap-0.5 text-brand-500 p-2" aria-label="Beranda"><span class="text-lg" aria-hidden="true">🏠</span>Beranda</button>
+        <button onclick="navigateTo('movies')" class="flex flex-col items-center gap-0.5 text-zinc-400 p-2" aria-label="Film"><span class="text-lg" aria-hidden="true">🎬</span>Film</button>
+        <button onclick="navigateTo('tv')" class="flex flex-col items-center gap-0.5 text-zinc-400 p-2" aria-label="Series"><span class="text-lg" aria-hidden="true">📺</span>Series</button>
+        <button onclick="toggleMobileMenu()" class="flex flex-col items-center gap-0.5 text-zinc-400 p-2" aria-label="Pustaka"><span class="text-lg" aria-hidden="true">📚</span>Pustaka</button>
+        <button onclick="navigateTo('watchlist')" class="flex flex-col items-center gap-0.5 text-zinc-400 p-2 relative" aria-label="Favorit">
+            <span class="text-lg" aria-hidden="true">⭐</span>Favorit
             <span id="mob-watchlist-count" class="absolute top-1 right-1 bg-brand-500 text-white text-[8px] px-1 rounded-full">0</span>
         </button>
     </nav>
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 sm:space-y-10" id="main-content">
         
-        <nav class="breadcrumb">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
             <a href="/" onclick="event.preventDefault(); navigateTo('home')">Beranda</a>
-            <span class="separator">›</span>
+            <span class="separator" aria-hidden="true">›</span>
             <span id="breadcrumb-current">Semua Film</span>
         </nav>
 
         <article id="hero-section" class="relative rounded-2xl overflow-hidden bg-zinc-900 min-h-[280px] sm:min-h-[420px] border border-zinc-800/80 shadow-2xl flex items-end">
-            <div id="hero-backdrop" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg')"></div>
+            <div id="hero-backdrop" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image: url('https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg')" role="img" aria-label="Backdrop film utama"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent"></div>
             
             <div class="relative z-10 p-4 sm:p-8 lg:p-10 max-w-3xl space-y-2 sm:space-y-4">
@@ -353,22 +456,22 @@
                 <h1 id="hero-title" class="text-xl sm:text-3xl lg:text-5xl font-extrabold text-white leading-tight">Avatar: Fire and Ash</h1>
                 <p id="hero-overview" class="text-[11px] sm:text-sm text-zinc-300 line-clamp-2 sm:line-clamp-3">Lanjutan epik petualangan di Pandora.</p>
                 <div class="flex flex-wrap items-center gap-2 sm:gap-3">
-                    <button onclick="openHeroPlayer()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg shadow-lg flex items-center gap-2 text-xs sm:text-sm">
+                    <button onclick="openHeroPlayer()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg shadow-lg flex items-center gap-2 text-xs sm:text-sm" aria-label="Tonton film utama sekarang">
                         ▶ Tonton Sekarang
                     </button>
-                    <button onclick="toggleHeroFavorite()" class="bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 font-semibold px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-zinc-700 text-xs sm:text-sm">
-                        <span id="hero-fav-icon">☆</span> <span id="hero-fav-text">Simpan</span>
+                    <button onclick="toggleHeroFavorite()" class="bg-zinc-800/80 hover:bg-zinc-700 text-zinc-200 font-semibold px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border border-zinc-700 text-xs sm:text-sm" aria-label="Simpan ke favorit">
+                        <span id="hero-fav-icon" aria-hidden="true">☆</span> <span id="hero-fav-text">Simpan</span>
                     </button>
                 </div>
             </div>
 
             <div class="absolute right-2 bottom-2 z-20 flex items-center gap-1.5">
-                <button onclick="prevHero()" class="p-2 rounded-full bg-zinc-950/80 text-zinc-300 hover:bg-brand-500 text-xs">◀</button>
-                <button onclick="nextHero()" class="p-2 rounded-full bg-zinc-950/80 text-zinc-300 hover:bg-brand-500 text-xs">▶</button>
+                <button onclick="prevHero()" class="p-2 rounded-full bg-zinc-950/80 text-zinc-300 hover:bg-brand-500 text-xs" aria-label="Film sebelumnya">◀</button>
+                <button onclick="nextHero()" class="p-2 rounded-full bg-zinc-950/80 text-zinc-300 hover:bg-brand-500 text-xs" aria-label="Film berikutnya">▶</button>
             </div>
         </article>
 
-        <section id="search-section" class="hidden space-y-3 sm:space-y-4 fade-in">
+        <section id="search-section" class="hidden space-y-3 sm:space-y-4 fade-in" aria-label="Hasil pencarian">
             <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
                 <h2 class="text-base sm:text-xl font-bold text-white">🔍 Hasil: <span id="search-query-text" class="text-brand-500"></span></h2>
                 <span id="search-count" class="text-xs text-zinc-400">0 hasil</span>
@@ -376,54 +479,62 @@
             <div id="search-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4"></div>
         </section>
 
-        <section id="trending-section" class="space-y-3 sm:space-y-4">
+        <section id="trending-section" class="space-y-3 sm:space-y-4" aria-label="Trending mingguan">
             <h2 class="text-base sm:text-xl font-bold text-white">🔥 Trending Mingguan</h2>
-            <div id="trending-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1"></div>
+            <div class="carousel-wrapper">
+                <div id="trending-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1" role="list"></div>
+            </div>
         </section>
 
-        <section id="movies-section" class="space-y-3 sm:space-y-4">
+        <section id="movies-section" class="space-y-3 sm:space-y-4" aria-label="Film bioskop terbaru">
             <h2 class="text-base sm:text-xl font-bold text-white">🎬 Film Bioskop Terbaru</h2>
-            <div id="movies-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1"></div>
+            <div class="carousel-wrapper">
+                <div id="movies-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1" role="list"></div>
+            </div>
         </section>
 
-        <section id="series-section" class="space-y-3 sm:space-y-4">
+        <section id="series-section" class="space-y-3 sm:space-y-4" aria-label="Series dan acara TV">
             <h2 class="text-base sm:text-xl font-bold text-white">📺 Series & Acara TV</h2>
-            <div id="series-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1"></div>
+            <div class="carousel-wrapper">
+                <div id="series-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1" role="list"></div>
+            </div>
         </section>
 
-        <section id="thriller-section" class="space-y-3 sm:space-y-4">
+        <section id="thriller-section" class="space-y-3 sm:space-y-4" aria-label="Thriller dan misteri">
             <h2 class="text-base sm:text-xl font-bold text-white">🔪 Thriller & Misteri</h2>
-            <div id="thriller-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1"></div>
+            <div class="carousel-wrapper">
+                <div id="thriller-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1" role="list"></div>
+            </div>
         </section>
 
-        <section id="watchlist-section" class="hidden space-y-3 sm:space-y-4 fade-in">
+        <section id="watchlist-section" class="hidden space-y-3 sm:space-y-4 fade-in" aria-label="Daftar favorit">
             <h2 class="text-base sm:text-xl font-bold text-white">⭐ Daftar Film Favorit Saya</h2>
             <div id="watchlist-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4"></div>
         </section>
 
-        <section id="detail-section" class="hidden space-y-4 sm:space-y-6 fade-in">
+        <section id="detail-section" class="hidden space-y-4 sm:space-y-6 fade-in" aria-label="Detail film">
             <div class="flex items-center justify-between gap-2 flex-wrap">
-                <button onclick="closeDetailPage()" class="flex items-center gap-2 text-sm text-zinc-300 hover:text-white bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2">← Kembali</button>
+                <button onclick="closeDetailPage()" class="flex items-center gap-2 text-sm text-zinc-300 hover:text-white bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2" aria-label="Kembali ke daftar">← Kembali</button>
                 <div class="flex items-center gap-2">
                     <span id="detail-type-badge" class="bg-brand-500 text-white font-bold text-xs px-2 py-0.5 rounded">MOVIE</span>
                     <h2 id="detail-title" class="text-lg sm:text-2xl font-extrabold text-white truncate max-w-[200px] sm:max-w-md">Judul</h2>
                 </div>
-                <button onclick="toggleDetailFavorite()" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3 py-2 rounded-xl border border-zinc-700">☆ Simpan</button>
+                <button onclick="toggleDetailFavorite()" class="text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3 py-2 rounded-xl border border-zinc-700" aria-label="Simpan ke favorit">☆ Simpan</button>
             </div>
 
             <div class="video-container rounded-xl overflow-hidden border border-zinc-800">
-                <iframe id="video-iframe" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+                <iframe id="video-iframe" allowfullscreen allow="autoplay; encrypted-media" title="Pemutar video" loading="lazy"></iframe>
             </div>
 
             <div class="flex flex-wrap items-center gap-2 bg-zinc-900/80 p-3 rounded-xl border border-zinc-800">
                 <span class="text-xs font-bold text-zinc-400 uppercase">Server:</span>
-                <button onclick="switchServer(1)" id="server-btn-1" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-500 text-white">Server 1</button>
-                <button onclick="switchServer(2)" id="server-btn-2" class="px-3 py-1.5 rounded-lg text-xs bg-zinc-800 text-zinc-300">Server 2</button>
-                <button onclick="switchServer(3)" id="server-btn-3" class="px-3 py-1.5 rounded-lg text-xs bg-zinc-800 text-zinc-300">Server 3</button>
+                <button onclick="switchServer(1)" id="server-btn-1" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-brand-500 text-white" aria-label="Server 1">Server 1</button>
+                <button onclick="switchServer(2)" id="server-btn-2" class="px-3 py-1.5 rounded-lg text-xs bg-zinc-800 text-zinc-300" aria-label="Server 2">Server 2</button>
+                <button onclick="switchServer(3)" id="server-btn-3" class="px-3 py-1.5 rounded-lg text-xs bg-zinc-800 text-zinc-300" aria-label="Server 3">Server 3</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-zinc-900/40 p-4 rounded-xl border border-zinc-800/60">
-                <img id="detail-poster" src="" alt="Poster" class="w-full h-48 sm:h-64 object-cover rounded-lg">
+                <img id="detail-poster" src="" alt="Poster film" class="w-full h-48 sm:h-64 object-cover rounded-lg" loading="lazy">
                 <div class="md:col-span-2 space-y-3">
                     <div class="flex flex-wrap gap-2">
                         <span id="detail-rating" class="text-amber-400 font-extrabold text-sm">★ 8.8</span>
@@ -434,7 +545,7 @@
                     
                     <div>
                         <h4 class="text-xs font-bold text-white">Beri rating:</h4>
-                        <div id="user-rating-stars" class="star-rating flex gap-1"></div>
+                        <div id="user-rating-stars" class="star-rating flex gap-1" role="radiogroup" aria-label="Beri rating 1 sampai 5 bintang"></div>
                         <span id="user-rating-message" class="text-xs text-zinc-400"></span>
                     </div>
                 </div>
@@ -443,11 +554,13 @@
             <div class="bg-zinc-900/40 p-4 rounded-xl border border-zinc-800/60 space-y-3">
                 <h3 class="text-base sm:text-lg font-bold text-white">💬 Komentar</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <label for="comment-name" class="sr-only">Nama kamu</label>
                     <input type="text" id="comment-name" placeholder="Nama kamu (opsional)" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-brand-500">
+                    <label for="comment-text" class="sr-only">Tulis komentar</label>
                     <input type="text" id="comment-text" placeholder="Tulis komentar..." class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-brand-500">
                 </div>
-                <button onclick="submitComment()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs py-2.5 px-4 rounded-lg">Kirim Komentar</button>
-                <div id="comments-list" class="space-y-3 max-h-72 overflow-y-auto"></div>
+                <button onclick="submitComment()" class="bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs py-2.5 px-4 rounded-lg" aria-label="Kirim komentar">Kirim Komentar</button>
+                <div id="comments-list" class="space-y-3 max-h-72 overflow-y-auto" role="list" aria-label="Daftar komentar"></div>
             </div>
         </section>
     </main>
@@ -458,9 +571,10 @@
         </div>
     </footer>
 
-    <div id="request-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md items-center justify-center p-4" style="display:none;">
+    <div id="request-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md items-center justify-center p-4" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="request-modal-title">
         <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-md w-full p-6 space-y-4">
-            <h3 class="text-lg font-bold text-white">📝 Request Film Baru</h3>
+            <h3 id="request-modal-title" class="text-lg font-bold text-white">📝 Request Film Baru</h3>
+            <label for="req-title-input" class="sr-only">Judul film</label>
             <input type="text" id="req-title-input" placeholder="Judul Film..." class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-500">
             <button onclick="submitRequest()" class="w-full bg-brand-500 hover:bg-brand-600 text-white font-bold text-sm py-3 rounded-xl">Kirim Request</button>
             <button onclick="closeRequestModal()" class="w-full bg-zinc-800 text-zinc-300 text-sm py-2 rounded-xl">Tutup</button>
@@ -514,32 +628,32 @@
         ];
 
         const FALLBACK_LIBRARY = [
-            // Film Barat
-            { Judul: "Spider-Man: Brand New Day", Poster: "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg", Link: "https://vidsrc.to/embed/movie/939243", Genre: "film barat", Tahun: "2026", Rating: "8.8", Aktor: "Tom Holland", Deskripsi: "Petualangan baru Spider-Man." },
-            { Judul: "Supergirl", Poster: "https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg", Link: "https://vidsrc.to/embed/movie/533535", Genre: "film barat", Tahun: "2026", Rating: "8.5", Aktor: "Milly Alcock", Deskripsi: "Kisah Supergirl." },
-            { Judul: "Dune: Part Two", Poster: "https://image.tmdb.org/t/p/w500/1pdfifyNQrYMH7QCKV4T58I2Aky.jpg", Link: "https://vidsrc.to/embed/movie/693134", Genre: "film barat", Tahun: "2024", Rating: "8.6", Aktor: "Timothee Chalamet", Deskripsi: "Paul Atreides bersatu dengan Fremen." },
+            // Film Barat - diurutkan dari terbaru
+            { Judul: "Spider-Man: Brand New Day", Poster: "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg", Link: "https://vidsrc.to/embed/movie/939243", Genre: "film barat", Tahun: "2026", Rating: "8.8", Aktor: "Tom Holland", Deskripsi: "Petualangan baru Spider-Man.", TanggalUpload: "2026-01-15" },
+            { Judul: "Supergirl", Poster: "https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg", Link: "https://vidsrc.to/embed/movie/533535", Genre: "film barat", Tahun: "2026", Rating: "8.5", Aktor: "Milly Alcock", Deskripsi: "Kisah Supergirl.", TanggalUpload: "2026-01-10" },
+            { Judul: "Dune: Part Two", Poster: "https://image.tmdb.org/t/p/w500/1pdfifyNQrYMH7QCKV4T58I2Aky.jpg", Link: "https://vidsrc.to/embed/movie/693134", Genre: "film barat", Tahun: "2024", Rating: "8.6", Aktor: "Timothee Chalamet", Deskripsi: "Paul Atreides bersatu dengan Fremen.", TanggalUpload: "2025-12-20" },
             
             // Film Asia
-            { Judul: "Parasite", Poster: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg", Link: "https://vidsrc.to/embed/movie/496243", Genre: "film asia", Tahun: "2019", Rating: "8.5", Aktor: "Song Kang-ho", Deskripsi: "Keluarga miskin menyusup ke keluarga kaya." },
+            { Judul: "Parasite", Poster: "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg", Link: "https://vidsrc.to/embed/movie/496243", Genre: "film asia", Tahun: "2019", Rating: "8.5", Aktor: "Song Kang-ho", Deskripsi: "Keluarga miskin menyusup ke keluarga kaya.", TanggalUpload: "2025-11-01" },
             
             // Film Indonesia
-            { Judul: "ANTRI DONG (1990)", Poster: "https://ik.imagekit.io/yhhmgwam7/images%20(1).jpg", Link: "https://vidsrc.to/embed/movie/939243", Genre: "film indonesia", Tahun: "1990", Rating: "8.6", Aktor: "", Deskripsi: "Film komedi Indonesia klasik." },
+            { Judul: "ANTRI DONG (1990)", Poster: "https://ik.imagekit.io/yhhmgwam7/images%20(1).jpg", Link: "https://vidsrc.to/embed/movie/939243", Genre: "film indonesia", Tahun: "1990", Rating: "8.6", Aktor: "", Deskripsi: "Film komedi Indonesia klasik.", TanggalUpload: "2025-10-15" },
             
-            // Series Korea
-            { Judul: "Squid Game", Poster: "https://image.tmdb.org/t/p/w500/9PFonBhy4cQy7Jz20NpMygczOkv.jpg", Link: "https://vidsrc.to/embed/tv/93405/1/1", Genre: "series korea", Tahun: "2021", Rating: "8.9", Aktor: "Lee Jung-jae", Deskripsi: "Permainan bertahan hidup yang mematikan." },
-            { Judul: "Queen of Tears", Poster: "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg", Link: "https://vidsrc.to/embed/tv/1396/1/1", Genre: "series korea", Tahun: "2024", Rating: "8.7", Aktor: "Kim Soo-hyun", Deskripsi: "Drama romantis pasangan suami istri." },
+            // Series Korea - Episode 1 saja
+            { Judul: "Squid Game - Episode 1", Poster: "https://image.tmdb.org/t/p/w500/9PFonBhy4cQy7Jz20NpMygczOkv.jpg", Link: "https://vidsrc.to/embed/tv/93405/1/1", Genre: "series korea", Tahun: "2021", Rating: "8.9", Aktor: "Lee Jung-jae", Deskripsi: "Episode 1: Permainan dimulai.", TanggalUpload: "2026-02-01", Episode: "1" },
+            { Judul: "Queen of Tears - Episode 1", Poster: "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg", Link: "https://vidsrc.to/embed/tv/1396/1/1", Genre: "series korea", Tahun: "2024", Rating: "8.7", Aktor: "Kim Soo-hyun", Deskripsi: "Episode 1: Perkenalan pasangan.", TanggalUpload: "2026-01-20", Episode: "1" },
             
-            // Series Barat
-            { Judul: "Breaking Bad", Poster: "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg", Link: "https://vidsrc.to/embed/tv/1396/1/1", Genre: "series barat", Tahun: "2008", Rating: "9.5", Aktor: "Bryan Cranston", Deskripsi: "Guru kimia menjadi produsen narkoba." },
-            { Judul: "Stranger Things", Poster: "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg", Link: "https://vidsrc.to/embed/tv/66732/1/1", Genre: "series barat", Tahun: "2016", Rating: "8.7", Aktor: "Millie Bobby Brown", Deskripsi: "Misteri supranatural di Hawkins." },
+            // Series Barat - Episode 1 saja
+            { Judul: "Breaking Bad - Episode 1", Poster: "https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg", Link: "https://vidsrc.to/embed/tv/1396/1/1", Genre: "series barat", Tahun: "2008", Rating: "9.5", Aktor: "Bryan Cranston", Deskripsi: "Episode 1: Pilot.", TanggalUpload: "2025-12-01", Episode: "1" },
+            { Judul: "Stranger Things - Episode 1", Poster: "https://image.tmdb.org/t/p/w500/49WJfeN0moxb9IPfGn8AIqMGskD.jpg", Link: "https://vidsrc.to/embed/tv/66732/1/1", Genre: "series barat", Tahun: "2016", Rating: "8.7", Aktor: "Millie Bobby Brown", Deskripsi: "Episode 1: The Vanishing of Will Byers.", TanggalUpload: "2025-11-20", Episode: "1" },
             
-            // Series India
-            { Judul: "Sacred Games", Poster: "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg", Link: "https://vidsrc.to/embed/tv/123/1/1", Genre: "series india", Tahun: "2018", Rating: "8.5", Aktor: "Saif Ali Khan", Deskripsi: "Thriller kriminal Mumbai." },
+            // Series India - Episode 1 saja
+            { Judul: "Sacred Games - Episode 1", Poster: "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg", Link: "https://vidsrc.to/embed/tv/123/1/1", Genre: "series india", Tahun: "2018", Rating: "8.5", Aktor: "Saif Ali Khan", Deskripsi: "Episode 1: Ashwathama.", TanggalUpload: "2025-10-01", Episode: "1" },
             
             // Seni Tradisional
-            { Judul: "Wayang Golek - Asep Sunandar", Poster: "https://ik.imagekit.io/yhhmgwam7/sddefault.jpg", Link: "https://www.youtube-nocookie.com/embed/Bkp60lq8I4k", Genre: "seni wayang", Tahun: "2024", Rating: "9.0", Aktor: "Asep Sunandar", Deskripsi: "Pertunjukan wayang golek." },
-            { Judul: "Cak Kartolo Nyetrip", Poster: "https://ik.imagekit.io/yhhmgwam7/cak.jpg", Link: "https://www.youtube-nocookie.com/embed/2geBf7LuZSc", Genre: "seni ludruk", Tahun: "2023", Rating: "8.7", Aktor: "Cak Kartolo", Deskripsi: "Ludruk humor Jawa Timur." },
-            { Judul: "Joko Kendil - Kethoprak", Poster: "https://ik.imagekit.io/yhhmgwam7/k%20emdil%20(1).jpg", Link: "https://www.youtube-nocookie.com/embed/1p9AnYGAv2s", Genre: "seni ketoprak", Tahun: "2023", Rating: "8.8", Aktor: "", Deskripsi: "Kethoprak tradisional." }
+            { Judul: "Wayang Golek - Asep Sunandar", Poster: "https://ik.imagekit.io/yhhmgwam7/sddefault.jpg", Link: "https://www.youtube-nocookie.com/embed/Bkp60lq8I4k", Genre: "seni wayang", Tahun: "2024", Rating: "9.0", Aktor: "Asep Sunandar", Deskripsi: "Pertunjukan wayang golek.", TanggalUpload: "2026-02-10" },
+            { Judul: "Cak Kartolo Nyetrip", Poster: "https://ik.imagekit.io/yhhmgwam7/cak.jpg", Link: "https://www.youtube-nocookie.com/embed/2geBf7LuZSc", Genre: "seni ludruk", Tahun: "2023", Rating: "8.7", Aktor: "Cak Kartolo", Deskripsi: "Ludruk humor Jawa Timur.", TanggalUpload: "2026-01-05" },
+            { Judul: "Joko Kendil - Kethoprak", Poster: "https://ik.imagekit.io/yhhmgwam7/k%20emdil%20(1).jpg", Link: "https://www.youtube-nocookie.com/embed/1p9AnYGAv2s", Genre: "seni ketoprak", Tahun: "2023", Rating: "8.8", Aktor: "", Deskripsi: "Kethoprak tradisional.", TanggalUpload: "2025-12-15" }
         ];
 
         const state = {
@@ -575,6 +689,41 @@
         function hideLoading() { document.getElementById('loading-overlay').style.display = 'none'; }
         function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text || ''; return div.innerHTML; }
         function slugify(text) { return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
+
+        // ================= SORTING LIBRARY =================
+        function sortLibraryByNewest(items) {
+            return items.sort((a, b) => {
+                const dateA = a.TanggalUpload || '';
+                const dateB = b.TanggalUpload || '';
+                return dateB.localeCompare(dateA); // Terbaru di atas
+            });
+        }
+
+        // ================= FILTER SERIES (Episode 1 saja) =================
+        function filterSeriesEpisode1(items) {
+            // Untuk series, hanya tampilkan episode 1
+            const seriesMap = {};
+            const nonSeries = [];
+            
+            items.forEach(item => {
+                const genre = (item.Genre || '').toLowerCase();
+                if (genre.includes('series')) {
+                    // Ambil judul dasar tanpa "Episode X"
+                    const baseTitle = (item.Judul || '').replace(/\s*-\s*Episode\s+\d+.*$/i, '').trim();
+                    const episode = parseInt(item.Episode || '1');
+                    
+                    if (!seriesMap[baseTitle] || episode < seriesMap[baseTitle].episode) {
+                        seriesMap[baseTitle] = { item, episode };
+                    }
+                } else {
+                    nonSeries.push(item);
+                }
+            });
+            
+            // Gabungkan dan urutkan
+            const seriesItems = Object.values(seriesMap).map(entry => entry.item);
+            return [...nonSeries, ...seriesItems];
+        }
 
         // ================= FETCH TMDB =================
         async function fetchTMDBCatalogs() {
@@ -643,27 +792,40 @@
         function createCardHTML(item) {
             const isFav = state.watchlist.some(x => x.id === item.id);
             const poster = item.poster_path || 'https://placehold.co/400x600/18181b/ff5c00?text=N/A';
+            const isNew = item.TanggalUpload && isWithinLast7Days(item.TanggalUpload);
+            
             return `
-                <a href="/${item.type}/${item.id}/${slugify(item.title)}" onclick="event.preventDefault(); openDetailPage(${item.id}, '${item.type}')" class="poster-card shrink-0 w-28 sm:w-36 md:w-44 bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer block">
+                <a href="/${item.type || 'movie'}/${item.id || '0'}/${slugify(item.title || '')}" onclick="event.preventDefault(); ${item.link ? `playLibraryItem('${escapeHtml(item.link)}', '${escapeHtml(item.title)}', '${escapeHtml(poster)}', '${escapeHtml(item.rating || '8.0')}', '${escapeHtml(item.year || '2026')}', '${escapeHtml(item.overview || item.Deskripsi || '')}', '${escapeHtml(item.Aktor || '')}')` : `openDetailPage(${item.id}, '${item.type}')`}" class="poster-card shrink-0 w-28 sm:w-36 md:w-44 bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer block" role="listitem" aria-label="${escapeHtml(item.title)}">
                     <div class="relative aspect-[2/3] overflow-hidden bg-zinc-950">
-                        <img src="${poster}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=N/A'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute top-2 left-2 bg-black/70 text-amber-400 font-bold text-xs px-2 py-1 rounded">★ ${item.rating}</div>
+                        <img src="${poster}" alt="${escapeHtml(item.title)}" loading="lazy" decoding="async" width="300" height="450" onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=N/A'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-2 left-2 bg-black/70 text-amber-400 font-bold text-xs px-2 py-1 rounded" aria-label="Rating ${item.rating}">★ ${item.rating}</div>
+                        ${isNew ? '<span class="new-badge">BARU</span>' : ''}
+                        ${item.Episode ? `<span class="episode-badge">EP ${item.Episode}</span>` : ''}
                         <div class="absolute top-2 right-2">
-                            <button onclick="event.preventDefault(); event.stopPropagation(); toggleFavorite(${item.id}, '${item.type}')" class="p-1.5 rounded-full bg-black/70 text-white text-xs">${isFav ? '⭐' : '☆'}</button>
+                            <button onclick="event.preventDefault(); event.stopPropagation(); toggleFavorite(${item.id || 0}, '${item.type || 'movie'}')" class="p-1.5 rounded-full bg-black/70 text-white text-xs" aria-label="${isFav ? 'Hapus dari favorit' : 'Tambah ke favorit'}">${isFav ? '⭐' : '☆'}</button>
                         </div>
-                        <div class="absolute inset-0 bg-brand-600/40 backdrop-blur-[2px] play-overlay flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div class="absolute inset-0 bg-brand-600/40 backdrop-blur-[2px] play-overlay flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true">
                             <div class="w-10 h-10 rounded-full bg-brand-500 text-white flex items-center justify-center">▶</div>
                         </div>
                     </div>
                     <div class="p-2">
                         <h3 class="text-xs sm:text-sm font-bold text-white truncate">${escapeHtml(item.title)}</h3>
                         <div class="flex justify-between text-[10px] text-zinc-400 mt-1">
-                            <span>${item.year}</span>
-                            <span>${item.type === 'tv' ? 'Series' : 'HD'}</span>
+                            <span>${item.year || item.Tahun || '2026'}</span>
+                            <span>${item.type === 'tv' || item.Episode ? 'Series' : 'HD'}</span>
                         </div>
                     </div>
                 </a>
             `;
+        }
+
+        function isWithinLast7Days(dateStr) {
+            if (!dateStr) return false;
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffTime = now - date;
+            const diffDays = diffTime / (1000 * 60 * 60 * 24);
+            return diffDays >= 0 && diffDays <= 7;
         }
 
         // ================= NAVIGASI =================
@@ -720,7 +882,21 @@
                 state.watchlist.splice(index, 1);
                 showToast('Dihapus dari favorit', '🗑️');
             } else {
-                const allItems = [...state.trendingData, ...state.moviesData, ...state.seriesData, ...state.thrillerData];
+                const allItems = [...state.trendingData, ...state.moviesData, ...state.seriesData, ...state.thrillerData, ...state.libraryData.map(lib => ({
+                    id: lib.id || Math.floor(Math.random() * 1000000),
+                    title: lib.Judul || 'Tanpa Judul',
+                    type: 'movie',
+                    rating: lib.Rating || '8.0',
+                    year: lib.Tahun || '2026',
+                    genre: lib.Genre || 'Pustaka',
+                    overview: lib.Deskripsi || '',
+                    poster_path: lib.Poster || null,
+                    backdrop_path: lib.Poster || null,
+                    link: lib.Link || '',
+                    Aktor: lib.Aktor || '',
+                    Episode: lib.Episode || '',
+                    TanggalUpload: lib.TanggalUpload || ''
+                }))];
                 const item = allItems.find(x => x.id === id && x.type === type);
                 if (item) {
                     state.watchlist.push(item);
@@ -730,6 +906,7 @@
             localStorage.setItem('lt21_watchlist', JSON.stringify(state.watchlist));
             updateWatchlistBadge();
             renderAllSections();
+            if (state.activeTab === 'watchlist') renderWatchlist();
         }
         function updateWatchlistBadge() {
             const count = state.watchlist.length;
@@ -764,7 +941,11 @@
         // ================= SEARCH =================
         async function handleSearchInput(event) {
             const query = event.target.value.trim();
-            if (!query) { document.getElementById('search-section').classList.add('hidden'); return; }
+            if (!query) { 
+                document.getElementById('search-section').classList.add('hidden'); 
+                navigateTo('home');
+                return; 
+            }
             try {
                 const [movieRes, tvRes] = await Promise.all([
                     fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}&api_key=${TMDB_API_KEY}&language=id-ID`),
@@ -806,6 +987,7 @@
             document.getElementById('detail-genres').textContent = item.genre;
             document.getElementById('detail-overview').textContent = item.overview;
             document.getElementById('detail-poster').src = item.poster_path || 'https://placehold.co/400x600/18181b/ff5c00?text=N/A';
+            document.getElementById('detail-poster').alt = `Poster ${item.title}`;
             
             setupVideoSource(item);
             loadDetailInteractions(item.id);
@@ -818,8 +1000,12 @@
         }
         function setupVideoSource(item) {
             const iframe = document.getElementById('video-iframe');
-            const provider = VIDEO_PROVIDERS[state.currentServer - 1];
-            iframe.src = item.type === 'tv' ? provider.tv(item.id) : provider.movie(item.id);
+            if (item.link) {
+                iframe.src = item.link;
+            } else {
+                const provider = VIDEO_PROVIDERS[state.currentServer - 1];
+                iframe.src = item.type === 'tv' ? provider.tv(item.id) : provider.movie(item.id);
+            }
             updateServerButtons();
         }
         function updateServerButtons() {
@@ -831,8 +1017,15 @@
                 }
             }
         }
-        function switchServer(serverNum) { state.currentServer = serverNum; if (state.currentMedia) setupVideoSource(state.currentMedia); }
-        function closeDetailPage() { document.getElementById('detail-section').classList.add('hidden'); navigateTo(state.activeTab); }
+        function switchServer(serverNum) { 
+            state.currentServer = serverNum; 
+            if (state.currentMedia && !state.currentMedia.link) setupVideoSource(state.currentMedia); 
+        }
+        function closeDetailPage() { 
+            document.getElementById('detail-section').classList.add('hidden'); 
+            document.getElementById('video-iframe').src = '';
+            navigateTo(state.activeTab); 
+        }
         function toggleDetailFavorite() { if (state.currentMedia) toggleFavorite(state.currentMedia.id, state.currentMedia.type); }
 
         // ================= KOLEKSI / PUSTAKA =================
@@ -875,7 +1068,10 @@
             return result;
         }
         function navigateToCollection(collectionType) {
-            if (!state.isLibraryLoaded) { loadLibraryFromGoogleSheets().then(() => navigateToCollection(collectionType)); return; }
+            if (!state.isLibraryLoaded) { 
+                loadLibraryFromGoogleSheets().then(() => navigateToCollection(collectionType)); 
+                return; 
+            }
             
             const categoryMap = {
                 'film-barat': ['film barat', 'barat'],
@@ -892,10 +1088,18 @@
                 'seni-ketoprak': ['ketoprak']
             };
             const keywords = categoryMap[collectionType] || [collectionType];
-            const filteredItems = state.libraryData.filter(item => {
+            
+            // Filter berdasarkan kategori
+            let filteredItems = state.libraryData.filter(item => {
                 const genre = (item.Genre || '').toLowerCase();
                 return keywords.some(keyword => genre.includes(keyword));
             });
+            
+            // Filter series: hanya tampilkan episode 1
+            filteredItems = filterSeriesEpisode1(filteredItems);
+            
+            // Urutkan dari terbaru
+            filteredItems = sortLibraryByNewest(filteredItems);
             
             if (filteredItems.length === 0) { showToast('Tidak ada konten untuk kategori ini', '📭'); return; }
             
@@ -915,7 +1119,7 @@
             container.innerHTML = `
                 <div class="flex items-center justify-between border-b border-zinc-800 pb-2">
                     <h2 class="text-base sm:text-xl font-bold text-white">📚 ${categoryName} <span class="text-xs text-zinc-400">(${items.length})</span></h2>
-                    <button onclick="closeCollection()" class="text-zinc-400 hover:text-white p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-xs">✕ Tutup</button>
+                    <button onclick="closeCollection()" class="text-zinc-400 hover:text-white p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-xs" aria-label="Tutup koleksi">✕ Tutup</button>
                 </div>
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
                     ${items.map(item => createLibraryCardHTML(item)).join('')}
@@ -931,16 +1135,25 @@
             const link = item.Link || '#';
             const actors = item.Aktor || '';
             const description = item.Deskripsi || '';
+            const isNew = item.TanggalUpload && isWithinLast7Days(item.TanggalUpload);
             
             return `
-                <a href="#" onclick="event.preventDefault(); playLibraryItem('${escapeHtml(link)}', '${escapeHtml(title)}', '${escapeHtml(poster)}', '${escapeHtml(rating)}', '${escapeHtml(year)}', '${escapeHtml(description)}', '${escapeHtml(actors)}')" class="poster-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer block">
+                <a href="#" onclick="event.preventDefault(); playLibraryItem('${escapeHtml(link)}', '${escapeHtml(title)}', '${escapeHtml(poster)}', '${escapeHtml(rating)}', '${escapeHtml(year)}', '${escapeHtml(description)}', '${escapeHtml(actors)}')" class="poster-card bg-zinc-900 rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer block" role="listitem" aria-label="${escapeHtml(title)}">
                     <div class="relative aspect-[2/3] overflow-hidden bg-zinc-950">
-                        <img src="${poster}" alt="${escapeHtml(title)}" loading="lazy" onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=N/A'" class="w-full h-full object-cover">
-                        <div class="absolute top-2 left-2 bg-black/70 text-amber-400 font-bold text-xs px-2 py-1 rounded">★ ${rating}</div>
+                        <img src="${poster}" alt="${escapeHtml(title)}" loading="lazy" decoding="async" width="300" height="450" onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=N/A'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute top-2 left-2 bg-black/70 text-amber-400 font-bold text-xs px-2 py-1 rounded" aria-label="Rating ${rating}">★ ${rating}</div>
+                        ${isNew ? '<span class="new-badge">BARU</span>' : ''}
+                        ${item.Episode ? `<span class="episode-badge">EP ${item.Episode}</span>` : ''}
+                        <div class="absolute inset-0 bg-brand-600/40 backdrop-blur-[2px] play-overlay flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true">
+                            <div class="w-10 h-10 rounded-full bg-brand-500 text-white flex items-center justify-center">▶</div>
+                        </div>
                     </div>
                     <div class="p-2">
                         <h3 class="text-xs sm:text-sm font-bold text-white truncate">${escapeHtml(title)}</h3>
-                        <div class="flex justify-between text-[10px] text-zinc-400 mt-1"><span>${year}</span><span>HD</span></div>
+                        <div class="flex justify-between text-[10px] text-zinc-400 mt-1">
+                            <span>${year}</span>
+                            <span>${item.Episode ? 'Series' : 'HD'}</span>
+                        </div>
                     </div>
                 </a>
             `;
@@ -948,9 +1161,18 @@
         function playLibraryItem(link, title, poster, rating, year, description, actors) {
             if (!link || link === '#') { showToast('Link tidak tersedia', '⚠️'); return; }
             const mediaItem = {
-                id: Math.floor(Math.random() * 1000000), title, type: 'movie', rating, year,
-                genre: 'Pustaka Film', overview: description || 'Tidak ada deskripsi.',
-                poster_path: poster, backdrop_path: poster, link, actors, isLibraryItem: true
+                id: Math.floor(Math.random() * 1000000), 
+                title, 
+                type: 'movie', 
+                rating, 
+                year,
+                genre: 'Pustaka Film', 
+                overview: description || 'Tidak ada deskripsi.',
+                poster_path: poster, 
+                backdrop_path: poster, 
+                link, 
+                actors, 
+                isLibraryItem: true
             };
             state.currentMedia = mediaItem;
             state.currentServer = 1;
@@ -961,6 +1183,7 @@
             document.getElementById('detail-genres').textContent = 'Pustaka Film';
             document.getElementById('detail-overview').textContent = description || 'Tidak ada deskripsi.';
             document.getElementById('detail-poster').src = poster || 'https://placehold.co/400x600/18181b/ff5c00?text=N/A';
+            document.getElementById('detail-poster').alt = `Poster ${title}`;
             document.getElementById('video-iframe').src = link;
             document.querySelectorAll('#main-content > section').forEach(s => s.classList.add('hidden'));
             document.getElementById('detail-section').classList.remove('hidden');
@@ -988,7 +1211,14 @@
                 const star = document.createElement('span');
                 star.className = `star ${i <= selected ? 'active' : ''}`;
                 star.innerHTML = '★';
-                if (!disabled) star.onclick = () => submitRating(i);
+                star.setAttribute('role', 'radio');
+                star.setAttribute('aria-label', `${i} bintang`);
+                star.setAttribute('aria-checked', i === selected);
+                if (!disabled) {
+                    star.onclick = () => submitRating(i);
+                    star.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); submitRating(i); } };
+                    star.tabIndex = 0;
+                }
                 container.appendChild(star);
             }
         }
@@ -1013,10 +1243,10 @@
                 } catch(e) { console.warn('Firebase:', e.message); }
             }
             if (comments.length === 0) comments = JSON.parse(localStorage.getItem(`comments_${mediaId}`) || '[]');
-            if (comments.length === 0) { list.innerHTML = '<p class="text-xs text-zinc-500">Belum ada komentar.</p>'; return; }
+            if (comments.length === 0) { list.innerHTML = '<p class="text-xs text-zinc-500">Belum ada komentar. Jadilah yang pertama!</p>'; return; }
             list.innerHTML = comments.map(comment => `
-                <div class="comment-item flex gap-2 items-start p-2 rounded-lg">
-                    <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-brand-500 shrink-0">${escapeHtml((comment.name || 'A').charAt(0).toUpperCase())}</div>
+                <div class="comment-item flex gap-2 items-start p-2 rounded-lg" role="listitem">
+                    <div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-brand-500 shrink-0" aria-hidden="true">${escapeHtml((comment.name || 'A').charAt(0).toUpperCase())}</div>
                     <div class="flex-1">
                         <div class="flex items-center gap-2"><span class="text-xs font-bold text-white">${escapeHtml(comment.name || 'Anonim')}</span><span class="text-[10px] text-zinc-500">${escapeHtml(comment.date || '')} ${escapeHtml(comment.time || '')}</span></div>
                         <p class="text-xs text-zinc-300">${escapeHtml(comment.text)}</p>
@@ -1059,9 +1289,25 @@
             document.getElementById('req-title-input').value = '';
             closeRequestModal();
         }
-        function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
-        function toggleDesktopDropdown() { document.getElementById('desktop-dropdown').classList.toggle('active'); }
+        function toggleMobileMenu() { 
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden'); 
+        }
+        function toggleDesktopDropdown() { 
+            const dropdown = document.getElementById('desktop-dropdown');
+            dropdown.classList.toggle('active'); 
+        }
         function manualUpdateTMDB() { showToast('Memperbarui...', '🔄'); fetchTMDBCatalogs(); }
+
+        // ================= KEYBOARD NAVIGATION =================
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDetailPage();
+                closeCollection();
+                closeRequestModal();
+                toggleMobileMenu();
+            }
+        });
 
         // ================= INISIALISASI =================
         window.onload = function() {
