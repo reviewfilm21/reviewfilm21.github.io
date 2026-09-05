@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  reviewfilm21:
+    build: .
+    container_name: reviewfilm21-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - TMDB_API_KEY=a45cdae790f09cee394b716b3115b84f
+      - TMDB_BASE_URL=https://api.themoviedb.org/3
+      - NODE_ENV=production
+      - CACHE_TTL=1800
+    restart: unless-stopped
+    volumes:
+      - ./public:/app/public
