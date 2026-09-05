@@ -830,6 +830,8 @@
         const DEFAULT_API_KEY_ENCODED = "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhaR1FpT2lJeFlqRmtNbU5tTVdSbU1EVTNZekpsTm1FeE1UQTRPR1kzTlRCa01EQTFOU0lzSW01aVppSTZNVGM0T0RVeE9UQTJOaTQzTURVNU9UazVMQ0p6ZFdJaU9pSTJZVGxoWVRJNVlUQXlNREZrTmpnelVURTJaVFpsWldZaUxDSnpZMjl3WlhKeklqcGJJaUZ3YVY5eVpXRmtJaXdpWlhKemFXNW5aWE1pTENKcGJtbDBhVzl1SWl3aVpXMXBibWx1WnlKZC5NMUUwbkl0d2pmdkczN1Z2bFlfR2EtdGFySTF2eEtWU2t4ZkpMWmV2ZHhUOA==";
         const DEFAULT_API_KEY = atob(DEFAULT_API_KEY_ENCODED);
         const MOVIES_JSON_URL = './movies.json';
+        const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+        const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
         
         const VIDEO_PROVIDERS = [
             { name: 'Vidsrc', movie: (id) => `https://vidsrc.to/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` },
@@ -876,6 +878,114 @@
             trailerKey: ''
         };
 
+        // ================= FETCH TMDB API =================
+        async function fetchTMDBCatalogs() {
+            console.log('🔄 Fetching fresh data from TMDB API...');
+            
+            try {
+                const [trendingMovies, trendingTV, popularMovies, popularTV, thrillerMovies] = await Promise.all([
+                    fetchTMDB('/trending/movie/week?language=id-ID'),
+                    fetchTMDB('/trending/tv/week?language=id-ID'),
+                    fetchTMDB('/movie/popular?language=id-ID&page=1'),
+                    fetchTMDB('/tv/popular?language=id-ID&page=1'),
+                    fetchTMDB('/discover/movie?with_genres=53&language=id-ID&sort_by=popularity.desc')
+                ]);
+
+                let success = false;
+
+                if (trendingMovies?.results?.length) {
+                    state.trendingData = trendingMovies.results.slice(0, 10).map(normalizeTMDBItem);
+                    state.heroItems = state.trendingData.slice(0, 5);
+                    success = true;
+                }
+
+                if (popularMovies?.results?.length) {
+                    state.moviesData = popularMovies.results.slice(0, 20).map(normalizeTMDBItem);
+                    success = true;
+                }
+
+                if (popularTV?.results?.length) {
+                    state.seriesData = popularTV.results.slice(0, 20).map(normalizeTMDBItem);
+                    success = true;
+                }
+
+                if (thrillerMovies?.results?.length) {
+                    state.thrillerData = thrillerMovies.results.slice(0, 20).map(normalizeTMDBItem);
+                    success = true;
+                }
+
+                if (success) {
+                    localStorage.setItem('reviewfilm21_cache', JSON.stringify({
+                        timestamp: Date.now(),
+                        trending: state.trendingData,
+                        movies: state.moviesData,
+                        series: state.seriesData,
+                        thriller: state.thrillerData
+                    }));
+
+                    setupHeroCarousel();
+                    renderAllSections();
+
+                    console.log('✅ TMDB data fetched successfully!');
+                    console.log(`   - Trending: ${state.trendingData.length} items`);
+                    console.log(`   - Movies: ${state.moviesData.length} items`);
+                    console.log(`   - Series: ${state.seriesData.length} items`);
+                    console.log(`   - Thriller: ${state.thrillerData.length} items`);
+                }
+
+                return success;
+            } catch (error) {
+                console.error('❌ Error fetching TMDB data:', error);
+                return false;
+            }
+        }
+
+        async function fetchTMDB(endpoint) {
+            try {
+                const separator = endpoint.includes('?') ? '&' : '?';
+                const url = `${TMDB_BASE_URL}${endpoint}${separator}api_key=${DEFAULT_API_KEY}`;
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`TMDB API error: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.warn(`⚠️ Failed to fetch ${endpoint}:`, error.message);
+                return null;
+            }
+        }
+
+        function normalizeTMDBItem(item) {
+            if (!item?.id) return null;
+            
+            const isMovie = item.media_type === 'movie' || item.title;
+            
+            return {
+                id: item.id,
+                title: item.title || item.name || 'Unknown',
+                type: item.media_type || (isMovie ? 'movie' : 'tv'),
+                rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0',
+                year: (item.release_date || item.first_air_date || '2026').substring(0, 4),
+                genre: 'Bioskop',
+                overview: item.overview || 'Tidak ada deskripsi.',
+                poster_path: item.poster_path ? 
+                    `${TMDB_IMAGE_BASE}/w500${item.poster_path}` : 
+                    'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
+                backdrop_path: item.backdrop_path ? 
+                    `${TMDB_IMAGE_BASE}/w1280${item.backdrop_path}` : 
+                    'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover',
+                popularity: item.popularity || 0,
+                vote_count: item.vote_count || 0
+            };
+        }
+
         // ================= LOAD MOVIES.JSON =================
         async function loadMoviesFromJSON() {
             console.log('🔄 Loading movies.json...');
@@ -902,10 +1012,8 @@
                     state.seriesData = data.tvShows.map(normalizeJSONItem).filter(Boolean);
                 }
                 
-                // Set thriller from movies
                 state.thrillerData = state.moviesData.slice(0, 20);
                 
-                // Cache to localStorage
                 localStorage.setItem('reviewfilm21_cache', JSON.stringify({
                     timestamp: Date.now(),
                     trending: state.trendingData,
@@ -918,9 +1026,6 @@
                 renderAllSections();
                 
                 console.log(`✅ Data loaded from movies.json`);
-                console.log(`   - Trending: ${state.trendingData.length}`);
-                console.log(`   - Movies: ${state.moviesData.length}`);
-                console.log(`   - Series: ${state.seriesData.length}`);
                 
                 return true;
             } catch (error) {
@@ -954,13 +1059,18 @@
         // ================= INISIALISASI =================
         window.onload = async function () {
             updateWatchlistBadge();
+            document.getElementById('loading-overlay').style.display = 'flex';
             
-            // Load from cache first
-            const cached = localStorage.getItem('reviewfilm21_cache');
-            if (cached) {
-                try {
-                    const data = JSON.parse(cached);
-                    if (Date.now() - data.timestamp < 24 * 60 * 60 * 1000) {
+            // PRIORITAS 1: Fetch langsung dari TMDB API
+            const tmdbSuccess = await fetchTMDBCatalogs();
+            
+            // PRIORITAS 2: Jika TMDB gagal, gunakan cache
+            if (!tmdbSuccess) {
+                console.log('⚠️ TMDB failed, trying cache...');
+                const cached = localStorage.getItem('reviewfilm21_cache');
+                if (cached) {
+                    try {
+                        const data = JSON.parse(cached);
                         if (data.trending?.length) {
                             state.trendingData = data.trending;
                             state.heroItems = data.trending.slice(0, 5);
@@ -968,21 +1078,35 @@
                         if (data.movies?.length) state.moviesData = data.movies;
                         if (data.series?.length) state.seriesData = data.series;
                         if (data.thriller?.length) state.thrillerData = data.thriller;
-                        
                         setupHeroCarousel();
                         renderAllSections();
+                        console.log('✅ Loaded from cache');
+                    } catch(e) {
+                        console.warn('⚠️ Cache parsing error:', e);
                     }
-                } catch(e) {}
+                }
+                
+                // PRIORITAS 3: Coba movies.json
+                const jsonSuccess = await loadMoviesFromJSON();
+                
+                // PRIORITAS 4: Fallback ke data statis
+                if (!jsonSuccess && !state.moviesData.length) {
+                    console.log('⚠️ Using fallback data');
+                    state.trendingData = [...FALLBACK_MOVIES, ...FALLBACK_SERIES];
+                    state.moviesData = [...FALLBACK_MOVIES];
+                    state.seriesData = [...FALLBACK_SERIES];
+                    state.thrillerData = [...FALLBACK_MOVIES];
+                    state.heroItems = [...FALLBACK_MOVIES].slice(0, 5);
+                    setupHeroCarousel();
+                    renderAllSections();
+                }
             }
             
-            // Load fresh from movies.json
-            await loadMoviesFromJSON();
-            
-            // Fallback to TMDB API if needed
-            if (!state.moviesData.length || state.moviesData.length <= 1) {
-                console.log('🔄 Fallback: Fetching from TMDB API...');
+            // Auto-update setiap 3 jam
+            setInterval(async () => {
+                console.log('🔄 Auto-updating TMDB data...');
                 await fetchTMDBCatalogs();
-            }
+            }, 3 * 60 * 60 * 1000);
             
             initSmartTvControls();
             handleRoute();
@@ -1170,7 +1294,6 @@
             document.getElementById('detail-poster').src = item.poster_path;
             document.getElementById('detail-type-badge').textContent = item.type === 'tv' ? 'TV SERIES' : 'MOVIE';
             
-            // Setup video
             const provider = VIDEO_PROVIDERS[0];
             const iframe = document.getElementById('video-iframe');
             iframe.src = item.type === 'tv' ? provider.tv(item.id, 1, 1) : provider.movie(item.id);
@@ -1212,7 +1335,6 @@
                 return;
             }
             
-            // Simple search in loaded data
             const q = query.toLowerCase();
             const results = [...state.trendingData, ...state.moviesData, ...state.seriesData].filter(item =>
                 item.title.toLowerCase().includes(q) || item.overview.toLowerCase().includes(q)
@@ -1279,9 +1401,16 @@
         }
         
         function manualUpdateTMDB() {
-            showToast('Memperbarui data...', '🔄');
-            loadMoviesFromJSON().then(() => {
-                showToast('Data berhasil diperbarui!', '✅');
+            showToast('Memperbarui data dari TMDB...', '🔄');
+            document.getElementById('loading-overlay').style.display = 'flex';
+            
+            fetchTMDBCatalogs().then(success => {
+                hideLoading();
+                if (success) {
+                    showToast('✅ Data berhasil diperbarui dari TMDB!', '✅');
+                } else {
+                    showToast('❌ Gagal update, cek koneksi internet', '⚠️');
+                }
             });
         }
         
