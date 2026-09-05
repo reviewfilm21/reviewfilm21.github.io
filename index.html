@@ -80,6 +80,10 @@
     <!-- Skrip Iklan Adsterra -->
     <script async="async" data-cfasync="false" src="https://thrillingdeepcutlery.com/0ebe8e033d54f677c253b902dad75d61/invoke.js" onerror="console.warn('Ad script blocked or failed to load safely.');"></script>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -830,10 +834,44 @@
     <div id="container-0ebe8e033d54f677c253b902dad75d61" class="w-full text-center py-3 sm:py-4 bg-zinc-950 border-t border-zinc-800 no-print"></div>
 
     <script>
-       // ================= KONSTANTA & STATE =================
-// API Key TMDB (Dienskripsi untuk keamanan)
-const TMDB_API_KEY_ENCODED = 'YTQ1Y2RhZTc5MGYwOWNlZTM5NGI3MTZiMzExNWI4NGY=';
-const TMDB_API_KEY = atob(TMDB_API_KEY_ENCODED);
+        // ================= FIREBASE CONFIG =================
+        const firebaseConfig = {
+            apiKey: "AIzaSyCk8FLlQLe7_FKDVwbbNrVlIpIeOVFhQw0",
+            authDomain: "reviewfilm21-16bce.firebaseapp.com",
+            projectId: "reviewfilm21-16bce",
+            storageBucket: "reviewfilm21-16bce.firebasestorage.app",
+            messagingSenderId: "522045066841",
+            appId: "1:522045066841:web:b1e3509de388fe2adf6b48",
+            measurementId: "G-L34HRZ2MVY"
+        };
+
+        let db = null;
+        let firebaseLoaded = false;
+
+        function initFirebase() {
+            if (typeof firebase !== 'undefined') {
+                try {
+                    if (!firebase.apps.length) {
+                        firebase.initializeApp(firebaseConfig);
+                    }
+                    db = firebase.firestore();
+                    firebaseLoaded = true;
+                    console.log('✅ Firebase terhubung');
+                    return true;
+                } catch (e) {
+                    console.warn('⚠️ Gagal inisialisasi Firebase:', e);
+                    return false;
+                }
+            } else {
+                console.warn('⚠️ Firebase SDK belum dimuat');
+                return false;
+            }
+        }
+
+        // ================= KONSTANTA & STATE =================
+        // API Key TMDB (Dienskripsi untuk keamanan)
+        const TMDB_API_KEY_ENCODED = 'YTQ1Y2RhZTc5MGYwOWNlZTM5NGI3MTZiMzExNWI4NGY=';
+        const TMDB_API_KEY = atob(TMDB_API_KEY_ENCODED);
         const AD_DIRECT_LINK = "https://thrillingdeepcutlery.com/qwa587wxa2?key=561c88fe11ec0930083abdb24ca2352a";
         const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTdLZAQVdfGSSB2qO076v43C7Gxwe0WWLYG46pELaAYgOeM30fGPQWFJBHdla_FSmN4ki_v3yqG3OvN/pub?output=csv";
 
@@ -1997,52 +2035,131 @@ const TMDB_API_KEY = atob(TMDB_API_KEY_ENCODED);
                 container.appendChild(btn);
             });
         }
-        function renderComments(mediaId) {
+        async function renderComments(mediaId) {
             const list = document.getElementById('comments-list');
             if (!list) return;
-            const commentsKey = `comments_${mediaId}`;
-            const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+            
+            list.innerHTML = '<p class="text-xs text-zinc-500">Memuat komentar...</p>';
+            
+            let comments = [];
+            
+            if (firebaseLoaded && db) {
+                try {
+                    const snapshot = await db.collection('comments')
+                        .where('mediaId', '==', mediaId)
+                        .orderBy('timestamp', 'desc')
+                        .limit(50)
+                        .get();
+                    
+                    comments = snapshot.docs.map(doc => {
+                        const data = doc.data();
+                        return {
+                            name: data.name || 'Anonim',
+                            text: data.text,
+                            date: data.date || 'Baru saja'
+                        };
+                    });
+                    
+                    console.log(`✅ ${comments.length} komentar dimuat dari Firebase`);
+                } catch (e) {
+                    console.warn('⚠️ Gagal ambil komentar dari Firebase:', e);
+                }
+            }
+            
             if (comments.length === 0) {
-                list.innerHTML = `<p class="text-xs sm:text-sm text-zinc-500">Belum ada komentar. Jadilah yang pertama!</p>`;
+                const commentsKey = `comments_${mediaId}`;
+                const localComments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+                comments = localComments;
+            }
+            
+            if (comments.length === 0) {
+                list.innerHTML = '<p class="text-xs sm:text-sm text-zinc-500">Belum ada komentar. Jadilah yang pertama!</p>';
                 return;
             }
+            
             list.innerHTML = comments.map(comment => `
                 <div class="comment-item flex gap-2 sm:gap-3 items-start p-2 rounded-lg">
-                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 flex items-center justify-center text-xs sm:text-sm font-bold text-brand-500 shrink-0">${escapeHtml(comment.name || 'A').charAt(0).toUpperCase()}</div>
+                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 flex items-center justify-center text-xs sm:text-sm font-bold text-brand-500 shrink-0">
+                        ${escapeHtml((comment.name || 'A').charAt(0).toUpperCase())}
+                    </div>
                     <div class="space-y-1">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-xs sm:text-sm font-bold text-white">${escapeHtml(comment.name || 'Anonim')}</span>
-                            <span class="text-[10px] text-zinc-500">${escapeHtml(comment.date)}</span>
+                            <span class="text-[10px] text-zinc-500">${escapeHtml(comment.date || '')}</span>
                         </div>
                         <p class="text-xs sm:text-sm text-zinc-300">${escapeHtml(comment.text)}</p>
                     </div>
                 </div>
             `).join('');
         }
-        function submitComment() {
+        async function submitComment() {
             if (!state.currentMedia) return;
+            
             const nameInput = document.getElementById('comment-name');
             const textInput = document.getElementById('comment-text');
             const name = nameInput.value.trim();
             const text = textInput.value.trim();
+            
             if (!text) {
                 showToast('Tulis komentar terlebih dahulu', '⚠️');
                 textInput.focus();
                 return;
             }
+            
+            if (text.length > 500) {
+                showToast('Komentar maksimal 500 karakter', '⚠️');
+                return;
+            }
+            
             const mediaId = state.currentMedia.id;
-            const commentsKey = `comments_${mediaId}`;
-            const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
-            comments.push({
-                name: name || 'Anonim',
-                text: text,
-                date: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
-            });
-            localStorage.setItem(commentsKey, JSON.stringify(comments));
-            nameInput.value = '';
-            textInput.value = '';
-            renderComments(mediaId);
-            showToast('Komentar berhasil dikirim!', '💬');
+            const mediaTitle = state.currentMedia.title;
+            const mediaType = state.currentMedia.type;
+            
+            const submitBtn = document.querySelector('#detail-section button[onclick="submitComment()"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Mengirim...';
+            }
+            
+            try {
+                if (firebaseLoaded && db) {
+                    await db.collection('comments').add({
+                        mediaId: mediaId,
+                        mediaTitle: mediaTitle,
+                        mediaType: mediaType,
+                        name: name || 'Anonim',
+                        text: text,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                        date: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                    });
+                    
+                    showToast('Komentar berhasil dikirim!', '💬');
+                } else {
+                    const commentsKey = `comments_${mediaId}`;
+                    const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
+                    comments.push({
+                        name: name || 'Anonim',
+                        text: text,
+                        date: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                    });
+                    localStorage.setItem(commentsKey, JSON.stringify(comments));
+                    showToast('Komentar tersimpan lokal (offline)', '💬');
+                }
+                
+                nameInput.value = '';
+                textInput.value = '';
+                
+                await renderComments(mediaId);
+                
+            } catch (error) {
+                console.error('❌ Gagal kirim komentar:', error);
+                showToast('Gagal mengirim komentar. Coba lagi.', '⚠️');
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Kirim Komentar';
+                }
+            }
         }
 
         // ================= FILTER =================
@@ -2161,6 +2278,9 @@ const TMDB_API_KEY = atob(TMDB_API_KEY_ENCODED);
 
         window.onload = function () {
             updateWatchlistBadge();
+            
+            // Inisialisasi Firebase
+            initFirebase();
             
             const cachedTrending = loadTMDBFromCache('trending');
             const cachedMovies = loadTMDBFromCache('movies');
