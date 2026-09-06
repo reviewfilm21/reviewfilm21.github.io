@@ -772,9 +772,8 @@
             <div class="flex flex-wrap items-center justify-between gap-2 sm:gap-4 bg-zinc-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-800">
                 <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                     <span class="text-[10px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider">Server:</span>
-                    <button id="server-btn-1" onclick="switchServer(1)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target">Server 1</button>
-                    <button id="server-btn-2" onclick="switchServer(2)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Server 2</button>
-                    <button id="server-btn-3" onclick="switchServer(3)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Server 3</button>
+                    <button id="server-btn-1" onclick="switchServer(1)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target">Vidsrc</button>
+                    <button id="server-btn-2" onclick="switchServer(2)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Vidsrc CC</button>
                 </div>
                 <div class="flex items-center gap-1.5 sm:gap-2">
                     <button onclick="playTrailer()" class="focusable text-[10px] sm:text-xs bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold px-3 sm:px-4 py-2 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-md touch-target">
@@ -887,12 +886,10 @@
         const PUSTAKA_SERVER_2 = "https://paceboook21.blogspot.com/p/video-preview-body-margin-0-padding-0_0619822090.html";
         const PUSTAKA_SERVER_3 = "https://paceboook21.blogspot.com/p/live-hot-box-sizing-border-box-margin-0.html";
 
+        // ====== PERUBAHAN: Hanya 2 server video (Vidsrc & Vidsrc CC) ======
         const VIDEO_PROVIDERS = [
             { name: 'Vidsrc', movie: (id) => `https://vidsrc.to/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` },
-            { name: 'Vidsrc CC', movie: (id) => `https://vidsrc.cc/v2/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}` },
-            { name: 'AutoEmbed', movie: (id) => `https://autoembed.co/movie/tmdb/${id}`, tv: (id, season, episode) => `https://autoembed.co/tv/tmdb/${id}/${season}/${episode}` },
-            { name: '2Embed', movie: (id) => `https://www.2embed.cc/embed/${id}`, tv: (id, season, episode) => `https://www.2embed.cc/embed/${id}/${season}/${episode}` },
-            { name: 'SuperEmbed', movie: (id) => `https://multiembed.mov/direct.php?video_id=${id}&tmdb=1`, tv: (id, season, episode) => `https://multiembed.mov/direct.php?video_id=${id}&tmdb=1&s=${season}&e=${episode}` }
+            { name: 'Vidsrc CC', movie: (id) => `https://vidsrc.cc/v2/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}` }
         ];
 
         const FALLBACK_MOVIES = [
@@ -973,7 +970,6 @@
             collectionPageSize: 12,
             collectionCurrentPage: 1,
             currentCollectionName: '',
-            // State untuk navigasi episode di pustaka film
             libraryEpisodes: [],
             currentLibraryEpisodeIndex: 0
         };
@@ -984,14 +980,12 @@
         
         const store = new Store(initialState);
         
-        // Middleware untuk log state changes (hanya di development)
         if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
             store.addMiddleware((prev, next) => {
                 console.log('[State Change]', { prev: prev.activeTab, next: next.activeTab });
             });
         }
         
-        // Subscribe untuk update watchlist badge secara otomatis
         store.subscribe((state) => {
             const badge = document.getElementById('watchlist-count-badge');
             const mobBadge = document.getElementById('mob-watchlist-count');
@@ -1104,7 +1098,6 @@
                 
                 console.log(`✅ Data pustaka dimuat: ${parsedData.length} item`);
                 
-                // Trigger render ulang untuk menggabungkan data
                 renderAllSections();
                 
                 return true;
@@ -1184,7 +1177,6 @@
                 
                 const newState = {};
                 
-                // Trending
                 if (results[0].status === 'fulfilled' && results[0].value.ok) {
                     const data = await results[0].value.json();
                     if (data?.results?.length) {
@@ -1193,7 +1185,6 @@
                     }
                 }
                 
-                // Movies
                 if (results[1].status === 'fulfilled' && results[1].value.ok) {
                     const data = await results[1].value.json();
                     if (data?.results?.length) {
@@ -1202,7 +1193,6 @@
                     }
                 }
                 
-                // TV Series
                 if (results[2].status === 'fulfilled' && results[2].value.ok) {
                     const data = await results[2].value.json();
                     if (data?.results?.length) {
@@ -1211,7 +1201,6 @@
                     }
                 }
                 
-                // Thriller
                 if (results[3].status === 'fulfilled' && results[3].value.ok) {
                     const data = await results[3].value.json();
                     if (data?.results?.length) {
@@ -1226,7 +1215,6 @@
                     store.setState(newState);
                 }
                 
-                // Cache data
                 if (newState.trendingData) cacheTMDBData('trending', newState.trendingData);
                 if (newState.moviesData) cacheTMDBData('movies', newState.moviesData);
                 if (newState.seriesData) cacheTMDBData('series', newState.seriesData);
@@ -1320,7 +1308,6 @@
         function mergeTMDBWithLibrary(tmdbData, libraryData, type = 'all') {
             if (!libraryData || libraryData.length === 0) return tmdbData;
             
-            // Convert library data ke format yang sama dengan TMDB items
             const libraryItems = libraryData.map(item => {
                 const title = item.Judul || 'Tanpa Judul';
                 const poster = enforceHttps(item.Poster) || 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster';
@@ -1331,11 +1318,9 @@
                                 title.toLowerCase().includes('series') ||
                                 title.toLowerCase().includes('bag');
                 
-                // Filter berdasarkan type
                 if (type === 'movie' && isSeries) return null;
                 if (type === 'tv' && !isSeries) return null;
                 
-                // Hanya tampilkan episode 1 untuk series
                 if (isSeries) {
                     const episodeMatch = title.match(/\[(\d+)\]/) || title.match(/Ep(?:isode)?\s*(\d+)/i);
                     const episodeNumber = episodeMatch ? parseInt(episodeMatch[1]) : 1;
@@ -1372,10 +1357,8 @@
                 };
             }).filter(Boolean);
             
-            // Gabungkan data
             const merged = [...tmdbData];
             
-            // Tambahkan library items yang tidak duplikat
             libraryItems.forEach(libItem => {
                 const isDuplicate = tmdbData.some(tmdbItem => 
                     tmdbItem.title.toLowerCase() === libItem.title.toLowerCase() &&
@@ -1387,7 +1370,6 @@
                 }
             });
             
-            // Sort: TMDB items dulu (by popularity), library items di akhir
             merged.sort((a, b) => {
                 if (a.isLibraryItem && !b.isLibraryItem) return 1;
                 if (!a.isLibraryItem && b.isLibraryItem) return -1;
@@ -1397,9 +1379,7 @@
             return merged;
         }
 
-        // Fungsi untuk mendapatkan episode terkait dari library data
         function getLibraryEpisodes(currentTitle, libraryData) {
-            // Ekstrak judul dasar tanpa nomor episode
             const baseTitle = currentTitle.replace(/^Nonton\s*/i, '')
                                          .replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '')
                                          .replace(/Series\s*Sub\s*Indo/i, '')
@@ -1410,7 +1390,6 @@
                                          .replace(/\bBag\s*\d+\b/gi, '')
                                          .trim();
             
-            // Cari semua episode yang cocok dengan judul dasar
             return libraryData.filter(item => {
                 const itemTitle = (item.Judul || '');
                 const itemBaseTitle = itemTitle.replace(/^Nonton\s*/i, '')
@@ -1424,7 +1403,6 @@
                                               .trim();
                 return itemBaseTitle === baseTitle;
             }).sort((a, b) => {
-                // Urutkan berdasarkan nomor episode
                 const aMatch = (a.Judul || '').match(/\[(\d+)\]/) || (a.Judul || '').match(/Ep(?:isode)?\s*(\d+)/i);
                 const bMatch = (b.Judul || '').match(/\[(\d+)\]/) || (b.Judul || '').match(/Ep(?:isode)?\s*(\d+)/i);
                 const aEp = aMatch ? parseInt(aMatch[1]) : 0;
@@ -1499,7 +1477,6 @@
         function renderAllSections() {
             const state = store.getState();
             
-            // Gabungkan data TMDB dengan library
             let trendingData = state.trendingData;
             let moviesData = state.moviesData;
             let seriesData = state.seriesData;
@@ -1517,7 +1494,6 @@
             renderCarousel('series-carousel', seriesData);
             renderCarousel('thriller-carousel', thrillerData);
             
-            // Update hero items jika trending berubah
             if (trendingData.length > 0) {
                 store.setState({ heroItems: trendingData.slice(0, 5) });
             }
@@ -1545,11 +1521,9 @@
             const slug = slugify(item.title);
             const poster = getOptimizedImage(item.poster_path, 500);
             
-            // Badge untuk library items
             const libraryBadge = item.isLibraryItem ? 
                 `<div class="absolute bottom-1 sm:bottom-2 right-1 sm:right-2 bg-purple-500/80 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">PUSTAKA</div>` : '';
             
-            // Badge episode 1 untuk series
             const episodeBadge = (item.type === 'tv' && item.isLibraryItem) ? 
                 `<div class="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 bg-brand-500/90 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">EP 1</div>` : '';
             
@@ -1666,7 +1640,6 @@
                 return keywords.some(keyword => genre.includes(keyword));
             });
             
-            // Filter untuk series - hanya tampilkan episode 1
             filteredItems = filteredItems.filter(item => {
                 const title = (item.Judul || '').toLowerCase();
                 const isSeries = title.includes('season') || 
@@ -1762,18 +1735,15 @@
                             title.toLowerCase().includes('series') ||
                             title.toLowerCase().includes('bag');
             
-            // Deteksi episode number dari judul
             const episodeMatch = title.match(/\[(\d+)\]/) || title.match(/Ep(?:isode)?\s*(\d+)/i);
             const episodeNumber = episodeMatch ? parseInt(episodeMatch[1]) : 1;
             
-            // Hanya tampilkan episode 1 untuk series
             if (isSeries && episodeNumber > 1) {
-                return ''; // Skip episode selain 1
+                return '';
             }
             
             const type = isSeries ? 'tv' : 'movie';
             
-            // Bersihkan judul
             let displayTitle = title.replace(/^Nonton\s*/i, '')
                                    .replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '')
                                    .replace(/Series\s*Sub\s*Indo/i, '')
@@ -1786,7 +1756,6 @@
             
             if (!displayTitle) displayTitle = title;
             
-            // Badge episode 1 untuk series
             const episodeBadge = isSeries ? 
                 `<div class="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 bg-brand-500/90 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">EP 1</div>` : '';
             
@@ -1927,7 +1896,6 @@
                 console.warn('⚠️ Gagal search TMDB:', e); 
             }
             
-            // Tambahkan pencarian dari library
             const state = store.getState();
             if (state.isLibraryLoaded) {
                 const qLower = query.toLowerCase();
@@ -2081,18 +2049,14 @@
             const isSeries = item.type === 'tv';
             
             if (isSeries && !item.isLibraryItem) {
-                // Untuk TV series dari TMDB
                 epContainer.classList.remove('hidden');
                 let epHTML = '';
                 for (let i = 1; i <= 10; i++) {
                     epHTML += `<button onclick="switchEpisode(${i})" class="focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium touch-target ${i === 1 ? 'bg-brand-500 text-white font-bold' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'}">Episode ${i}</button>`;
                 }
                 epGrid.innerHTML = epHTML;
-                
-                // Aktifkan tombol navigasi episode
                 updateEpisodeNavButtons(true, 1, 10);
             } else if (isSeries && item.isLibraryItem && item.libraryEpisodes && item.libraryEpisodes.length > 1) {
-                // Untuk series dari pustaka film dengan multiple episodes
                 epContainer.classList.remove('hidden');
                 let epHTML = '';
                 item.libraryEpisodes.forEach((ep, index) => {
@@ -2102,12 +2066,9 @@
                     epHTML += `<button onclick="switchLibraryEpisode(${index})" class="focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium touch-target ${isActive ? 'bg-brand-500 text-white font-bold' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'}">Episode ${epNum}</button>`;
                 });
                 epGrid.innerHTML = epHTML;
-                
-                // Aktifkan tombol navigasi episode
                 updateEpisodeNavButtons(true, 1, item.libraryEpisodes.length);
             } else {
                 epContainer.classList.add('hidden');
-                // Nonaktifkan tombol navigasi episode untuk movie
                 updateEpisodeNavButtons(false, 1, 1);
             }
             
@@ -2152,13 +2113,14 @@
             }
         }
         
+        // ====== PERUBAHAN: getPustakaVideoUrl hanya 2 server ======
         function getPustakaVideoUrl(serverNum, item) {
             if (serverNum === 1) {
                 if (item.link && item.link !== '#') return formatEmbedUrl(item.link);
                 return 'about:blank';
             }
             if (serverNum === 2) return PUSTAKA_SERVER_2;
-            if (serverNum === 3) return PUSTAKA_SERVER_3;
+            // PUSTAKA_SERVER_3 tetap ada tapi tidak digunakan sebagai server utama
             return 'about:blank';
         }
         
@@ -2177,6 +2139,7 @@
             return enforceHttps(embedUrl);
         }
         
+        // ====== PERUBAHAN: updateIframeSource hanya 2 server ======
         function updateIframeSource() {
             const state = store.getState();
             const item = state.currentMedia;
@@ -2185,9 +2148,15 @@
             const iframe = document.getElementById('video-iframe');
             if (!iframe) return;
             
+            // Validasi server number (hanya 1 dan 2)
+            if (state.currentServer < 1 || state.currentServer > 2) {
+                store.setState({ currentServer: 1 });
+            }
+            
             if (item.isLibraryItem) {
                 currentVideoUrl = getPustakaVideoUrl(state.currentServer, item);
                 iframe.src = currentVideoUrl;
+                updateServerButtons();
                 return;
             }
             
@@ -2205,33 +2174,43 @@
             iframe.src = url;
             updateServerButtons();
             
-            // Update tombol navigasi episode
             if (item.type === 'tv') {
                 updateEpisodeNavButtons(true, state.currentEpisode, 10);
             }
         }
         
+        // ====== PERUBAHAN: updateServerButtons hanya 2 server ======
         function updateServerButtons() {
             const state = store.getState();
+            const serverNames = ['Vidsrc', 'Vidsrc CC'];
             
-            for (let i = 1; i <= 3; i++) {
+            for (let i = 1; i <= 2; i++) {
                 const btn = document.getElementById(`server-btn-${i}`);
                 if (btn) {
                     if (i === state.currentServer) {
                         btn.className = "focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target";
-                        btn.innerHTML = state.currentMedia?.isLibraryItem ? `Server ${i}` : `Server ${i} (${VIDEO_PROVIDERS[i-1]?.name || 'N/A'})`;
+                        btn.innerHTML = state.currentMedia?.isLibraryItem ? `Server ${i} (${serverNames[i-1]})` : serverNames[i-1];
                     } else {
                         btn.className = "focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target";
-                        btn.innerHTML = `Server ${i}`;
+                        btn.innerHTML = serverNames[i-1];
                     }
                 }
             }
         }
         
+        // ====== PERUBAHAN: switchServer hanya 2 server ======
         function switchServer(serverNum) {
+            // Validasi hanya server 1 dan 2 yang valid
+            if (serverNum < 1 || serverNum > 2) {
+                showToast('Server tidak tersedia', '⚠️');
+                return;
+            }
+            
             store.setState({ currentServer: serverNum });
             updateIframeSource();
-            showToast(`Server ${serverNum} dipilih`, '🔄');
+            
+            const serverName = serverNum === 1 ? 'Vidsrc' : 'Vidsrc CC';
+            showToast(`Server ${serverName} dipilih`, '🔄');
         }
         
         function switchEpisode(epNum) {
@@ -2268,7 +2247,6 @@
                 currentEpisode: index + 1
             });
             
-            // Update UI episodes grid
             const container = document.getElementById('episodes-grid');
             if (container) {
                 container.querySelectorAll('button').forEach((btn, idx) => {
@@ -2278,7 +2256,6 @@
                 });
             }
             
-            // Update video source
             const currentEpisode = item.libraryEpisodes[index];
             if (currentEpisode && currentEpisode.Link) {
                 const iframe = document.getElementById('video-iframe');
@@ -2289,15 +2266,12 @@
                 }
             }
             
-            // Update episode navigation buttons
             updateEpisodeNavButtons(true, index + 1, item.libraryEpisodes.length);
             
-            // Update episode info
             const epMatch = (currentEpisode?.Judul || '').match(/\[(\d+)\]/) || (currentEpisode?.Judul || '').match(/Ep(?:isode)?\s*(\d+)/i);
             const epNum = epMatch ? parseInt(epMatch[1]) : index + 1;
             showToast(`Episode ${epNum} dimuat`, '📺');
             
-            // Update title
             if (currentEpisode) {
                 const cleanedTitle = currentEpisode.Judul.replace(/^Nonton\s*/i, '')
                                                        .replace(/Sub\s*Indo(?:nesia)?/i, '')
@@ -2330,7 +2304,6 @@
             
             const state = store.getState();
             
-            // Cari episode terkait untuk series
             const libraryEpisodes = type === 'tv' ? 
                 getLibraryEpisodes(title, state.libraryData) : 
                 [];
@@ -2403,7 +2376,6 @@
                 return;
             }
             
-            // Untuk TV series dari TMDB
             if (!state.currentMedia.isLibraryItem) {
                 const totalEpisodes = 10;
                 let newEpisode = state.currentEpisode;
@@ -2420,7 +2392,6 @@
                 return;
             }
             
-            // Untuk series dari pustaka film
             if (state.currentMedia.isLibraryItem && state.currentMedia.libraryEpisodes && state.currentMedia.libraryEpisodes.length > 1) {
                 const totalEpisodes = state.currentMedia.libraryEpisodes.length;
                 let newIndex = state.currentLibraryEpisodeIndex;
@@ -2446,7 +2417,6 @@
             if (!prevBtn || !nextBtn || !epInfo) return;
             
             if (!isSeries || totalEpisodes <= 1) {
-                // Sembunyikan atau nonaktifkan untuk movie atau single episode
                 prevBtn.disabled = true;
                 nextBtn.disabled = true;
                 prevBtn.style.opacity = '0';
@@ -2455,23 +2425,18 @@
                 return;
             }
             
-            // Tampilkan tombol untuk series
             prevBtn.style.opacity = '1';
             nextBtn.style.opacity = '1';
             
-            // Atur status disabled
             prevBtn.disabled = currentEpisode <= 1;
             nextBtn.disabled = currentEpisode >= totalEpisodes;
             
-            // Update tooltip
             prevBtn.title = currentEpisode > 1 ? `Episode ${currentEpisode - 1}` : 'Tidak ada episode sebelumnya';
             nextBtn.title = currentEpisode < totalEpisodes ? `Episode ${currentEpisode + 1}` : 'Tidak ada episode selanjutnya';
             
-            // Tampilkan info episode
             epInfo.textContent = `Episode ${currentEpisode} dari ${totalEpisodes}`;
             epInfo.classList.remove('hidden');
             
-            // Sembunyikan info setelah 3 detik
             clearTimeout(epInfo._hideTimer);
             epInfo._hideTimer = setTimeout(() => {
                 epInfo.classList.add('hidden');
@@ -2677,14 +2642,11 @@
 
         // ================= INISIALISASI =================
         window.onload = function () {
-            // Load watchlist dari store
             const initialStateData = store.getState();
             
-            // Update badge
             document.getElementById('watchlist-count-badge').textContent = initialStateData.watchlist.length;
             document.getElementById('mob-watchlist-count').textContent = initialStateData.watchlist.length;
             
-            // Load cache TMDB
             const cachedTrending = loadTMDBFromCache('trending');
             const cachedMovies = loadTMDBFromCache('movies');
             const cachedSeries = loadTMDBFromCache('series');
@@ -2702,12 +2664,10 @@
                 store.setState(cachedState);
             }
             
-            // Load library data terlebih dahulu, baru fetch TMDB
             loadLibraryFromGoogleSheets().then(() => {
                 fetchTMDBCatalogs();
             });
             
-            // Fallback jika library gagal dimuat
             setTimeout(() => {
                 if (!store.getState().isLibraryLoaded) {
                     console.warn('⚠️ Library tidak dimuat dalam 10 detik, memuat data fallback');
@@ -2716,14 +2676,12 @@
                 }
             }, 10000);
             
-            // Setup hero carousel dan render awal
             setupHeroCarousel();
             renderAllSections();
             
             hideLoading();
         };
 
-        // Handle resize dengan debounce
         let resizeTimer;
         window.addEventListener('resize', () => { 
             clearTimeout(resizeTimer); 
