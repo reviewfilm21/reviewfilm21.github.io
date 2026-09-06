@@ -1,0 +1,40 @@
+{
+  "name": "ReviewFilm21 - Nonton Film Sub Indo",
+  "short_name": "ReviewFilm21",
+  "description": "Nonton film dan TV series subtitle Indonesia gratis",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🎬</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Film Bioskop",
+      "url": "/movies",
+      "description": "Lihat film bioskop terbaru"
+    },
+    {
+      "name": "TV Series",
+      "url": "/tv",
+      "description": "Lihat TV series"
+    },
+    {
+      "name": "Favorit",
+      "url": "/watchlist",
+      "description": "Lihat daftar favorit"
+    }
+  ],
+  "categories": ["entertainment", "video", "streaming"],
+  "lang": "id-ID",
+  "dir": "ltr",
+  "prefer_related_applications": false
+}
