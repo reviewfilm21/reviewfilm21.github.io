@@ -455,7 +455,37 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-16 lg:pb-0">
+<!-- JavaScript Files -->
+<script src="/js/rateLimiter.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/analytics.js"></script>
+<script src="/js/moderation.js"></script>
+<script src="/js/i18n.js"></script>
+
+<script>
+// Inisialisasi setelah DOM loaded
+document.addEventListener('DOMContentLoaded', async () => {
+  // Inisialisasi IndexedDB
+  try {
+    window.db = await db.open();
+    await migrateFromLocalStorage();
+    console.log('✅ IndexedDB siap');
+  } catch (error) {
+    console.warn('⚠️ Gagal inisialisasi IndexedDB:', error);
+  }
+  
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    try {
+      const registration = await navigator.serviceWorker.register('/sw.js');
+      console.log('✅ Service Worker terdaftar:', registration.scope);
+    } catch (error) {
+      console.error('❌ Service Worker gagal:', error);
+    }
+  }
+});
+</script>
+    <body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-16 lg:pb-0">
 
     <div id="toast" class="fixed top-5 right-5 z-[100] transform translate-y-[-100px] opacity-0 transition-all duration-300 bg-brand-500 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 font-semibold text-sm pointer-events-none max-w-[90vw] sm:max-w-md" role="alert" aria-live="polite">
         <span id="toast-icon">ℹ️</span>
