@@ -21,16 +21,10 @@
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>🎬</text></svg>">
 
     <!-- Verifikasi Search Engine -->
-   <meta name="google-site-verification" content="qFWhyo2SrrFA5qLhtPUjNr8NcLIlg-U_Eqvk0F8pprI" />
+    <meta name="google-site-verification" content="NawKeEqOgbxUWIDbLPlpPYTFmbnMEZ9TEkHTEia3nts" />
     <meta name="msvalidate.01" content="C34B61F3D297CB00DCDD5EC9D1D20C25" />
     
     <link rel="canonical" href="https://reviewfilm21.netlify.app/" />
-<!-- Keamanan Tambahan -->
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-<meta http-equiv="X-XSS-Protection" content="1; mode=block">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; img-src 'self' https: data: blob:; media-src 'self' https: blob:; frame-src 'self' https://vidsrc.to https://vidsrc.cc https://www.youtube.com https://www.youtube-nocookie.com https://mxdrop.sx https://blogspot.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://api.themoviedb.org https://docs.google.com https://image.tmdb.org https:;">
     
     <!-- Open Graph / Facebook SEO -->
     <meta property="og:type" content="website">
@@ -471,7 +465,6 @@
 <script>
 // Inisialisasi setelah DOM loaded
 document.addEventListener('DOMContentLoaded', async () => {
-  // Inisialisasi IndexedDB
   try {
     window.db = await db.open();
     await migrateFromLocalStorage();
@@ -480,7 +473,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.warn('⚠️ Gagal inisialisasi IndexedDB:', error);
   }
   
-  // Register Service Worker
   if ('serviceWorker' in navigator) {
     try {
       const registration = await navigator.serviceWorker.register('/sw.js');
@@ -491,7 +483,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 </script>
-    <body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-16 lg:pb-0">
+<body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-16 lg:pb-0">
 
     <div id="toast" class="fixed top-5 right-5 z-[100] transform translate-y-[-100px] opacity-0 transition-all duration-300 bg-brand-500 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 font-semibold text-sm pointer-events-none max-w-[90vw] sm:max-w-md" role="alert" aria-live="polite">
         <span id="toast-icon">ℹ️</span>
@@ -787,7 +779,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             <div class="relative w-full aspect-video bg-zinc-950 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl video-container">
                 <iframe id="video-iframe" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe>
                 
-                <!-- Navigasi Episode Overlay -->
                 <button id="episode-prev-btn" onclick="navigateEpisode('prev')" class="episode-nav-overlay episode-nav-prev" aria-label="Episode Sebelumnya" disabled>
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -799,7 +790,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </svg>
                 </button>
                 
-                <!-- Info Episode -->
                 <div id="episode-info" class="absolute top-3 left-1/2 transform -translate-x-1/2 bg-black/70 backdrop-blur-md text-white text-xs sm:text-sm font-bold px-3 py-1.5 rounded-full border border-brand-500/50 hidden">
                     Episode 1
                 </div>
@@ -922,7 +912,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const PUSTAKA_SERVER_2 = "https://paceboook21.blogspot.com/p/video-preview-body-margin-0-padding-0_0619822090.html";
         const PUSTAKA_SERVER_3 = "https://paceboook21.blogspot.com/p/live-hot-box-sizing-border-box-margin-0.html";
 
-        // ====== PERUBAHAN: Hanya 2 server video (Vidsrc & Vidsrc CC) ======
         const VIDEO_PROVIDERS = [
             { name: 'Vidsrc', movie: (id) => `https://vidsrc.to/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` },
             { name: 'Vidsrc CC', movie: (id) => `https://vidsrc.cc/v2/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}` }
@@ -947,7 +936,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const mediaCache = new Map();
         [...FALLBACK_MOVIES, ...FALLBACK_SERIES].forEach(item => mediaCache.set(`${item.type}-${item.id}`, item));
 
-        // ================= STORE (State Management Terpusat) =================
+        // ================= STORE =================
         class Store {
             constructor(initialState) {
                 this.state = initialState;
@@ -1016,12 +1005,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         const store = new Store(initialState);
         
-        if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-            store.addMiddleware((prev, next) => {
-                console.log('[State Change]', { prev: prev.activeTab, next: next.activeTab });
-            });
-        }
-        
         store.subscribe((state) => {
             const badge = document.getElementById('watchlist-count-badge');
             const mobBadge = document.getElementById('mob-watchlist-count');
@@ -1078,44 +1061,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             for (let attempt = 1; attempt <= maxRetries; attempt++) {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), timeout);
-                
                 try {
                     const response = await fetch(url, { signal: controller.signal });
                     clearTimeout(timeoutId);
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     return response;
                 } catch (error) {
                     clearTimeout(timeoutId);
                     console.warn(`⚠️ Attempt ${attempt}/${maxRetries} failed for ${url}:`, error.message);
-                    
-                    if (attempt === maxRetries) {
-                        throw error;
-                    }
-                    
+                    if (attempt === maxRetries) throw error;
                     await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempt - 1)));
                 }
             }
         }
         
-        const fetchWithTimeout = (url, timeout = 10000) => fetchWithRetry(url, 1, timeout);
-        
-        function updateTvFocusables() { 
-            // Simple placeholder for TV focus management
-        }
+        function updateTvFocusables() { }
 
         // ================= OPTIMASI GAMBAR =================
         function getOptimizedImage(url, width = 500) {
             if (!url) return 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster';
-            
             if (url.includes('image.tmdb.org')) {
                 if (url.includes('/w500/')) return url.replace('/w500/', `/w${width}/`);
                 if (url.includes('/w1280/')) return url.replace('/w1280/', `/w${width}/`);
             }
-            
             return url;
         }
 
@@ -1126,16 +1094,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const csvText = await response.text();
                 const parsedData = parseCSV(csvText);
                 if (parsedData.length === 0) throw new Error('Data CSV kosong');
-                
-                store.setState({ 
-                    libraryData: parsedData, 
-                    isLibraryLoaded: true 
-                });
-                
+                store.setState({ libraryData: parsedData, isLibraryLoaded: true });
                 console.log(`✅ Data pustaka dimuat: ${parsedData.length} item`);
-                
                 renderAllSections();
-                
                 return true;
             } catch (error) {
                 console.error('Error loading library:', error);
@@ -1182,19 +1143,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 { Judul: "Wayang Golek-Asep Sunandar - Panca Tunggal", Poster: "https://ik.imagekit.io/yhhmgwam7/sddefault.jpg", Link: "https://www.youtube-nocookie.com/embed/Bkp60lq8I4k?si=0o8FU3kmxW1VbvGX&controls=0&start=200", Genre: "wayang", Tahun: "2026", Rating: "8,8", Aktor: "Asep Sunanda", Deskripsi: "" },
                 { Judul: "JOKO KENDIL VIRAL TIKTOK- KETHOPRAK MINI SLAMET BUDOYO", Poster: "https://ik.imagekit.io/yhhmgwam7/k%20emdil%20(1).jpg", Link: "https://www.youtube-nocookie.com/embed/1p9AnYGAv2s?si=YK3HcUXS8Llbd1yj&start=60", Genre: "ketoprak, drama", Tahun: "2023", Rating: "8,8", Aktor: "", Deskripsi: "" }
             ];
-            
-            store.setState({ 
-                libraryData: fallbackData, 
-                isLibraryLoaded: true 
-            });
-            
+            store.setState({ libraryData: fallbackData, isLibraryLoaded: true });
             console.log(`⚠️ Menggunakan data cadangan: ${fallbackData.length} item`);
         }
 
         // ================= FUNGSI TMDB =================
         async function fetchTMDBCatalogs() {
             try {
-                const state = store.getState();
                 const genreEl = document.getElementById('genre-filter');
                 const yearEl = document.getElementById('year-filter');
                 const genreId = genreEl ? genreEl.value : '';
@@ -1202,7 +1157,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 let endpointAppend = '';
                 if (genreId) endpointAppend += `&with_genres=${genreId}`;
                 if (yearVal) endpointAppend += `&primary_release_year=${yearVal}&first_air_date_year=${yearVal}`;
-                let fetchedAny = false;
                 
                 const results = await Promise.allSettled([
                     fetchWithRetry(`https://api.themoviedb.org/3/trending/all/week?language=id-ID${endpointAppend}&api_key=${DEFAULT_API_KEY}`, 2, 10000),
@@ -1215,52 +1169,31 @@ document.addEventListener('DOMContentLoaded', async () => {
                 
                 if (results[0].status === 'fulfilled' && results[0].value.ok) {
                     const data = await results[0].value.json();
-                    if (data?.results?.length) {
-                        newState.trendingData = data.results.map(normalizeTMDBItem).filter(Boolean);
-                        fetchedAny = true;
-                    }
+                    if (data?.results?.length) newState.trendingData = data.results.map(normalizeTMDBItem).filter(Boolean);
                 }
-                
                 if (results[1].status === 'fulfilled' && results[1].value.ok) {
                     const data = await results[1].value.json();
-                    if (data?.results?.length) {
-                        newState.moviesData = data.results.map(normalizeTMDBItem).filter(Boolean);
-                        fetchedAny = true;
-                    }
+                    if (data?.results?.length) newState.moviesData = data.results.map(normalizeTMDBItem).filter(Boolean);
                 }
-                
                 if (results[2].status === 'fulfilled' && results[2].value.ok) {
                     const data = await results[2].value.json();
-                    if (data?.results?.length) {
-                        newState.seriesData = data.results.map(normalizeTMDBItem).filter(Boolean);
-                        fetchedAny = true;
-                    }
+                    if (data?.results?.length) newState.seriesData = data.results.map(normalizeTMDBItem).filter(Boolean);
                 }
-                
                 if (results[3].status === 'fulfilled' && results[3].value.ok) {
                     const data = await results[3].value.json();
-                    if (data?.results?.length) {
-                        newState.thrillerData = data.results.map(normalizeTMDBItem).filter(Boolean);
-                        fetchedAny = true;
-                    }
+                    if (data?.results?.length) newState.thrillerData = data.results.map(normalizeTMDBItem).filter(Boolean);
                 }
                 
                 localStorage.setItem('last_tmdb_update', Date.now().toString());
-                
-                if (Object.keys(newState).length > 0) {
-                    store.setState(newState);
-                }
+                if (Object.keys(newState).length > 0) store.setState(newState);
                 
                 if (newState.trendingData) cacheTMDBData('trending', newState.trendingData);
                 if (newState.moviesData) cacheTMDBData('movies', newState.moviesData);
                 if (newState.seriesData) cacheTMDBData('series', newState.seriesData);
                 if (newState.thrillerData) cacheTMDBData('thriller', newState.thrillerData);
                 
-                if (fetchedAny) {
-                    setupHeroCarousel();
-                    renderAllSections();
-                    console.log('✅ TMDB data updated at:', new Date().toLocaleString('id-ID'));
-                }
+                setupHeroCarousel();
+                renderAllSections();
             } catch (err) {
                 console.error('❌ Error fetching TMDB:', err);
                 renderAllSections();
@@ -1275,14 +1208,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const releaseDate = item.release_date || item.first_air_date || new Date().getFullYear().toString();
             const year = releaseDate ? (releaseDate.split('-')[0] || new Date().getFullYear().toString()) : new Date().getFullYear().toString();
             const type = item.media_type || (item.title ? 'movie' : 'tv');
-            
-            const posterPath = item.poster_path ? 
-                enforceHttps(`https://image.tmdb.org/t/p/w500${item.poster_path}`) : 
-                'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster';
-            const backdropPath = item.backdrop_path ? 
-                enforceHttps(`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`) : 
-                'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover';
-            
+            const posterPath = item.poster_path ? enforceHttps(`https://image.tmdb.org/t/p/w500${item.poster_path}`) : 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster';
+            const backdropPath = item.backdrop_path ? enforceHttps(`https://image.tmdb.org/t/p/w1280${item.backdrop_path}`) : 'https://placehold.co/1200x600/18181b/ff5c00?text=No+Cover';
             return {
                 id: item.id,
                 title: title,
@@ -1299,13 +1226,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         function getGenreNames(genreIds) {
-            const genreMap = {
-                28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy',
-                80: 'Crime', 99: 'Documentary', 18: 'Drama', 10751: 'Family',
-                14: 'Fantasy', 36: 'History', 27: 'Horror', 10402: 'Music',
-                9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi', 10770: 'TV Movie',
-                53: 'Thriller', 10752: 'War', 37: 'Western'
-            };
+            const genreMap = { 28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy', 80: 'Crime', 18: 'Drama', 14: 'Fantasy', 27: 'Horror', 9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi', 53: 'Thriller' };
             if (!genreIds || genreIds.length === 0) return 'Bioskop';
             return genreIds.slice(0, 3).map(id => genreMap[id] || 'Bioskop').join(', ');
         }
@@ -1314,9 +1235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const cacheData = { timestamp: Date.now(), data: data };
                 localStorage.setItem(`tmdb_cache_${key}`, JSON.stringify(cacheData));
-            } catch (e) { 
-                console.warn('⚠️ Gagal cache TMDB data:', e); 
-            }
+            } catch (e) { console.warn('⚠️ Gagal cache TMDB:', e); }
         }
 
         function loadTMDBFromCache(key, maxAge = 30 * 60 * 1000) {
@@ -1326,9 +1245,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const cacheData = JSON.parse(cached);
                     if (Date.now() - cacheData.timestamp < maxAge) return cacheData.data;
                 }
-            } catch (e) { 
-                console.warn('⚠️ Gagal load cache TMDB:', e); 
-            }
+            } catch (e) { console.warn('⚠️ Gagal load cache:', e); }
             return null;
         }
 
@@ -1343,38 +1260,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         // ================= FUNGSI MERGE DATA =================
         function mergeTMDBWithLibrary(tmdbData, libraryData, type = 'all') {
             if (!libraryData || libraryData.length === 0) return tmdbData;
-            
             const libraryItems = libraryData.map(item => {
                 const title = item.Judul || 'Tanpa Judul';
                 const poster = enforceHttps(item.Poster) || 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster';
                 const rating = parseFloat((item.Rating || '8.0').replace(',', '.')) || 8.0;
                 const year = item.Tahun || new Date().getFullYear().toString();
-                const isSeries = title.toLowerCase().includes('season') || 
-                                title.toLowerCase().includes('episode') || 
-                                title.toLowerCase().includes('series') ||
-                                title.toLowerCase().includes('bag');
-                
+                const isSeries = title.toLowerCase().includes('season') || title.toLowerCase().includes('episode') || title.toLowerCase().includes('series') || title.toLowerCase().includes('bag');
                 if (type === 'movie' && isSeries) return null;
                 if (type === 'tv' && !isSeries) return null;
-                
                 if (isSeries) {
                     const episodeMatch = title.match(/\[(\d+)\]/) || title.match(/Ep(?:isode)?\s*(\d+)/i);
                     const episodeNumber = episodeMatch ? parseInt(episodeMatch[1]) : 1;
                     if (episodeNumber > 1) return null;
                 }
-                
-                let displayTitle = title.replace(/^Nonton\s*/i, '')
-                                       .replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '')
-                                       .replace(/Series\s*Sub\s*Indo/i, '')
-                                       .replace(/Sub\s*Indo/i, '')
-                                       .replace(/Sub\s*Indonesia/i, '')
-                                       .replace(/\[\d+\]/g, '')
-                                       .replace(/Ep(?:isode)?\s*\d+/gi, '')
-                                       .replace(/\bBag\s*\d+\b/gi, '')
-                                       .trim();
-                
+                let displayTitle = title.replace(/^Nonton\s*/i, '').replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '').replace(/Series\s*Sub\s*Indo/i, '').replace(/Sub\s*Indo/i, '').replace(/Sub\s*Indonesia/i, '').replace(/\[\d+\]/g, '').replace(/Ep(?:isode)?\s*\d+/gi, '').replace(/\bBag\s*\d+\b/gi, '').trim();
                 if (!displayTitle) displayTitle = title;
-                
                 return {
                     id: Math.abs(hashCode(title + (item.Link || ''))),
                     title: displayTitle,
@@ -1392,51 +1292,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                     libraryEpisodes: isSeries ? getLibraryEpisodes(title, libraryData) : []
                 };
             }).filter(Boolean);
-            
             const merged = [...tmdbData];
-            
             libraryItems.forEach(libItem => {
-                const isDuplicate = tmdbData.some(tmdbItem => 
-                    tmdbItem.title.toLowerCase() === libItem.title.toLowerCase() &&
-                    Math.abs(parseInt(tmdbItem.year) - parseInt(libItem.year)) <= 1
-                );
-                
-                if (!isDuplicate) {
-                    merged.push(libItem);
-                }
+                const isDuplicate = tmdbData.some(tmdbItem => tmdbItem.title.toLowerCase() === libItem.title.toLowerCase() && Math.abs(parseInt(tmdbItem.year) - parseInt(libItem.year)) <= 1);
+                if (!isDuplicate) merged.push(libItem);
             });
-            
             merged.sort((a, b) => {
                 if (a.isLibraryItem && !b.isLibraryItem) return 1;
                 if (!a.isLibraryItem && b.isLibraryItem) return -1;
                 return (b.popularity || 0) - (a.popularity || 0);
             });
-            
             return merged;
         }
 
         function getLibraryEpisodes(currentTitle, libraryData) {
-            const baseTitle = currentTitle.replace(/^Nonton\s*/i, '')
-                                         .replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '')
-                                         .replace(/Series\s*Sub\s*Indo/i, '')
-                                         .replace(/Sub\s*Indo/i, '')
-                                         .replace(/Sub\s*Indonesia/i, '')
-                                         .replace(/\[\d+\]/g, '')
-                                         .replace(/Ep(?:isode)?\s*\d+/gi, '')
-                                         .replace(/\bBag\s*\d+\b/gi, '')
-                                         .trim();
-            
+            const baseTitle = currentTitle.replace(/^Nonton\s*/i, '').replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '').replace(/Series\s*Sub\s*Indo/i, '').replace(/Sub\s*Indo/i, '').replace(/Sub\s*Indonesia/i, '').replace(/\[\d+\]/g, '').replace(/Ep(?:isode)?\s*\d+/gi, '').replace(/\bBag\s*\d+\b/gi, '').trim();
             return libraryData.filter(item => {
                 const itemTitle = (item.Judul || '');
-                const itemBaseTitle = itemTitle.replace(/^Nonton\s*/i, '')
-                                              .replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '')
-                                              .replace(/Series\s*Sub\s*Indo/i, '')
-                                              .replace(/Sub\s*Indo/i, '')
-                                              .replace(/Sub\s*Indonesia/i, '')
-                                              .replace(/\[\d+\]/g, '')
-                                              .replace(/Ep(?:isode)?\s*\d+/gi, '')
-                                              .replace(/\bBag\s*\d+\b/gi, '')
-                                              .trim();
+                const itemBaseTitle = itemTitle.replace(/^Nonton\s*/i, '').replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '').replace(/Series\s*Sub\s*Indo/i, '').replace(/Sub\s*Indo/i, '').replace(/Sub\s*Indonesia/i, '').replace(/\[\d+\]/g, '').replace(/Ep(?:isode)?\s*\d+/gi, '').replace(/\bBag\s*\d+\b/gi, '').trim();
                 return itemBaseTitle === baseTitle;
             }).sort((a, b) => {
                 const aMatch = (a.Judul || '').match(/\[(\d+)\]/) || (a.Judul || '').match(/Ep(?:isode)?\s*(\d+)/i);
@@ -1456,13 +1329,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         function switchTab(tab) {
             store.setState({ activeTab: tab });
-            
             document.getElementById('detail-section').classList.add('hidden');
             const collectionContainer = document.getElementById('collection-container');
             if (collectionContainer) collectionContainer.classList.add('hidden');
-            
             document.querySelectorAll('#main-content > *').forEach(s => s.classList.add('hidden'));
-            
             const sections = {
                 hero: document.getElementById('hero-section'),
                 trending: document.getElementById('trending-section'),
@@ -1471,7 +1341,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 thriller: document.getElementById('thriller-section'),
                 watchlist: document.getElementById('watchlist-section')
             };
-            
             if (tab === 'watchlist') {
                 sections.watchlist.classList.remove('hidden');
                 document.getElementById('breadcrumb-current').textContent = 'Daftar Favorit';
@@ -1491,52 +1360,29 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('breadcrumb-current').textContent = 'Semua Film';
                 renderAllSections();
             }
-            
-            const titleMap = { 
-                home: 'ReviewFilm21 - Nonton Film Sub Indo Gratis', 
-                movies: 'Nonton Film Bioskop Sub Indo Gratis - ReviewFilm21', 
-                tv: 'Nonton TV Series & Drakor Sub Indo Gratis - ReviewFilm21', 
-                watchlist: 'Daftar Favorit Saya - ReviewFilm21' 
-            };
+            const titleMap = { home: 'ReviewFilm21 - Nonton Film Sub Indo Gratis', movies: 'Nonton Film Bioskop Sub Indo Gratis - ReviewFilm21', tv: 'Nonton TV Series & Drakor Sub Indo Gratis - ReviewFilm21', watchlist: 'Daftar Favorit Saya - ReviewFilm21' };
             document.title = titleMap[tab] || titleMap.home;
-            
-            document.querySelectorAll('[id^="nav-"], [id^="mob-nav-"]').forEach(btn => {
-                const tabName = btn.id.replace('nav-', '').replace('mob-nav-', '');
-                if (tabName === tab) { btn.classList.add('text-brand-500'); btn.classList.remove('text-zinc-400', 'text-zinc-300'); }
-                else { btn.classList.remove('text-brand-500'); btn.classList.add('text-zinc-400'); }
-            });
-            
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            setTimeout(updateTvFocusables, 200);
         }
 
         function renderAllSections() {
             const state = store.getState();
-            
             let trendingData = state.trendingData;
             let moviesData = state.moviesData;
             let seriesData = state.seriesData;
             let thrillerData = state.thrillerData;
-            
             if (state.isLibraryLoaded && state.libraryData.length > 0) {
                 trendingData = mergeTMDBWithLibrary(state.trendingData, state.libraryData, 'all');
                 moviesData = mergeTMDBWithLibrary(state.moviesData, state.libraryData, 'movie');
                 seriesData = mergeTMDBWithLibrary(state.seriesData, state.libraryData, 'tv');
                 thrillerData = mergeTMDBWithLibrary(state.thrillerData, state.libraryData, 'movie');
             }
-            
             renderCarousel('trending-carousel', trendingData);
             renderCarousel('movies-carousel', moviesData);
             renderCarousel('series-carousel', seriesData);
             renderCarousel('thriller-carousel', thrillerData);
-            
-            if (trendingData.length > 0) {
-                store.setState({ heroItems: trendingData.slice(0, 5) });
-            }
-            
+            if (trendingData.length > 0) store.setState({ heroItems: trendingData.slice(0, 5) });
             if (state.activeTab === 'watchlist') renderWatchlistGrid();
-            
-            setTimeout(updateTvFocusables, 200);
         }
 
         function renderCarousel(elementId, items) {
@@ -1556,39 +1402,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             mediaCache.set(key, item);
             const slug = slugify(item.title);
             const poster = getOptimizedImage(item.poster_path, 500);
-            
-            const libraryBadge = item.isLibraryItem ? 
-                `<div class="absolute bottom-1 sm:bottom-2 right-1 sm:right-2 bg-purple-500/80 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">PUSTAKA</div>` : '';
-            
-            const episodeBadge = (item.type === 'tv' && item.isLibraryItem) ? 
-                `<div class="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 bg-brand-500/90 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">EP 1</div>` : '';
-            
-            return `
-                <a href="/${item.type}/${item.id}/${slug}" onclick="event.preventDefault(); navigateToDetail('${key}')" class="focusable poster-card shrink-0 w-24 sm:w-36 md:w-44 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative snap-start block">
-                    <div class="relative aspect-[2/3] overflow-hidden bg-zinc-950">
-                        <img src="${poster}" alt="Poster ${escapeHtml(item.title)}" loading="lazy" onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=Gambar+N/A'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-black/70 backdrop-blur-md text-amber-400 font-extrabold text-[8px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/20">★ ${item.rating}</div>
-                        <div class="absolute top-1 sm:top-2 right-1 sm:right-2 z-10">
-                            <button onclick="event.preventDefault(); event.stopPropagation(); toggleFavoriteFromKey('${key}')" class="focusable p-2 sm:p-1.5 rounded-full bg-black/70 hover:bg-brand-500 text-white transition-all text-[8px] sm:text-xs touch-target" aria-label="Simpan Favorit">${isFav ? '⭐' : '☆'}</button>
-                        </div>
-                        ${libraryBadge}
-                        ${episodeBadge}
-                        <div class="absolute inset-0 bg-brand-600/40 backdrop-blur-[2px] play-overlay flex flex-col items-center justify-center p-1 sm:p-3 text-center">
-                            <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-brand-500 text-white flex items-center justify-center shadow-xl shadow-brand-500/50 mb-1 sm:mb-2 transform group-hover:scale-110 transition-transform">
-                                <svg class="w-4 h-4 sm:w-6 sm:h-6 fill-current translate-x-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                            </div>
-                            <span class="text-white text-[8px] sm:text-xs font-black tracking-wide drop-shadow">TONTON</span>
-                        </div>
-                    </div>
-                    <div class="p-2 sm:p-3 space-y-0.5 sm:space-y-1">
-                        <h3 class="text-[10px] sm:text-sm font-bold text-white truncate group-hover:text-brand-500 transition-colors">${escapeHtml(item.title)}</h3>
-                        <div class="flex items-center justify-between text-[8px] sm:text-[10px] text-zinc-400">
-                            <span>${item.year}</span>
-                            <span class="uppercase border border-zinc-700 px-0.5 sm:px-1 rounded text-[7px] sm:text-[9px]">${item.type === 'tv' ? (item.isLibraryItem ? 'EP 1' : 'Series') : 'HD'}</span>
-                        </div>
-                    </div>
-                </a>
-            `;
+            const libraryBadge = item.isLibraryItem ? `<div class="absolute bottom-1 sm:bottom-2 right-1 sm:right-2 bg-purple-500/80 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">PUSTAKA</div>` : '';
+            const episodeBadge = (item.type === 'tv' && item.isLibraryItem) ? `<div class="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 bg-brand-500/90 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">EP 1</div>` : '';
+            return `<a href="/${item.type}/${item.id}/${slug}" onclick="event.preventDefault(); navigateToDetail('${key}')" class="focusable poster-card shrink-0 w-24 sm:w-36 md:w-44 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative snap-start block"><div class="relative aspect-[2/3] overflow-hidden bg-zinc-950"><img src="${poster}" alt="Poster ${escapeHtml(item.title)}" loading="lazy" onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=Gambar+N/A'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"><div class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-black/70 backdrop-blur-md text-amber-400 font-extrabold text-[8px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/20">★ ${item.rating}</div><div class="absolute top-1 sm:top-2 right-1 sm:right-2 z-10"><button onclick="event.preventDefault(); event.stopPropagation(); toggleFavoriteFromKey('${key}')" class="focusable p-2 sm:p-1.5 rounded-full bg-black/70 hover:bg-brand-500 text-white transition-all text-[8px] sm:text-xs touch-target" aria-label="Simpan Favorit">${isFav ? '⭐' : '☆'}</button></div>${libraryBadge}${episodeBadge}<div class="absolute inset-0 bg-brand-600/40 backdrop-blur-[2px] play-overlay flex flex-col items-center justify-center p-1 sm:p-3 text-center"><div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-brand-500 text-white flex items-center justify-center shadow-xl shadow-brand-500/50 mb-1 sm:mb-2"><svg class="w-4 h-4 sm:w-6 sm:h-6 fill-current translate-x-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="text-white text-[8px] sm:text-xs font-black tracking-wide drop-shadow">TONTON</span></div></div><div class="p-2 sm:p-3 space-y-0.5 sm:space-y-1"><h3 class="text-[10px] sm:text-sm font-bold text-white truncate group-hover:text-brand-500 transition-colors">${escapeHtml(item.title)}</h3><div class="flex items-center justify-between text-[8px] sm:text-[10px] text-zinc-400"><span>${item.year}</span><span class="uppercase border border-zinc-700 px-0.5 sm:px-1 rounded text-[7px] sm:text-[9px]">${item.type === 'tv' ? (item.isLibraryItem ? 'EP 1' : 'Series') : 'HD'}</span></div></div></a>`;
         }
 
         function navigateToDetail(key) {
@@ -1605,15 +1421,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (item) toggleWatchlistDirect(item);
         }
 
-        function isWatchlisted(id) { 
-            return store.getState().watchlist.some(x => x.id === id); 
-        }
+        function isWatchlisted(id) { return store.getState().watchlist.some(x => x.id === id); }
 
         function toggleWatchlistDirect(item) {
             const state = store.getState();
             const idx = state.watchlist.findIndex(x => x.id === item.id);
             let newWatchlist;
-            
             if (idx > -1) {
                 newWatchlist = state.watchlist.filter(x => x.id !== item.id);
                 showToast(`"${item.title}" dihapus dari favorit`, '🗑️');
@@ -1621,11 +1434,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 newWatchlist = [...state.watchlist, item];
                 showToast(`"${item.title}" ditambahkan ke favorit!`, '⭐');
             }
-            
             store.setState({ watchlist: newWatchlist });
             localStorage.setItem('lt21_watchlist', JSON.stringify(newWatchlist));
             renderAllSections();
-            
             if (state.currentMedia && state.currentMedia.id === item.id) updateDetailFavoriteButton();
         }
 
@@ -1633,66 +1444,40 @@ document.addEventListener('DOMContentLoaded', async () => {
             const grid = document.getElementById('watchlist-grid');
             const state = store.getState();
             if (!grid) return;
-            
             if (state.watchlist.length === 0) {
                 grid.innerHTML = `<div class="col-span-full py-12 text-center space-y-3"><span class="text-4xl">⭐</span><p class="text-zinc-400 text-sm">Belum ada film di daftar favorit Kamu.</p><button onclick="navigateTo('home')" class="focusable text-xs bg-brand-500 text-white font-bold px-4 py-3 rounded-lg touch-target">Cari Film Sekarang</button></div>`;
                 return;
             }
-            
             grid.innerHTML = state.watchlist.map(item => createCardHTML(item)).join('');
         }
 
         // ================= KOLEKSI =================
         function navigateToCollection(collectionType) {
             const state = store.getState();
-            
             if (!state.isLibraryLoaded) {
-                loadLibraryFromGoogleSheets().then(() => { 
-                    if (store.getState().isLibraryLoaded) navigateToCollection(collectionType); 
-                });
+                loadLibraryFromGoogleSheets().then(() => { if (store.getState().isLibraryLoaded) navigateToCollection(collectionType); });
                 return;
             }
-            
             const categoryMap = {
-                'film-barat': ['film barat', 'barat'], 
-                'film-asia': ['film asia', 'asia'], 
-                'film-indonesia': ['film indonesia', 'indonesia'], 
-                'film-superhero': ['superhero'],
-                'series-korea': ['series korea', 'korea'], 
-                'series-asia': ['series asia'], 
-                'series-indonesia': ['series indonesia'], 
-                'series-barat': ['series barat'], 
-                'series-india': ['series india'],
-                'seni-wayang': ['wayang'], 
-                'seni-ludruk': ['ludruk'], 
-                'seni-ketoprak': ['ketoprak']
+                'film-barat': ['film barat', 'barat'], 'film-asia': ['film asia', 'asia'], 'film-indonesia': ['film indonesia', 'indonesia'], 'film-superhero': ['superhero'],
+                'series-korea': ['series korea', 'korea'], 'series-asia': ['series asia'], 'series-indonesia': ['series indonesia'], 'series-barat': ['series barat'], 'series-india': ['series india'],
+                'seni-wayang': ['wayang'], 'seni-ludruk': ['ludruk'], 'seni-ketoprak': ['ketoprak']
             };
-            
             const keywords = categoryMap[collectionType];
             if (!keywords) { showToast('Kategori tidak ditemukan', '⚠️'); return; }
-            
             let filteredItems = state.libraryData.filter(item => {
                 const genre = item.Genre ? item.Genre.toLowerCase() : '';
                 return keywords.some(keyword => genre.includes(keyword));
             });
-            
             filteredItems = filteredItems.filter(item => {
                 const title = (item.Judul || '').toLowerCase();
-                const isSeries = title.includes('season') || 
-                                title.includes('episode') || 
-                                title.includes('series') ||
-                                title.includes('bag');
-                
+                const isSeries = title.includes('season') || title.includes('episode') || title.includes('series') || title.includes('bag');
                 if (!isSeries) return true;
-                
                 const episodeMatch = item.Judul.match(/\[(\d+)\]/) || item.Judul.match(/Ep(?:isode)?\s*(\d+)/i);
                 const episodeNumber = episodeMatch ? parseInt(episodeMatch[1]) : 1;
-                
                 return episodeNumber === 1;
             });
-            
             if (filteredItems.length === 0) { showToast('Tidak ada konten untuk kategori ini', '📭'); return; }
-            
             const categoryName = collectionType.replace('-', ' ').toUpperCase();
             showCollectionGrid(filteredItems, categoryName);
             window.history.pushState({}, '', `/collection/${collectionType}`);
@@ -1701,14 +1486,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         function showCollectionGrid(items, categoryName) {
-            store.setState({ 
-                currentCollectionItems: items, 
-                currentCollectionName: categoryName, 
-                collectionCurrentPage: 1 
-            });
-            
+            store.setState({ currentCollectionItems: items, currentCollectionName: categoryName, collectionCurrentPage: 1 });
             document.querySelectorAll('#main-content > *').forEach(s => s.classList.add('hidden'));
-            
             let collectionContainer = document.getElementById('collection-container');
             if (!collectionContainer) {
                 collectionContainer = document.createElement('section');
@@ -1717,29 +1496,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('main-content').appendChild(collectionContainer);
             }
             collectionContainer.classList.remove('hidden');
-            collectionContainer.innerHTML = `
-                <div class="flex items-center justify-between border-b border-zinc-800 pb-2 sm:pb-3">
-                    <h2 class="text-base sm:text-xl font-bold text-white flex items-center gap-1.5 sm:gap-2"><span class="text-brand-500">📚</span> ${categoryName} <span class="text-xs text-zinc-400 font-normal ml-2">(${items.length} konten)</span></h2>
-                    <button onclick="closeCollection()" class="focusable text-zinc-400 hover:text-white p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-xs touch-target">✕ Tutup</button>
-                </div>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4" id="collection-grid"></div>
-                <div id="collection-load-more-container" class="text-center pt-4"></div>
-            `;
+            collectionContainer.innerHTML = `<div class="flex items-center justify-between border-b border-zinc-800 pb-2 sm:pb-3"><h2 class="text-base sm:text-xl font-bold text-white"><span class="text-brand-500">📚</span> ${categoryName} <span class="text-xs text-zinc-400 font-normal ml-2">(${items.length} konten)</span></h2><button onclick="closeCollection()" class="focusable text-zinc-400 hover:text-white p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-xs touch-target">✕ Tutup</button></div><div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4" id="collection-grid"></div><div id="collection-load-more-container" class="text-center pt-4"></div>`;
             renderCollectionPage();
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            setTimeout(updateTvFocusables, 200);
         }
 
         function renderCollectionPage() {
             const grid = document.getElementById('collection-grid');
             const state = store.getState();
             if (!grid) return;
-            
-            const start = 0;
             const end = state.collectionCurrentPage * state.collectionPageSize;
-            const pageItems = state.currentCollectionItems.slice(start, end);
+            const pageItems = state.currentCollectionItems.slice(0, end);
             grid.innerHTML = pageItems.map(item => createLibraryCardHTML(item)).filter(Boolean).join('');
-            
             const loadMoreContainer = document.getElementById('collection-load-more-container');
             if (loadMoreContainer) {
                 const totalPages = Math.ceil(state.currentCollectionItems.length / state.collectionPageSize);
@@ -1755,7 +1523,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const state = store.getState();
             store.setState({ collectionCurrentPage: state.collectionCurrentPage + 1 });
             renderCollectionPage();
-            setTimeout(updateTvFocusables, 200);
         }
 
         function createLibraryCardHTML(item) {
@@ -1766,65 +1533,17 @@ document.addEventListener('DOMContentLoaded', async () => {
             const link = item.Link || '#';
             const actors = item.Aktor || '';
             const description = item.Deskripsi || '';
-            const isSeries = title.toLowerCase().includes('season') || 
-                            title.toLowerCase().includes('episode') || 
-                            title.toLowerCase().includes('series') ||
-                            title.toLowerCase().includes('bag');
-            
+            const isSeries = title.toLowerCase().includes('season') || title.toLowerCase().includes('episode') || title.toLowerCase().includes('series') || title.toLowerCase().includes('bag');
             const episodeMatch = title.match(/\[(\d+)\]/) || title.match(/Ep(?:isode)?\s*(\d+)/i);
             const episodeNumber = episodeMatch ? parseInt(episodeMatch[1]) : 1;
-            
-            if (isSeries && episodeNumber > 1) {
-                return '';
-            }
-            
+            if (isSeries && episodeNumber > 1) return '';
             const type = isSeries ? 'tv' : 'movie';
-            
-            let displayTitle = title.replace(/^Nonton\s*/i, '')
-                                   .replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '')
-                                   .replace(/Series\s*Sub\s*Indo/i, '')
-                                   .replace(/Sub\s*Indo/i, '')
-                                   .replace(/Sub\s*Indonesia/i, '')
-                                   .replace(/\[\d+\]/g, '')
-                                   .replace(/Ep(?:isode)?\s*\d+/gi, '')
-                                   .replace(/\bBag\s*\d+\b/gi, '')
-                                   .trim();
-            
+            let displayTitle = title.replace(/^Nonton\s*/i, '').replace(/[\(\[]\s*[\d]{4}\s*[\)\]]/g, '').replace(/Series\s*Sub\s*Indo/i, '').replace(/Sub\s*Indo/i, '').replace(/Sub\s*Indonesia/i, '').replace(/\[\d+\]/g, '').replace(/Ep(?:isode)?\s*\d+/gi, '').replace(/\bBag\s*\d+\b/gi, '').trim();
             if (!displayTitle) displayTitle = title;
-            
-            const episodeBadge = isSeries ? 
-                `<div class="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 bg-brand-500/90 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">EP 1</div>` : '';
-            
+            const episodeBadge = isSeries ? `<div class="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 bg-brand-500/90 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">EP 1</div>` : '';
             const slug = slugify(displayTitle);
             const itemId = Math.abs(hashCode(title + link));
-            
-            return `
-                <a href="/${type}/${itemId}/${slug}" onclick="event.preventDefault(); playLibraryItem('${escapeHtml(link)}', '${escapeHtml(title)}', '${escapeHtml(poster)}', '${escapeHtml(rating)}', '${escapeHtml(year)}', '${escapeHtml(description)}', '${escapeHtml(actors)}', '${type}')" 
-                   class="focusable poster-card shrink-0 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative snap-start block">
-                    <div class="relative aspect-[2/3] overflow-hidden bg-zinc-950">
-                        <img src="${poster}" alt="Poster ${escapeHtml(displayTitle)}" loading="lazy" 
-                             onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=Gambar+N/A'" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-black/70 backdrop-blur-md text-amber-400 font-extrabold text-[8px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/20">★ ${rating}</div>
-                        ${isSeries ? `<div class="absolute top-1 sm:top-2 right-1 sm:right-2 bg-brand-500/80 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">Series</div>` : ''}
-                        ${episodeBadge}
-                        <div class="absolute inset-0 bg-brand-600/40 backdrop-blur-[2px] play-overlay flex flex-col items-center justify-center p-1 sm:p-3 text-center">
-                            <div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-brand-500 text-white flex items-center justify-center shadow-xl shadow-brand-500/50 mb-1 sm:mb-2 transform group-hover:scale-110 transition-transform">
-                                <svg class="w-4 h-4 sm:w-6 sm:h-6 fill-current translate-x-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                            </div>
-                            <span class="text-white text-[8px] sm:text-xs font-black tracking-wide drop-shadow">TONTON</span>
-                        </div>
-                    </div>
-                    <div class="p-2 sm:p-3 space-y-0.5 sm:space-y-1">
-                        <h3 class="text-[10px] sm:text-sm font-bold text-white truncate group-hover:text-brand-500 transition-colors">${escapeHtml(displayTitle)}</h3>
-                        <div class="flex items-center justify-between text-[8px] sm:text-[10px] text-zinc-400">
-                            <span>${year}</span>
-                            <span class="uppercase border border-zinc-700 px-0.5 sm:px-1 rounded text-[7px] sm:text-[9px]">${type === 'tv' ? 'EP 1' : 'HD'}</span>
-                        </div>
-                        ${actors ? `<div class="text-[7px] sm:text-[9px] text-zinc-500 truncate">${escapeHtml(actors)}</div>` : ''}
-                    </div>
-                </a>
-            `;
+            return `<a href="/${type}/${itemId}/${slug}" onclick="event.preventDefault(); playLibraryItem('${escapeHtml(link)}', '${escapeHtml(title)}', '${escapeHtml(poster)}', '${escapeHtml(rating)}', '${escapeHtml(year)}', '${escapeHtml(description)}', '${escapeHtml(actors)}', '${type}')" class="focusable poster-card shrink-0 bg-zinc-900 rounded-lg sm:rounded-xl overflow-hidden border border-zinc-800/80 group cursor-pointer relative snap-start block"><div class="relative aspect-[2/3] overflow-hidden bg-zinc-950"><img src="${poster}" alt="Poster ${escapeHtml(displayTitle)}" loading="lazy" onerror="this.src='https://placehold.co/400x600/18181b/ff5c00?text=Gambar+N/A'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"><div class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-black/70 backdrop-blur-md text-amber-400 font-extrabold text-[8px] sm:text-[11px] px-1.5 sm:px-2 py-0.5 rounded border border-amber-500/20">★ ${rating}</div>${isSeries ? `<div class="absolute top-1 sm:top-2 right-1 sm:right-2 bg-brand-500/80 text-white text-[7px] sm:text-[9px] font-bold px-1.5 py-0.5 rounded">Series</div>` : ''}${episodeBadge}<div class="absolute inset-0 bg-brand-600/40 backdrop-blur-[2px] play-overlay flex flex-col items-center justify-center p-1 sm:p-3 text-center"><div class="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-brand-500 text-white flex items-center justify-center shadow-xl shadow-brand-500/50 mb-1 sm:mb-2"><svg class="w-4 h-4 sm:w-6 sm:h-6 fill-current translate-x-0.5" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div><span class="text-white text-[8px] sm:text-xs font-black tracking-wide drop-shadow">TONTON</span></div></div><div class="p-2 sm:p-3 space-y-0.5 sm:space-y-1"><h3 class="text-[10px] sm:text-sm font-bold text-white truncate group-hover:text-brand-500 transition-colors">${escapeHtml(displayTitle)}</h3><div class="flex items-center justify-between text-[8px] sm:text-[10px] text-zinc-400"><span>${year}</span><span class="uppercase border border-zinc-700 px-0.5 sm:px-1 rounded text-[7px] sm:text-[9px]">${type === 'tv' ? 'EP 1' : 'HD'}</span></div>${actors ? `<div class="text-[7px] sm:text-[9px] text-zinc-500 truncate">${escapeHtml(actors)}</div>` : ''}</div></a>`;
         }
 
         function closeCollection() {
@@ -1837,12 +1556,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // ================= PENCARIAN =================
         let searchDebounce = null;
-        
         function handleSearchInput(e) {
             clearTimeout(searchDebounce);
             const query = e.target.value.trim();
             const clearBtn = document.getElementById('search-clear-btn');
-            
             if (query) {
                 clearBtn.classList.remove('hidden');
             } else {
@@ -1850,23 +1567,16 @@ document.addEventListener('DOMContentLoaded', async () => {
                 document.getElementById('search-section').classList.add('hidden');
                 return;
             }
-            
             searchDebounce = setTimeout(() => executeSearch(query), 500);
         }
-        
         function handleMobileSearchInput(e) {
             document.getElementById('search-input').value = e.target.value;
             handleSearchInput({target:{value:e.target.value}});
         }
-        
         function toggleMobileSearch() {
             const bar = document.getElementById('mobile-search-bar');
-            if (bar) { 
-                bar.classList.toggle('hidden'); 
-                if (!bar.classList.contains('hidden')) document.getElementById('mobile-search-input').focus(); 
-            }
+            if (bar) { bar.classList.toggle('hidden'); if (!bar.classList.contains('hidden')) document.getElementById('mobile-search-input').focus(); }
         }
-        
         function clearSearch() {
             document.getElementById('search-input').value = '';
             document.getElementById('mobile-search-input').value = '';
@@ -1874,52 +1584,29 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('search-section').classList.add('hidden');
             document.getElementById('search-grid').innerHTML = '';
             document.getElementById('search-count').textContent = '0 Film Ditemukan';
-            
-            store.setState({ 
-                searchQuery: '', 
-                searchAllResults: [], 
-                searchCurrentPage: 1 
-            });
+            store.setState({ searchQuery: '', searchAllResults: [], searchCurrentPage: 1 });
         }
-        
         async function executeSearch(query) {
-            store.setState({ 
-                searchQuery: query, 
-                searchCurrentPage: 1 
-            });
-            
+            store.setState({ searchQuery: query, searchCurrentPage: 1 });
             document.getElementById('search-query-text').textContent = `"${query}"`;
-            
             let tmdbMatches = [];
-            
             try {
                 const searchGrid = document.getElementById('search-grid');
-                if (searchGrid) {
-                    searchGrid.innerHTML = `<div class="col-span-full py-8 text-center"><div class="spinner mx-auto"></div><p class="text-zinc-400 text-sm mt-3">Mencari di TMDB...</p></div>`;
-                }
+                if (searchGrid) searchGrid.innerHTML = `<div class="col-span-full py-8 text-center"><div class="spinner mx-auto"></div><p class="text-zinc-400 text-sm mt-3">Mencari di TMDB...</p></div>`;
                 document.getElementById('search-count').textContent = 'Mencari...';
-                
                 const results = await Promise.allSettled([
                     fetchWithRetry(`https://api.themoviedb.org/3/search/movie?language=id-ID&query=${encodeURIComponent(query)}&page=1&include_adult=false&api_key=${DEFAULT_API_KEY}`, 2, 10000),
                     fetchWithRetry(`https://api.themoviedb.org/3/search/tv?language=id-ID&query=${encodeURIComponent(query)}&page=1&include_adult=false&api_key=${DEFAULT_API_KEY}`, 2, 10000)
                 ]);
-                
                 if (results[0].status === 'fulfilled' && results[0].value.ok) {
                     const data = await results[0].value.json();
-                    if (data?.results?.length) {
-                        tmdbMatches.push(...data.results.map(item => normalizeTMDBItem({...item, media_type: 'movie'})).filter(Boolean));
-                    }
+                    if (data?.results?.length) tmdbMatches.push(...data.results.map(item => normalizeTMDBItem({...item, media_type: 'movie'})).filter(Boolean));
                 }
-                
                 if (results[1].status === 'fulfilled' && results[1].value.ok) {
                     const data = await results[1].value.json();
-                    if (data?.results?.length) {
-                        tmdbMatches.push(...data.results.map(item => normalizeTMDBItem({...item, media_type: 'tv'})).filter(Boolean));
-                    }
+                    if (data?.results?.length) tmdbMatches.push(...data.results.map(item => normalizeTMDBItem({...item, media_type: 'tv'})).filter(Boolean));
                 }
-                
                 tmdbMatches.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
-                
                 const seen = new Set();
                 tmdbMatches = tmdbMatches.filter(item => {
                     const key = `${item.title.toLowerCase()}-${item.year}`;
@@ -1927,71 +1614,48 @@ document.addEventListener('DOMContentLoaded', async () => {
                     seen.add(key);
                     return true;
                 });
-                
-            } catch(e) { 
-                console.warn('⚠️ Gagal search TMDB:', e); 
-            }
-            
+            } catch(e) { console.warn('⚠️ Gagal search TMDB:', e); }
             const state = store.getState();
             if (state.isLibraryLoaded) {
                 const qLower = query.toLowerCase();
-                const libraryMatches = mergeTMDBWithLibrary([], state.libraryData, 'all').filter(item => 
-                    item.title.toLowerCase().includes(qLower) || 
-                    (item.overview && item.overview.toLowerCase().includes(qLower))
-                );
+                const libraryMatches = mergeTMDBWithLibrary([], state.libraryData, 'all').filter(item => item.title.toLowerCase().includes(qLower) || (item.overview && item.overview.toLowerCase().includes(qLower)));
                 tmdbMatches.push(...libraryMatches);
             }
-            
             if (tmdbMatches.length === 0) {
                 const qLower = query.toLowerCase();
-                tmdbMatches = [...FALLBACK_MOVIES, ...FALLBACK_SERIES].filter(item => 
-                    item.title.toLowerCase().includes(qLower) || item.overview.toLowerCase().includes(qLower)
-                );
+                tmdbMatches = [...FALLBACK_MOVIES, ...FALLBACK_SERIES].filter(item => item.title.toLowerCase().includes(qLower) || item.overview.toLowerCase().includes(qLower));
             }
-            
             store.setState({ searchAllResults: tmdbMatches });
             renderSearchPage();
             document.getElementById('search-section').classList.remove('hidden');
-            
             if (tmdbMatches.length === 0) showToast('Tidak ada hasil ditemukan', '🔍');
-            
-            setTimeout(updateTvFocusables, 200);
         }
-        
         function renderSearchPage() {
             const searchGrid = document.getElementById('search-grid');
             const searchCount = document.getElementById('search-count');
             const state = store.getState();
             if (!searchGrid || !searchCount) return;
-            
-            const start = 0;
             const end = state.searchCurrentPage * state.searchPageSize;
-            const pageResults = state.searchAllResults.slice(start, end);
+            const pageResults = state.searchAllResults.slice(0, end);
             const totalPages = Math.ceil(state.searchAllResults.length / state.searchPageSize);
-            
             searchCount.textContent = `${state.searchAllResults.length} Film/Series Ditemukan`;
-            
             if (pageResults.length === 0) {
                 searchGrid.innerHTML = `<div class="col-span-full py-8 text-center space-y-3"><span class="text-4xl">🔍</span><p class="text-zinc-500 text-sm">Tidak ditemukan hasil untuk "${escapeHtml(state.searchQuery)}".</p><p class="text-zinc-600 text-xs">Coba kata kunci lain atau periksa ejaan.</p></div>`;
             } else {
                 searchGrid.innerHTML = pageResults.map(item => createCardHTML(item)).join('');
             }
-            
             let loadMoreHTML = '';
             if (state.searchCurrentPage < totalPages) {
                 loadMoreHTML = `<div class="col-span-full text-center pt-4"><button onclick="loadMoreSearch()" class="focusable text-xs bg-zinc-800 hover:bg-zinc-700 text-white font-bold px-6 py-3 rounded-lg touch-target">Muat Lebih Banyak (${state.searchCurrentPage}/${totalPages})</button></div>`;
             } else if (state.searchAllResults.length > 0) {
                 loadMoreHTML = `<div class="col-span-full text-center pt-4"><p class="text-xs text-zinc-500">Semua hasil telah dimuat.</p></div>`;
             }
-            
             searchGrid.insertAdjacentHTML('beforeend', loadMoreHTML);
         }
-        
         function loadMoreSearch() {
             const state = store.getState();
             store.setState({ searchCurrentPage: state.searchCurrentPage + 1 });
             renderSearchPage();
-            setTimeout(updateTvFocusables, 200);
         }
 
         // ================= HERO =================
@@ -2003,72 +1667,32 @@ document.addEventListener('DOMContentLoaded', async () => {
             state.heroTimer = setInterval(nextHero, 6000);
             store.setState({ heroTimer: state.heroTimer });
         }
-        
         function updateHeroDisplay() {
             const state = store.getState();
             const item = state.heroItems[state.currentHeroIndex];
             if (!item) return;
-            
             document.getElementById('hero-backdrop').style.backgroundImage = `url('${getOptimizedImage(item.backdrop_path, 1280)}')`;
             document.getElementById('hero-title').textContent = item.title;
             document.getElementById('hero-overview').textContent = item.overview;
             document.getElementById('hero-rating').textContent = `★ ${item.rating}`;
             document.getElementById('hero-year').textContent = item.year;
             document.getElementById('hero-type').textContent = item.type === 'tv' ? 'TV Series' : 'Bioskop Movie';
-            
             const isFav = isWatchlisted(item.id);
             document.getElementById('hero-fav-icon').textContent = isFav ? '⭐' : '☆';
             document.getElementById('hero-fav-text').textContent = isFav ? 'Tersimpan' : 'Simpan';
         }
-        
-        function nextHero() { 
-            const state = store.getState();
-            if (state.heroItems.length === 0) return; 
-            const newIndex = (state.currentHeroIndex + 1) % state.heroItems.length;
-            store.setState({ currentHeroIndex: newIndex });
-            updateHeroDisplay(); 
-        }
-        
-        function prevHero() { 
-            const state = store.getState();
-            if (state.heroItems.length === 0) return; 
-            const newIndex = (state.currentHeroIndex - 1 + state.heroItems.length) % state.heroItems.length;
-            store.setState({ currentHeroIndex: newIndex });
-            updateHeroDisplay(); 
-        }
-        
-        function openHeroPlayer() { 
-            const state = store.getState();
-            const item = state.heroItems[state.currentHeroIndex]; 
-            if (item) navigateToDetail(getMediaKey(item.type, item.id)); 
-        }
-        
-        function toggleHeroFavorite() { 
-            const state = store.getState();
-            const item = state.heroItems[state.currentHeroIndex]; 
-            if (item) { toggleWatchlistDirect(item); updateHeroDisplay(); } 
-        }
-        
-        function scrollCarousel(elementId, distance) { 
-            const container = document.getElementById(elementId); 
-            if (container) container.scrollBy({ left: distance, behavior: 'smooth' }); 
-        }
+        function nextHero() { const state = store.getState(); if (state.heroItems.length === 0) return; const newIndex = (state.currentHeroIndex + 1) % state.heroItems.length; store.setState({ currentHeroIndex: newIndex }); updateHeroDisplay(); }
+        function prevHero() { const state = store.getState(); if (state.heroItems.length === 0) return; const newIndex = (state.currentHeroIndex - 1 + state.heroItems.length) % state.heroItems.length; store.setState({ currentHeroIndex: newIndex }); updateHeroDisplay(); }
+        function openHeroPlayer() { const state = store.getState(); const item = state.heroItems[state.currentHeroIndex]; if (item) navigateToDetail(getMediaKey(item.type, item.id)); }
+        function toggleHeroFavorite() { const state = store.getState(); const item = state.heroItems[state.currentHeroIndex]; if (item) { toggleWatchlistDirect(item); updateHeroDisplay(); } }
+        function scrollCarousel(elementId, distance) { const container = document.getElementById(elementId); if (container) container.scrollBy({ left: distance, behavior: 'smooth' }); }
 
         // ================= DETAIL & PLAYER =================
         let adPopupInterval = null;
         let currentVideoUrl = '';
         
         async function openDetailPage(item) {
-            store.setState({ 
-                currentMedia: item, 
-                currentServer: 1, 
-                currentSeason: 1, 
-                currentEpisode: 1, 
-                trailerKey: '',
-                libraryEpisodes: item.libraryEpisodes || [],
-                currentLibraryEpisodeIndex: 0
-            });
-            
+            store.setState({ currentMedia: item, currentServer: 1, currentSeason: 1, currentEpisode: 1, trailerKey: '', libraryEpisodes: item.libraryEpisodes || [], currentLibraryEpisodeIndex: 0 });
             document.title = `Nonton ${item.title} (${item.year}) Subtitle Indonesia - ReviewFilm21`;
             document.getElementById('detail-title').textContent = item.title;
             document.getElementById('detail-type-badge').textContent = item.type === 'tv' ? 'TV SERIES' : 'MOVIE';
@@ -2077,13 +1701,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('detail-genres').textContent = item.genre || 'Pustaka Film';
             document.getElementById('detail-overview').textContent = item.overview || 'Tidak ada deskripsi tersedia.';
             document.getElementById('detail-poster').src = getOptimizedImage(item.poster_path, 500);
-            
             updateDetailFavoriteButton();
-            
             const epContainer = document.getElementById('episodes-container');
             const epGrid = document.getElementById('episodes-grid');
             const isSeries = item.type === 'tv';
-            
             if (isSeries && !item.isLibraryItem) {
                 epContainer.classList.remove('hidden');
                 let epHTML = '';
@@ -2107,125 +1728,104 @@ document.addEventListener('DOMContentLoaded', async () => {
                 epContainer.classList.add('hidden');
                 updateEpisodeNavButtons(false, 1, 1);
             }
-            
             document.querySelectorAll('#main-content > *:not(#detail-section)').forEach(s => s.classList.add('hidden'));
             document.getElementById('detail-section').classList.remove('hidden');
-            
             setupVideoSource(item);
-            
             if (!item.isLibraryItem) {
                 try {
                     const res = await fetchWithRetry(`https://api.themoviedb.org/3/${item.type}/${item.id}/videos?language=id-ID&api_key=${DEFAULT_API_KEY}`, 2, 10000);
                     if (res.ok) {
                         const data = await res.json();
                         const officialTrailer = data.results?.find(v => v.type === 'Trailer' && v.site === 'YouTube') || data.results?.find(v => v.site === 'YouTube');
-                        if (officialTrailer) {
-                            store.setState({ trailerKey: officialTrailer.key });
-                        }
+                        if (officialTrailer) store.setState({ trailerKey: officialTrailer.key });
                     }
-                } catch(e) { 
-                    console.warn('⚠️ Gagal fetch trailer:', e); 
-                }
+                } catch(e) { console.warn('⚠️ Gagal fetch trailer:', e); }
             }
-            
             loadDetailInteractions(item.id);
             window.scrollTo({ top: 0, behavior: 'smooth' });
             startAdInterval();
-            setTimeout(updateTvFocusables, 200);
         }
-        
+
         function setupVideoSource(item) {
             const iframe = document.getElementById('video-iframe');
             if (!iframe) return;
-            
             updateServerButtons();
-            
             if (item.isLibraryItem) {
                 const url = getPustakaVideoUrl(1, item);
                 currentVideoUrl = url;
                 iframe.src = url;
+                console.log('🎬 Library video URL:', url);
+                if (!url || url === 'about:blank') showToast('Link video tidak valid', '⚠️');
             } else {
                 updateIframeSource();
             }
         }
-        
-        // ====== PERUBAHAN: getPustakaVideoUrl hanya 2 server ======
+
+        // ====== PERBAIKAN: formatEmbedUrl ======
+        function formatEmbedUrl(url) {
+            if (!url) return 'about:blank';
+            let embedUrl = url.trim();
+            if (embedUrl.includes('youtube.com/embed/') || embedUrl.includes('youtube-nocookie.com/embed/')) {
+                return enforceHttps(embedUrl);
+            }
+            if (embedUrl.includes('youtube.com/watch?v=')) {
+                const videoId = embedUrl.match(/v=([^&]+)/);
+                if (videoId) return `https://www.youtube.com/embed/${videoId[1]}`;
+            }
+            if (embedUrl.includes('youtu.be/')) {
+                const videoId = embedUrl.match(/youtu\.be\/([^?]+)/);
+                if (videoId) return `https://www.youtube.com/embed/${videoId[1]}`;
+            }
+            if (embedUrl.includes('mxdrop.sx')) {
+                if (embedUrl.includes('/e/')) return enforceHttps(embedUrl);
+                return enforceHttps(embedUrl.replace('/d/', '/e/').replace('/v/', '/e/'));
+            }
+            if (embedUrl.startsWith('//')) return 'https:' + embedUrl;
+            if (embedUrl.startsWith('http://')) return embedUrl.replace('http://', 'https://');
+            return enforceHttps(embedUrl);
+        }
+
+        // ====== PERBAIKAN: getPustakaVideoUrl ======
         function getPustakaVideoUrl(serverNum, item) {
             if (serverNum === 1) {
                 if (item.link && item.link !== '#') return formatEmbedUrl(item.link);
                 return 'about:blank';
             }
             if (serverNum === 2) return PUSTAKA_SERVER_2;
-            // PUSTAKA_SERVER_3 tetap ada tapi tidak digunakan sebagai server utama
             return 'about:blank';
         }
-        
-        function formatEmbedUrl(url) {
-            if (!url) return 'about:blank';
-            let embedUrl = url;
-            if (url.includes('youtube.com/watch?v=')) { 
-                const videoId = url.match(/v=([^&]+)/); 
-                if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`; 
-            }
-            else if (url.includes('youtu.be/')) { 
-                const videoId = url.match(/youtu\.be\/([^?]+)/); 
-                if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`; 
-            }
-            else if (url.includes('youtube-nocookie.com/embed/')) embedUrl = url;
-            return enforceHttps(embedUrl);
-        }
-        
-        // ====== PERUBAHAN: updateIframeSource hanya 2 server ======
+
         function updateIframeSource() {
             const state = store.getState();
             const item = state.currentMedia;
             if (!item) return;
-            
             const iframe = document.getElementById('video-iframe');
             if (!iframe) return;
-            
-            // Validasi server number (hanya 1 dan 2)
-            if (state.currentServer < 1 || state.currentServer > 2) {
-                store.setState({ currentServer: 1 });
-            }
-            
+            if (state.currentServer < 1 || state.currentServer > 2) store.setState({ currentServer: 1 });
             if (item.isLibraryItem) {
                 currentVideoUrl = getPustakaVideoUrl(state.currentServer, item);
                 iframe.src = currentVideoUrl;
                 updateServerButtons();
                 return;
             }
-            
             const provider = VIDEO_PROVIDERS[(state.currentServer - 1) % VIDEO_PROVIDERS.length];
-            if (!provider) { 
-                iframe.src = 'about:blank'; 
-                return; 
-            }
-            
-            let url = item.type === 'tv' ? 
-                provider.tv(item.id, state.currentSeason, state.currentEpisode) : 
-                provider.movie(item.id);
-            
+            if (!provider) { iframe.src = 'about:blank'; return; }
+            let url = item.type === 'tv' ? provider.tv(item.id, state.currentSeason, state.currentEpisode) : provider.movie(item.id);
             currentVideoUrl = url;
             iframe.src = url;
             updateServerButtons();
-            
-            if (item.type === 'tv') {
-                updateEpisodeNavButtons(true, state.currentEpisode, 10);
-            }
+            if (item.type === 'tv') updateEpisodeNavButtons(true, state.currentEpisode, 10);
         }
-        
-        // ====== PERUBAHAN: updateServerButtons hanya 2 server ======
+
         function updateServerButtons() {
             const state = store.getState();
             const serverNames = ['Vidsrc', 'Vidsrc CC'];
-            
             for (let i = 1; i <= 2; i++) {
                 const btn = document.getElementById(`server-btn-${i}`);
                 if (btn) {
                     if (i === state.currentServer) {
                         btn.className = "focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target";
-                        btn.innerHTML = state.currentMedia?.isLibraryItem ? `Server ${i} (${serverNames[i-1]})` : serverNames[i-1];
+                        btn.innerHTML = serverNames[i-1];
                     } else {
                         btn.className = "focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target";
                         btn.innerHTML = serverNames[i-1];
@@ -2233,65 +1833,40 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             }
         }
-        
-        // ====== PERUBAHAN: switchServer hanya 2 server ======
+
         function switchServer(serverNum) {
-            // Validasi hanya server 1 dan 2 yang valid
-            if (serverNum < 1 || serverNum > 2) {
-                showToast('Server tidak tersedia', '⚠️');
-                return;
-            }
-            
+            if (serverNum < 1 || serverNum > 2) { showToast('Server tidak tersedia', '⚠️'); return; }
             store.setState({ currentServer: serverNum });
             updateIframeSource();
-            
             const serverName = serverNum === 1 ? 'Vidsrc' : 'Vidsrc CC';
             showToast(`Server ${serverName} dipilih`, '🔄');
         }
-        
+
         function switchEpisode(epNum) {
             store.setState({ currentEpisode: epNum });
-            
             const container = document.getElementById('episodes-grid');
             if (container) {
                 container.querySelectorAll('button').forEach((btn, idx) => {
-                    btn.className = idx + 1 === epNum ? 
-                        "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white touch-target" : 
-                        "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 touch-target";
+                    btn.className = idx + 1 === epNum ? "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white touch-target" : "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 touch-target";
                 });
             }
-            
             updateIframeSource();
             updateEpisodeNavButtons(true, epNum, 10);
             showToast(`Episode ${epNum} dimuat`, '📺');
         }
-        
+
         function switchLibraryEpisode(index) {
             const state = store.getState();
             const item = state.currentMedia;
-            
-            if (!item || !item.isLibraryItem || !item.libraryEpisodes || item.libraryEpisodes.length === 0) {
-                return;
-            }
-            
-            if (index < 0 || index >= item.libraryEpisodes.length) {
-                return;
-            }
-            
-            store.setState({ 
-                currentLibraryEpisodeIndex: index,
-                currentEpisode: index + 1
-            });
-            
+            if (!item || !item.isLibraryItem || !item.libraryEpisodes || item.libraryEpisodes.length === 0) return;
+            if (index < 0 || index >= item.libraryEpisodes.length) return;
+            store.setState({ currentLibraryEpisodeIndex: index, currentEpisode: index + 1 });
             const container = document.getElementById('episodes-grid');
             if (container) {
                 container.querySelectorAll('button').forEach((btn, idx) => {
-                    btn.className = idx === index ? 
-                        "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white touch-target" : 
-                        "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 touch-target";
+                    btn.className = idx === index ? "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white touch-target" : "focusable px-2.5 sm:px-3.5 py-2 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 touch-target";
                 });
             }
-            
             const currentEpisode = item.libraryEpisodes[index];
             if (currentEpisode && currentEpisode.Link) {
                 const iframe = document.getElementById('video-iframe');
@@ -2301,51 +1876,35 @@ document.addEventListener('DOMContentLoaded', async () => {
                     iframe.src = url;
                 }
             }
-            
             updateEpisodeNavButtons(true, index + 1, item.libraryEpisodes.length);
-            
             const epMatch = (currentEpisode?.Judul || '').match(/\[(\d+)\]/) || (currentEpisode?.Judul || '').match(/Ep(?:isode)?\s*(\d+)/i);
             const epNum = epMatch ? parseInt(epMatch[1]) : index + 1;
             showToast(`Episode ${epNum} dimuat`, '📺');
-            
             if (currentEpisode) {
-                const cleanedTitle = currentEpisode.Judul.replace(/^Nonton\s*/i, '')
-                                                       .replace(/Sub\s*Indo(?:nesia)?/i, '')
-                                                       .trim();
+                const cleanedTitle = currentEpisode.Judul.replace(/^Nonton\s*/i, '').replace(/Sub\s*Indo(?:nesia)?/i, '').trim();
                 document.getElementById('detail-title').textContent = cleanedTitle;
             }
         }
-        
+
         function playTrailer() {
             const state = store.getState();
             const iframe = document.getElementById('video-iframe');
             if (!iframe) return;
-            
-            if (state.trailerKey) { 
-                currentVideoUrl = `https://www.youtube.com/embed/${state.trailerKey}?autoplay=1`;
-                iframe.src = currentVideoUrl; 
-                showToast('Memutar Trailer Resmi YouTube', '🎬'); 
-            }
+            if (state.trailerKey) { currentVideoUrl = `https://www.youtube.com/embed/${state.trailerKey}?autoplay=1`; iframe.src = currentVideoUrl; showToast('Memutar Trailer Resmi YouTube', '🎬'); }
             else showToast('Maaf, trailer resmi tidak tersedia untuk film ini', '⚠️');
         }
-        
+
         function openExternalPlayer() {
-            if (currentVideoUrl && currentVideoUrl !== 'about:blank') {
-                window.open(currentVideoUrl, '_blank');
-            }
+            if (currentVideoUrl && currentVideoUrl !== 'about:blank') window.open(currentVideoUrl, '_blank');
         }
-        
+
+        // ====== PERBAIKAN: playLibraryItem ======
         function playLibraryItem(link, title, poster, rating, year, description, actors, type) {
             if (!link || link === '#') { showToast('Link video tidak tersedia', '⚠️'); return; }
-            
             const state = store.getState();
-            
-            const libraryEpisodes = type === 'tv' ? 
-                getLibraryEpisodes(title, state.libraryData) : 
-                [];
-            
+            const libraryEpisodes = type === 'tv' ? getLibraryEpisodes(title, state.libraryData) : [];
             const mediaItem = {
-                id: Math.floor(Math.random() * 1000000),
+                id: Math.abs(hashCode(title + link)),
                 title,
                 type: type || 'movie',
                 rating: rating || '8.0',
@@ -2359,99 +1918,58 @@ document.addEventListener('DOMContentLoaded', async () => {
                 isLibraryItem: true,
                 libraryEpisodes: libraryEpisodes
             };
-            
-            const slug = slugify(mediaItem.title.replace(/^Nonton\s*/i, '').replace(/Sub\s*Indo(?:nesia)?/i, '').trim());
-            window.history.pushState({}, '', `/${mediaItem.type}/${mediaItem.id}/${slug}`);
-            document.getElementById('breadcrumb-current').textContent = mediaItem.title;
             openDetailPage(mediaItem);
         }
-        
+
         function closeDetailPage() {
             document.getElementById('detail-section').classList.add('hidden');
             if (adPopupInterval) { clearInterval(adPopupInterval); adPopupInterval = null; }
-            
             const state = store.getState();
-            const sections = { 
-                home: ['hero-section', 'trending-section', 'movies-section', 'series-section', 'thriller-section'], 
-                movies: ['movies-section'], 
-                tv: ['series-section'], 
-                watchlist: ['watchlist-section'] 
-            };
-            
+            const sections = { home: ['hero-section', 'trending-section', 'movies-section', 'series-section', 'thriller-section'], movies: ['movies-section'], tv: ['series-section'], watchlist: ['watchlist-section'] };
             const toShow = sections[state.activeTab] || sections.home;
             document.querySelectorAll('#main-content > *').forEach(s => s.classList.add('hidden'));
-            toShow.forEach(id => { 
-                const sec = document.getElementById(id); 
-                if (sec) sec.classList.remove('hidden'); 
-            });
-            
-            const pathMap = { home: '/', movies: '/movies', tv: '/tv', watchlist: '/watchlist' };
-            window.history.pushState({}, '', pathMap[state.activeTab] || '/');
+            toShow.forEach(id => { const sec = document.getElementById(id); if (sec) sec.classList.remove('hidden'); });
+            window.history.pushState({}, '', '/');
             document.getElementById('breadcrumb-current').textContent = 'Semua Film';
             document.title = 'ReviewFilm21 - Nonton Film Sub Indo Gratis';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
+
         function updateDetailFavoriteButton() {
             const state = store.getState();
             const btn = document.querySelector('#detail-section button[onclick="toggleDetailFavorite()"]');
-            if (btn && state.currentMedia) {
-                btn.innerHTML = isWatchlisted(state.currentMedia.id) ? '⭐ Tersimpan' : '☆ Simpan';
-            }
-        }
-        
-        function toggleDetailFavorite() { 
-            const state = store.getState();
-            if (state.currentMedia) toggleWatchlistDirect(state.currentMedia); 
+            if (btn && state.currentMedia) btn.innerHTML = isWatchlisted(state.currentMedia.id) ? '⭐ Tersimpan' : '☆ Simpan';
         }
 
-        // ================= FUNGSI NAVIGASI EPISODE =================
+        function toggleDetailFavorite() { const state = store.getState(); if (state.currentMedia) toggleWatchlistDirect(state.currentMedia); }
+
         function navigateEpisode(direction) {
             const state = store.getState();
-            if (!state.currentMedia || state.currentMedia.type !== 'tv') {
-                return;
-            }
-            
+            if (!state.currentMedia || state.currentMedia.type !== 'tv') return;
             if (!state.currentMedia.isLibraryItem) {
                 const totalEpisodes = 10;
                 let newEpisode = state.currentEpisode;
-                
-                if (direction === 'prev' && state.currentEpisode > 1) {
-                    newEpisode = state.currentEpisode - 1;
-                } else if (direction === 'next' && state.currentEpisode < totalEpisodes) {
-                    newEpisode = state.currentEpisode + 1;
-                } else {
-                    return;
-                }
-                
+                if (direction === 'prev' && state.currentEpisode > 1) newEpisode = state.currentEpisode - 1;
+                else if (direction === 'next' && state.currentEpisode < totalEpisodes) newEpisode = state.currentEpisode + 1;
+                else return;
                 switchEpisode(newEpisode);
                 return;
             }
-            
             if (state.currentMedia.isLibraryItem && state.currentMedia.libraryEpisodes && state.currentMedia.libraryEpisodes.length > 1) {
                 const totalEpisodes = state.currentMedia.libraryEpisodes.length;
                 let newIndex = state.currentLibraryEpisodeIndex;
-                
-                if (direction === 'prev' && state.currentLibraryEpisodeIndex > 0) {
-                    newIndex = state.currentLibraryEpisodeIndex - 1;
-                } else if (direction === 'next' && state.currentLibraryEpisodeIndex < totalEpisodes - 1) {
-                    newIndex = state.currentLibraryEpisodeIndex + 1;
-                } else {
-                    return;
-                }
-                
+                if (direction === 'prev' && state.currentLibraryEpisodeIndex > 0) newIndex = state.currentLibraryEpisodeIndex - 1;
+                else if (direction === 'next' && state.currentLibraryEpisodeIndex < totalEpisodes - 1) newIndex = state.currentLibraryEpisodeIndex + 1;
+                else return;
                 switchLibraryEpisode(newIndex);
-                return;
             }
         }
-        
+
         function updateEpisodeNavButtons(isSeries, currentEpisode, totalEpisodes) {
             const prevBtn = document.getElementById('episode-prev-btn');
             const nextBtn = document.getElementById('episode-next-btn');
             const epInfo = document.getElementById('episode-info');
-            
             if (!prevBtn || !nextBtn || !epInfo) return;
-            
             if (!isSeries || totalEpisodes <= 1) {
                 prevBtn.disabled = true;
                 nextBtn.disabled = true;
@@ -2460,84 +1978,54 @@ document.addEventListener('DOMContentLoaded', async () => {
                 epInfo.classList.add('hidden');
                 return;
             }
-            
             prevBtn.style.opacity = '1';
             nextBtn.style.opacity = '1';
-            
             prevBtn.disabled = currentEpisode <= 1;
             nextBtn.disabled = currentEpisode >= totalEpisodes;
-            
-            prevBtn.title = currentEpisode > 1 ? `Episode ${currentEpisode - 1}` : 'Tidak ada episode sebelumnya';
-            nextBtn.title = currentEpisode < totalEpisodes ? `Episode ${currentEpisode + 1}` : 'Tidak ada episode selanjutnya';
-            
             epInfo.textContent = `Episode ${currentEpisode} dari ${totalEpisodes}`;
             epInfo.classList.remove('hidden');
-            
             clearTimeout(epInfo._hideTimer);
-            epInfo._hideTimer = setTimeout(() => {
-                epInfo.classList.add('hidden');
-            }, 3000);
+            epInfo._hideTimer = setTimeout(() => epInfo.classList.add('hidden'), 3000);
         }
 
         // ================= FITUR RATING, REAKSI, KOMENTAR =================
         function loadDetailInteractions(mediaId) {
             const userRatingKey = `rating_${mediaId}`;
             const savedRating = localStorage.getItem(userRatingKey);
-            
-            if (savedRating) {
-                document.getElementById('user-rating-message').textContent = 'Terima kasih, rate sudah tersimpan!';
-                renderStars(parseInt(savedRating), true);
-            } else {
-                document.getElementById('user-rating-message').textContent = '';
-                renderStars(0, false);
-            }
-            
+            if (savedRating) { document.getElementById('user-rating-message').textContent = 'Terima kasih, rate sudah tersimpan!'; renderStars(parseInt(savedRating), true); }
+            else { document.getElementById('user-rating-message').textContent = ''; renderStars(0, false); }
             renderReactions(mediaId);
             renderComments(mediaId);
         }
-        
         function renderStars(selected, disabled) {
             const container = document.getElementById('user-rating-stars');
             if (!container) return;
-            
             container.innerHTML = '';
             for (let i = 1; i <= 5; i++) {
                 const star = document.createElement('span');
                 star.className = `star ${i <= selected ? 'active' : ''}`;
                 star.innerHTML = '★';
-                if (!disabled) {
-                    star.style.cursor = 'pointer';
-                    star.onclick = () => submitRating(i);
-                }
+                if (!disabled) { star.style.cursor = 'pointer'; star.onclick = () => submitRating(i); }
                 container.appendChild(star);
             }
         }
-        
         function submitRating(rating) {
             const state = store.getState();
             if (!state.currentMedia) return;
-            
             localStorage.setItem(`rating_${state.currentMedia.id}`, rating.toString());
             document.getElementById('user-rating-message').textContent = 'Terima kasih, rate sudah tersimpan!';
             renderStars(rating, true);
             showToast('Rating berhasil disimpan!', '⭐');
         }
-        
         function renderReactions(mediaId) {
             const container = document.getElementById('reaction-container');
             if (!container) return;
-            
             const reactions = [
-                { emoji: '😄', label: 'Seru', key: 'seru' },
-                { emoji: '😢', label: 'Terharu', key: 'terharu' },
-                { emoji: '😱', label: 'Serem', key: 'serem' },
-                { emoji: '😂', label: 'Kocak', key: 'kocak' },
-                { emoji: '🥰', label: 'Baper', key: 'baper' },
-                { emoji: '🔥', label: 'Motivasi', key: 'motivasi' },
-                { emoji: '😲', label: 'Twist', key: 'twist' },
-                { emoji: '😤', label: 'Gregetan', key: 'gregetan' }
+                { emoji: '😄', label: 'Seru', key: 'seru' }, { emoji: '😢', label: 'Terharu', key: 'terharu' },
+                { emoji: '😱', label: 'Serem', key: 'serem' }, { emoji: '😂', label: 'Kocak', key: 'kocak' },
+                { emoji: '🥰', label: 'Baper', key: 'baper' }, { emoji: '🔥', label: 'Motivasi', key: 'motivasi' },
+                { emoji: '😲', label: 'Twist', key: 'twist' }, { emoji: '😤', label: 'Gregetan', key: 'gregetan' }
             ];
-            
             container.innerHTML = '';
             reactions.forEach(reaction => {
                 const countKey = `reaction_${mediaId}_${reaction.key}`;
@@ -2545,65 +2033,30 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const btn = document.createElement('button');
                 btn.className = `reaction-btn focusable px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg border border-zinc-700 bg-zinc-800/80 text-[10px] sm:text-xs font-medium flex items-center gap-1`;
                 btn.innerHTML = `${reaction.emoji} ${reaction.label} <span class="text-zinc-400">${count}</span>`;
-                btn.onclick = () => {
-                    localStorage.setItem(countKey, (count + 1).toString());
-                    renderReactions(mediaId);
-                };
+                btn.onclick = () => { localStorage.setItem(countKey, (count + 1).toString()); renderReactions(mediaId); };
                 container.appendChild(btn);
             });
         }
-        
         function renderComments(mediaId) {
             const list = document.getElementById('comments-list');
             if (!list) return;
-            
             const commentsKey = `comments_${mediaId}`;
             const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
-            
-            if (comments.length === 0) {
-                list.innerHTML = `<p class="text-xs sm:text-sm text-zinc-500">Belum ada komentar. Jadilah yang pertama!</p>`;
-                return;
-            }
-            
-            list.innerHTML = comments.map(comment => `
-                <div class="comment-item flex gap-2 sm:gap-3 items-start p-2 rounded-lg">
-                    <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 flex items-center justify-center text-xs sm:text-sm font-bold text-brand-500 shrink-0">${escapeHtml(comment.name || 'A').charAt(0).toUpperCase()}</div>
-                    <div class="space-y-1">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="text-xs sm:text-sm font-bold text-white">${escapeHtml(comment.name || 'Anonim')}</span>
-                            <span class="text-[10px] text-zinc-500">${escapeHtml(comment.date)}</span>
-                        </div>
-                        <p class="text-xs sm:text-sm text-zinc-300">${escapeHtml(comment.text)}</p>
-                    </div>
-                </div>
-            `).join('');
+            if (comments.length === 0) { list.innerHTML = `<p class="text-xs sm:text-sm text-zinc-500">Belum ada komentar. Jadilah yang pertama!</p>`; return; }
+            list.innerHTML = comments.map(comment => `<div class="comment-item flex gap-2 sm:gap-3 items-start p-2 rounded-lg"><div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-zinc-800 flex items-center justify-center text-xs sm:text-sm font-bold text-brand-500 shrink-0">${escapeHtml(comment.name || 'A').charAt(0).toUpperCase()}</div><div class="space-y-1"><div class="flex items-center gap-2 flex-wrap"><span class="text-xs sm:text-sm font-bold text-white">${escapeHtml(comment.name || 'Anonim')}</span><span class="text-[10px] text-zinc-500">${escapeHtml(comment.date)}</span></div><p class="text-xs sm:text-sm text-zinc-300">${escapeHtml(comment.text)}</p></div></div>`).join('');
         }
-        
         function submitComment() {
             const state = store.getState();
             if (!state.currentMedia) return;
-            
             const nameInput = document.getElementById('comment-name');
             const textInput = document.getElementById('comment-text');
             const name = nameInput.value.trim();
             const text = textInput.value.trim();
-            
-            if (!text) {
-                showToast('Tulis komentar terlebih dahulu', '⚠️');
-                textInput.focus();
-                return;
-            }
-            
+            if (!text) { showToast('Tulis komentar terlebih dahulu', '⚠️'); textInput.focus(); return; }
             const mediaId = state.currentMedia.id;
             const commentsKey = `comments_${mediaId}`;
             const comments = JSON.parse(localStorage.getItem(commentsKey) || '[]');
-            
-            comments.push({
-                name: name || 'Anonim',
-                text: text,
-                date: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })
-            });
-            
+            comments.push({ name: name || 'Anonim', text: text, date: new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' }) });
             localStorage.setItem(commentsKey, JSON.stringify(comments));
             nameInput.value = '';
             textInput.value = '';
@@ -2612,30 +2065,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // ================= FILTER =================
-        function applyFilters() { 
-            showToast('Filter genre & tahun diterapkan', '🔍'); 
-            fetchTMDBCatalogs(); 
-        }
+        function applyFilters() { showToast('Filter genre & tahun diterapkan', '🔍'); fetchTMDBCatalogs(); }
 
         // ================= MODAL REQUEST =================
-        function openRequestModal() { 
-            document.getElementById('request-modal').classList.remove('hidden'); 
-            setTimeout(() => document.getElementById('req-title-input').focus(), 100); 
-        }
-        function closeRequestModal() { 
-            document.getElementById('request-modal').classList.add('hidden'); 
-        }
+        function openRequestModal() { document.getElementById('request-modal').classList.remove('hidden'); setTimeout(() => document.getElementById('req-title-input').focus(), 100); }
+        function closeRequestModal() { document.getElementById('request-modal').classList.add('hidden'); }
         function submitRequest() {
             const titleInput = document.getElementById('req-title-input');
             const noteInput = document.getElementById('req-note-input');
             const title = titleInput?.value.trim();
-            
-            if (!title) { 
-                showToast('Mohon isi judul film yang diminta', '⚠️'); 
-                titleInput?.focus(); 
-                return; 
-            }
-            
+            if (!title) { showToast('Mohon isi judul film yang diminta', '⚠️'); titleInput?.focus(); return; }
             showToast(`Request "${title}" berhasil dikirim!`, '📩');
             titleInput.value = '';
             if (noteInput) noteInput.value = '';
@@ -2643,86 +2082,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // ================= POPUP IKLAN =================
-        function startAdInterval() {
-            if (adPopupInterval) clearInterval(adPopupInterval);
-            adPopupInterval = setInterval(() => {
-                const popup = document.getElementById('popup-overlay');
-                if (popup) popup.style.display = 'flex';
-            }, 15 * 60 * 1000);
-        }
-        function closePopup() {
-            document.getElementById('popup-overlay').style.display = 'none';
-        }
-        function goToAd() {
-            document.getElementById('popup-overlay').style.display = 'none';
-        }
+        function startAdInterval() { if (adPopupInterval) clearInterval(adPopupInterval); adPopupInterval = setInterval(() => { const popup = document.getElementById('popup-overlay'); if (popup) popup.style.display = 'flex'; }, 15 * 60 * 1000); }
+        function closePopup() { document.getElementById('popup-overlay').style.display = 'none'; }
+        function goToAd() { document.getElementById('popup-overlay').style.display = 'none'; }
 
         // ================= MOBILE MENU =================
-        function toggleMobileMenu() { 
-            const menu = document.getElementById('mobile-menu'); 
-            if (menu) menu.classList.toggle('hidden'); 
-            setTimeout(updateTvFocusables, 200); 
-        }
-        function toggleMobileDropdown() { 
-            const dropdown = document.getElementById('mobile-dropdown'); 
-            const arrow = document.getElementById('mobile-dropdown-arrow'); 
-            if (dropdown) { 
-                dropdown.classList.toggle('hidden'); 
-                if (arrow) arrow.textContent = dropdown.classList.contains('hidden') ? '▼' : '▲'; 
-            } 
-        }
-        function toggleDesktopDropdown() { 
-            const dropdown = document.getElementById('desktop-dropdown'); 
-            if (dropdown) dropdown.classList.toggle('active'); 
-        }
+        function toggleMobileMenu() { const menu = document.getElementById('mobile-menu'); if (menu) menu.classList.toggle('hidden'); }
+        function toggleMobileDropdown() { const dropdown = document.getElementById('mobile-dropdown'); const arrow = document.getElementById('mobile-dropdown-arrow'); if (dropdown) { dropdown.classList.toggle('hidden'); if (arrow) arrow.textContent = dropdown.classList.contains('hidden') ? '▼' : '▲'; } }
+        function toggleDesktopDropdown() { const dropdown = document.getElementById('desktop-dropdown'); if (dropdown) dropdown.classList.toggle('active'); }
 
         // ================= INISIALISASI =================
         window.onload = function () {
             const initialStateData = store.getState();
-            
             document.getElementById('watchlist-count-badge').textContent = initialStateData.watchlist.length;
             document.getElementById('mob-watchlist-count').textContent = initialStateData.watchlist.length;
-            
             const cachedTrending = loadTMDBFromCache('trending');
             const cachedMovies = loadTMDBFromCache('movies');
             const cachedSeries = loadTMDBFromCache('series');
             const cachedThriller = loadTMDBFromCache('thriller');
-            
             const cachedState = {};
-            if (cachedTrending) {
-                cachedState.trendingData = cachedTrending;
-            }
+            if (cachedTrending) cachedState.trendingData = cachedTrending;
             if (cachedMovies) cachedState.moviesData = cachedMovies;
             if (cachedSeries) cachedState.seriesData = cachedSeries;
             if (cachedThriller) cachedState.thrillerData = cachedThriller;
-            
-            if (Object.keys(cachedState).length > 0) {
-                store.setState(cachedState);
-            }
-            
-            loadLibraryFromGoogleSheets().then(() => {
-                fetchTMDBCatalogs();
-            });
-            
-            setTimeout(() => {
-                if (!store.getState().isLibraryLoaded) {
-                    console.warn('⚠️ Library tidak dimuat dalam 10 detik, memuat data fallback');
-                    loadFallbackLibraryData();
-                    fetchTMDBCatalogs();
-                }
-            }, 10000);
-            
+            if (Object.keys(cachedState).length > 0) store.setState(cachedState);
+            loadLibraryFromGoogleSheets().then(() => fetchTMDBCatalogs());
+            setTimeout(() => { if (!store.getState().isLibraryLoaded) { loadFallbackLibraryData(); fetchTMDBCatalogs(); } }, 10000);
             setupHeroCarousel();
             renderAllSections();
-            
             hideLoading();
         };
-
-        let resizeTimer;
-        window.addEventListener('resize', () => { 
-            clearTimeout(resizeTimer); 
-            resizeTimer = setTimeout(updateTvFocusables, 250); 
-        });
     </script>
 </body>
 </html>
