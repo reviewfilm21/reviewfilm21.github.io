@@ -15,7 +15,7 @@
     <meta name="author" content="ReviewFilm21">
     <meta name="format-detection" content="telephone=no">
     <meta name="color-scheme" content="dark">
-<meta name="referrer" content="no-referrer">
+
     <!-- Favicon SVG Data URI -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>🎬</text></svg>">
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>🎬</text></svg>">
@@ -749,7 +749,7 @@
             </div>
 
             <div class="relative w-full aspect-video bg-zinc-950 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl video-container">
-                <iframe id="video-iframe" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture" loading="lazy"></iframe>
+                <iframe id="video-iframe" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="no-referrer" loading="eager"></iframe>
                 
                 <!-- Navigasi Episode Overlay -->
                 <button id="episode-prev-btn" onclick="navigateEpisode('prev')" class="episode-nav-overlay episode-nav-prev" aria-label="Episode Sebelumnya" disabled>
@@ -1548,9 +1548,98 @@
         function toggleHeroFavorite() { const state = store.getState(); const item = state.heroItems[state.currentHeroIndex]; if (item) { toggleWatchlistDirect(item); updateHeroDisplay(); } }
         function scrollCarousel(elementId, distance) { const container = document.getElementById(elementId); if (container) container.scrollBy({ left: distance, behavior: 'smooth' }); }
 
-        // ================= DETAIL & PLAYER (SCRIPT LAMA - TIDAK DIUBAH) =================
+        // ================= DETAIL & PLAYER =================
         let adPopupInterval = null;
         let currentVideoUrl = '';
+        let iframeLoadTimer = null;
+        let iframeLoadToken = 0;
+
+        function getPlayerElements() {
+            return {
+                iframe: document.getElementById('video-iframe'),
+                container: document.querySelector('.video-container')
+            };
+        }
+
+        function clearIframeLoadTimer() {
+            if (iframeLoadTimer) {
+                clearTimeout(iframeLoadTimer);
+                iframeLoadTimer = null;
+            }
+        }
+
+        function removePlayerNotice() {
+            const notice = document.getElementById('player-compatibility-notice');
+            if (notice) notice.remove();
+        }
+
+        function showPlayerNotice(message, url) {
+            const { container } = getPlayerElements();
+            if (!container) return;
+
+            let notice = document.getElementById('player-compatibility-notice');
+            if (!notice) {
+                notice = document.createElement('div');
+                notice.id = 'player-compatibility-notice';
+                notice.className = 'absolute inset-0 z-20 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm';
+                container.appendChild(notice);
+            }
+
+            const safeUrl = typeof url === 'string' && /^https?:\/\//i.test(url) ? url : '';
+            notice.innerHTML = `
+                <div class="max-w-md w-full text-center space-y-3 bg-zinc-900/95 border border-zinc-700 rounded-2xl p-5 shadow-2xl">
+                    <div class="text-3xl">⚠️</div>
+                    <h4 class="text-sm sm:text-base font-bold text-white">Player tidak dapat ditampilkan</h4>
+                    <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed">${message}</p>
+                    ${safeUrl ? `<button type="button" onclick="openCurrentPlayerInNewTab()" class="inline-flex items-center justify-center bg-brand-500 hover:bg-brand-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm">↗ Buka di tab baru</button>` : ''}
+                </div>`;
+        }
+
+        function prepareIframe(url) {
+            const iframe = document.getElementById('video-iframe');
+            if (!iframe) return;
+
+            clearIframeLoadTimer();
+            removePlayerNotice();
+            iframeLoadToken += 1;
+            const token = iframeLoadToken;
+
+            // Penting untuk provider eksternal: jangan kirim origin/referrer Netlify.
+            iframe.referrerPolicy = 'no-referrer';
+            iframe.setAttribute('allowfullscreen', '');
+            iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
+            iframe.src = 'about:blank';
+
+            if (!url || url === 'about:blank') {
+                showPlayerNotice('URL video tidak tersedia.', '');
+                return;
+            }
+
+            // Beri browser satu frame untuk membersihkan dokumen lama sebelum navigasi.
+            requestAnimationFrame(() => {
+                if (token !== iframeLoadToken) return;
+                iframe.src = url;
+
+                // Cross-origin iframe tidak dapat diperiksa isi/HTTP statusnya dari JS.
+                // Timeout hanya menampilkan fallback; bukan klaim bahwa server pasti error.
+                iframeLoadTimer = setTimeout(() => {
+                    if (token !== iframeLoadToken) return;
+                    showPlayerNotice('Server video mungkin menolak embedding di website ini. Coba buka player langsung di tab baru.', url);
+                }, 12000);
+            });
+
+            iframe.onload = () => {
+                if (token !== iframeLoadToken) return;
+                clearIframeLoadTimer();
+                removePlayerNotice();
+            };
+        }
+
+        function openCurrentPlayerInNewTab() {
+            if (currentVideoUrl && currentVideoUrl !== 'about:blank') {
+                window.open(currentVideoUrl, '_blank', 'noopener,noreferrer');
+            }
+        }
         
         async function openDetailPage(item) {
             store.setState({ currentMedia: item, currentServer: 1, currentSeason: 1, currentEpisode: 1, trailerKey: '', libraryEpisodes: item.libraryEpisodes || [], currentLibraryEpisodeIndex: 0 });
@@ -1612,7 +1701,7 @@
             if (item.isLibraryItem) {
                 const url = getPustakaVideoUrl(1, item);
                 currentVideoUrl = url;
-                iframe.src = url;
+                prepareIframe(url);
             } else {
                 updateIframeSource();
             }
@@ -1629,17 +1718,37 @@
 
         function formatEmbedUrl(url) {
             if (!url) return 'about:blank';
-            let embedUrl = url;
-            if (url.includes('youtube.com/watch?v=')) { 
-                const videoId = url.match(/v=([^&]+)/); 
-                if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`; 
+
+            let embedUrl = String(url).trim();
+            if (!embedUrl || embedUrl === '#') return 'about:blank';
+
+            // Protocol-relative URL (//mxdrop.sx/...) -> HTTPS.
+            embedUrl = enforceHttps(embedUrl);
+
+            try {
+                const parsed = new URL(embedUrl);
+                const host = parsed.hostname.toLowerCase();
+
+                if (host === 'youtube.com' || host === 'www.youtube.com') {
+                    const videoId = parsed.searchParams.get('v');
+                    if (videoId) {
+                        return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}`;
+                    }
+                }
+
+                if (host === 'youtu.be') {
+                    const videoId = parsed.pathname.replace(/^\/+/, '').split('/')[0];
+                    if (videoId) {
+                        return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}`;
+                    }
+                }
+
+                // youtube-nocookie.com/embed/* sudah merupakan URL embed.
+                return parsed.toString();
+            } catch (error) {
+                console.warn('URL video tidak valid:', embedUrl, error);
+                return 'about:blank';
             }
-            else if (url.includes('youtu.be/')) { 
-                const videoId = url.match(/youtu\.be\/([^?]+)/); 
-                if (videoId) embedUrl = `https://www.youtube.com/embed/${videoId[1]}`; 
-            }
-            else if (url.includes('youtube-nocookie.com/embed/')) embedUrl = url;
-            return enforceHttps(embedUrl);
         }
 
         function updateIframeSource() {
@@ -1651,7 +1760,7 @@
             if (state.currentServer < 1 || state.currentServer > 2) store.setState({ currentServer: 1 });
             if (item.isLibraryItem) {
                 currentVideoUrl = getPustakaVideoUrl(state.currentServer, item);
-                iframe.src = currentVideoUrl;
+                prepareIframe(currentVideoUrl);
                 updateServerButtons();
                 return;
             }
@@ -1659,7 +1768,7 @@
             if (!provider) { iframe.src = 'about:blank'; return; }
             let url = item.type === 'tv' ? provider.tv(item.id, state.currentSeason, state.currentEpisode) : provider.movie(item.id);
             currentVideoUrl = url;
-            iframe.src = url;
+            prepareIframe(url);
             updateServerButtons();
             if (item.type === 'tv') updateEpisodeNavButtons(true, state.currentEpisode, 10);
         }
@@ -1716,7 +1825,7 @@
             const currentEpisode = item.libraryEpisodes[index];
             if (currentEpisode && currentEpisode.Link) {
                 const iframe = document.getElementById('video-iframe');
-                if (iframe) { const url = formatEmbedUrl(currentEpisode.Link); currentVideoUrl = url; iframe.src = url; }
+                if (iframe) { const url = formatEmbedUrl(currentEpisode.Link); currentVideoUrl = url; prepareIframe(url); }
             }
             updateEpisodeNavButtons(true, index + 1, item.libraryEpisodes.length);
             const epMatch = (currentEpisode?.Judul || '').match(/\[(\d+)\]/) || (currentEpisode?.Judul || '').match(/Ep(?:isode)?\s*(\d+)/i);
@@ -1732,11 +1841,11 @@
             const state = store.getState();
             const iframe = document.getElementById('video-iframe');
             if (!iframe) return;
-            if (state.trailerKey) { currentVideoUrl = `https://www.youtube.com/embed/${state.trailerKey}?autoplay=1`; iframe.src = currentVideoUrl; showToast('Memutar Trailer Resmi YouTube', '🎬'); }
+            if (state.trailerKey) { currentVideoUrl = `https://www.youtube.com/embed/${state.trailerKey}?autoplay=1`; prepareIframe(currentVideoUrl); showToast('Memutar Trailer Resmi YouTube', '🎬'); }
             else showToast('Maaf, trailer resmi tidak tersedia untuk film ini', '⚠️');
         }
 
-        function openExternalPlayer() { if (currentVideoUrl && currentVideoUrl !== 'about:blank') window.open(currentVideoUrl, '_blank'); }
+        function openExternalPlayer() { openCurrentPlayerInNewTab(); }
 
         function playLibraryItem(link, title, poster, rating, year, description, actors, type) {
             if (!link || link === '#') { showToast('Link video tidak tersedia', '⚠️'); return; }
