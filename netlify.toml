@@ -4,9 +4,7 @@
 [[headers]]
   for = "/*"
   [headers.values]
+    X-Frame-Options = "ALLOW-FROM https://vidsrc.to https://vidsrc.cc https://mxdrop.sx https://www.youtube.com https://blogspot.com"
+    Content-Security-Policy = "frame-src 'self' https://vidsrc.to https://vidsrc.cc https://mxdrop.sx https://www.youtube.com https://www.youtube-nocookie.com https://blogspot.com https://*.blogspot.com;"
+    Referrer-Policy = "no-referrer"
     X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "SAMEORIGIN"
-    X-XSS-Protection = "1; mode=block"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    Content-Security-Policy = "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; img-src 'self' https: data: blob:; media-src 'self' https: blob:; frame-src 'self' https://vidsrc.to https://vidsrc.cc https://www.youtube.com https://www.youtube-nocookie.com https://mxdrop.sx https://blogspot.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://api.themoviedb.org https://docs.google.com https://image.tmdb.org https:;"
