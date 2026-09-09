@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /backend/
+
+Sitemap: https://reviewfilm21.netlify.app/sitemap.xml
