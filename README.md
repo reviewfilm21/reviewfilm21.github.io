@@ -1,25 +1,20 @@
-# ReviewFilm21 🎬
+# ReviewFilm21
 
-Nonton Film & TV Series Subtitle Indonesia Gratis
+Repository ini disiapkan untuk deployment static frontend + Netlify Functions.
 
-## Fitur
-- 🎬 Streaming film bioskop terbaru
-- 📺 TV Series dan Drakor sub indo
-- 🎭 Seni tradisional (Wayang, Ludruk, Ketoprak)
-- ⭐ Multi-server player
-- 📱 Responsive design untuk mobile & Smart TV
+## Deploy ke Netlify
+1. Push seluruh isi repository ke GitHub.
+2. Hubungkan repository ke Netlify.
+3. Build command: kosong.
+4. Publish directory: `.`
+5. Set environment variable `TMDB_API_KEY` di Netlify.
+6. Deploy.
 
-## URL Penting
-- Beranda: https://reviewfilm21.github.io/
-- Film Bioskop: https://reviewfilm21.github.io/movies
-- TV Series: https://reviewfilm21.github.io/tv
-- Favorit: https://reviewfilm21.github.io/watchlist
+API frontend:
+- `/api/tmdb/*` -> Netlify Function `tmdb`
+- `/api/moderate` -> Netlify Function `moderate`
 
-## Teknologi
-- HTML5, CSS3 (Tailwind CSS)
-- JavaScript (Vanilla)
-- TMDB API untuk data film
-- Google Sheets untuk data pustaka
+`backend/` tetap tersedia untuk development atau deployment backend terpisah.
 
-## Lisensi
-© 2026 ReviewFilm21 - All Rights Reserved
+## Catatan player
+Header situs hanya mengatur response dari situs ReviewFilm21. Header tersebut tidak dapat menimpa X-Frame-Options/CSP yang dikirim server pihak ketiga yang menjadi sumber iframe.
