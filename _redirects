@@ -1,0 +1,3 @@
+/api/tmdb/*  /.netlify/functions/tmdb/:splat  200
+/api/moderate  /.netlify/functions/moderate  200
+/*  /index.html  200
