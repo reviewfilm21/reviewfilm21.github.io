@@ -1,0 +1,8 @@
+class ModerationSystem{
+  constructor(){this.badWords=['bangsat','bajingan','kontol','memek','ngentot','anjing','goblok','tolol','idiot','bego','brengsek','kampret','keparat','fuck','shit','asshole','bitch','damn','b4ngs4t','4nj1ng','g0bl0k','t0l0l','1d10t'];this.spamPatterns=[/(.)\1{4,}/g,/https?:\/\/\S+/g,/\b(?:www\.)\S+/g,/[A-Z\s]{20,}/g];this.maxLength=500;this.minLength=2}
+  moderate(text){const r={approved:true,reasons:[],filteredText:text,warnings:[]};if(text.length<this.minLength){r.approved=false;r.reasons.push('Komentar terlalu pendek')}if(text.length>this.maxLength){r.approved=false;r.reasons.push('Komentar terlalu panjang')}const lower=text.toLowerCase();const found=this.badWords.filter(w=>lower.includes(w.toLowerCase()));if(found.length){r.approved=false;r.reasons.push(`Mengandung kata tidak pantas: ${found.join(', ')}`);r.filteredText=this.censorBadWords(text,found)}this.spamPatterns.forEach(p=>{p.lastIndex=0;if(p.test(text)){r.warnings.push('Terdeteksi pola spam');if(p===this.spamPatterns[1]||p===this.spamPatterns[2]){r.approved=false;r.reasons.push('Link tidak diizinkan')}}});return r}
+  censorBadWords(text,words){let c=text;words.forEach(w=>{const re=new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');c=c.replace(re,'*'.repeat(w.length))});return c}
+  sanitizeHTML(text){const d=document.createElement('div');d.textContent=text;return d.innerHTML}
+  async checkWithBackend(text){try{const r=await fetch('/api/moderate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});return r.ok?await r.json():this.moderate(text)}catch(e){return this.moderate(text)}}
+}
+const moderation=new ModerationSystem();
