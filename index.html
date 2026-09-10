@@ -453,6 +453,15 @@
             left: 4px;
             z-index: 10;
         }
+    
+        /* ================= IKLAN ================= */
+        .ad-slot { position: relative; width: 100%; min-height: 40px; display: flex; align-items: center; justify-content: center; margin: 8px 0; }
+        .ad-slot-label { position: absolute; top: 5px; left: 8px; z-index: 2; font-size: 9px; color: #52525b; letter-spacing: .08em; text-transform: uppercase; pointer-events: none; }
+        .ad-top { min-height: 90px; }
+        .ad-player { min-height: 80px; }
+        .ad-mid { min-height: 100px; }
+        .ad-footer { min-height: 90px; }
+
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-brand-500 selection:text-white pb-16 lg:pb-0">
@@ -644,6 +653,11 @@
             <span id="breadcrumb-current">Semua Film</span>
         </nav>
 
+        <div class="ad-slot ad-top rounded-xl border border-zinc-800/60 bg-zinc-950/40 overflow-hidden" aria-label="Iklan">
+            <span class="ad-slot-label">Iklan</span>
+            <a href="https://thrillingdeepcutlery.com/f3deengg?key=1acdf64065adc72ae8103d33ede9a49a" target="_blank" rel="noopener noreferrer sponsored" class="w-full min-h-[90px] flex items-center justify-center text-zinc-600 hover:text-zinc-400 text-[10px]">Advertisement</a>
+        </div>
+
         <article id="hero-section" class="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-zinc-900 min-h-[280px] sm:min-h-[420px] lg:min-h-[460px] border border-zinc-800/80 shadow-2xl flex items-end">
             <div id="hero-backdrop" class="absolute inset-0 bg-cover bg-center transition-all duration-700 filter brightness-90" style="background-image: url('https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg')"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/60 to-transparent"></div>
@@ -729,6 +743,11 @@
             <div id="thriller-carousel" class="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar py-1 sm:py-2 scroll-smooth snap-x snap-mandatory"></div>
         </section>
 
+        <div class="ad-slot ad-mid rounded-xl border border-zinc-800/60 bg-zinc-950/30 overflow-hidden" aria-label="Iklan">
+            <span class="ad-slot-label">Iklan</span>
+            <script src="https://thrillingdeepcutlery.com/ad/0f/7b/ad0f7bc9f88af0397be73b25504b576a.js"></script>
+        </div>
+
         <section id="watchlist-section" class="hidden space-y-3 sm:space-y-4 fade-in">
             <div class="border-b border-zinc-800 pb-2 sm:pb-3">
                 <h2 class="text-base sm:text-xl font-bold text-white flex items-center gap-1.5 sm:gap-2"><span class="text-brand-500">⭐</span> Daftar Film Favorit Saya</h2>
@@ -786,6 +805,11 @@
                 </div>
             </div>
 
+            <div class="ad-slot ad-player rounded-xl border border-zinc-800/60 bg-zinc-950/30 overflow-hidden" aria-label="Iklan">
+                <span class="ad-slot-label">Iklan</span>
+                <script src="https://thrillingdeepcutlery.com/52/c7/0c/52c70cf2e73bd0a310dcccee04609f3b.js"></script>
+            </div>
+
             <div id="episodes-container" class="hidden bg-zinc-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-800 space-y-2 sm:space-y-3">
                 <h4 class="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5 sm:gap-2"><span>📺</span> Pilih Episode:</h4>
                 <div id="episodes-grid" class="flex flex-wrap gap-1.5 sm:gap-2 max-h-32 sm:max-h-40 overflow-y-auto"></div>
@@ -831,6 +855,12 @@
                 <div id="comments-list" class="space-y-3 sm:space-y-4 max-h-72 overflow-y-auto pr-1"></div>
             </div>
         </section>
+        <div class="ad-slot ad-footer rounded-xl border border-zinc-800/60 bg-zinc-950/30 overflow-hidden" aria-label="Iklan">
+            <span class="ad-slot-label">Iklan</span>
+            <div id="container-bfbcd7bcd4c8089720ba8ae9aa28ffa0" class="w-full min-h-[70px] flex items-center justify-center"></div>
+            <script async="async" data-cfasync="false" src="https://thrillingdeepcutlery.com/bfbcd7bcd4c8089720ba8ae9aa28ffa0/invoke.js"></script>
+        </div>
+
     </main>
 
     <footer class="bg-zinc-950 border-t border-zinc-800 py-6 sm:py-8 mt-8 no-print">
