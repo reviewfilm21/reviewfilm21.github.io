@@ -772,8 +772,9 @@
             <div class="flex flex-wrap items-center justify-between gap-2 sm:gap-4 bg-zinc-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-800">
                 <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                     <span class="text-[10px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider">Server:</span>
-                    <button id="server-btn-1" onclick="switchServer(1)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target">Vidsrc</button>
-                    <button id="server-btn-2" onclick="switchServer(2)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Vidsrc CC</button>
+                    <button id="server-btn-1" onclick="switchServer(1)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target">Server 1</button>
+                    <button id="server-btn-2" onclick="switchServer(2)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Server 2</button>
+                    <button id="server-btn-3" onclick="switchServer(3)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Server 3</button>
                 </div>
                 <div class="flex items-center gap-1.5 sm:gap-2">
                     <button onclick="playTrailer()" class="focusable text-[10px] sm:text-xs bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold px-3 sm:px-4 py-2 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-md touch-target">
@@ -888,7 +889,8 @@
 
         const VIDEO_PROVIDERS = [
             { name: 'Vidsrc', movie: (id) => `https://vidsrc.to/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` },
-            { name: 'Vidsrc CC', movie: (id) => `https://vidsrc.cc/v2/embed/movie/${id}`, tv: (id, season, episode) => `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}` }
+            { name: 'Server 2', movie: () => PUSTAKA_SERVER_2, tv: () => PUSTAKA_SERVER_2 },
+            { name: 'Server 3', movie: () => PUSTAKA_SERVER_3, tv: () => PUSTAKA_SERVER_3 }
         ];
 
         const FALLBACK_MOVIES = [
@@ -1553,6 +1555,7 @@
         let currentVideoUrl = '';
         let iframeLoadTimer = null;
         let iframeLoadToken = 0;
+        let iframeReadyTimer = null;
 
         function getPlayerElements() {
             return {
@@ -1561,10 +1564,14 @@
             };
         }
 
-        function clearIframeLoadTimer() {
+        function clearIframeTimers() {
             if (iframeLoadTimer) {
                 clearTimeout(iframeLoadTimer);
                 iframeLoadTimer = null;
+            }
+            if (iframeReadyTimer) {
+                clearTimeout(iframeReadyTimer);
+                iframeReadyTimer = null;
             }
         }
 
@@ -1573,7 +1580,29 @@
             if (notice) notice.remove();
         }
 
-        function showPlayerNotice(message, url) {
+        function setPlayerLoading(isLoading, text = 'Memuat player...') {
+            const { container } = getPlayerElements();
+            if (!container) return;
+            let loading = document.getElementById('player-loading-indicator');
+            if (isLoading) {
+                if (!loading) {
+                    loading = document.createElement('div');
+                    loading.id = 'player-loading-indicator';
+                    loading.className = 'absolute inset-0 z-10 flex items-center justify-center bg-black/55 backdrop-blur-[2px] pointer-events-none';
+                    container.appendChild(loading);
+                }
+                loading.innerHTML = `
+                    <div class="flex flex-col items-center gap-3 text-center px-4">
+                        <div class="spinner" style="width:36px;height:36px"></div>
+                        <span class="text-xs sm:text-sm text-zinc-300 font-medium">${escapeHtml(text)}</span>
+                    </div>`;
+                loading.style.display = 'flex';
+            } else if (loading) {
+                loading.style.display = 'none';
+            }
+        }
+
+        function showPlayerNotice(message, url, options = {}) {
             const { container } = getPlayerElements();
             if (!container) return;
 
@@ -1581,17 +1610,22 @@
             if (!notice) {
                 notice = document.createElement('div');
                 notice.id = 'player-compatibility-notice';
-                notice.className = 'absolute inset-0 z-20 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm';
+                notice.className = 'absolute inset-0 z-20 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm';
                 container.appendChild(notice);
             }
 
             const safeUrl = typeof url === 'string' && /^https?:\/\//i.test(url) ? url : '';
+            const title = options.title || 'Player belum dapat diputar';
+            const retry = options.retry !== false;
             notice.innerHTML = `
                 <div class="max-w-md w-full text-center space-y-3 bg-zinc-900/95 border border-zinc-700 rounded-2xl p-5 shadow-2xl">
                     <div class="text-3xl">⚠️</div>
-                    <h4 class="text-sm sm:text-base font-bold text-white">Player tidak dapat ditampilkan</h4>
-                    <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed">${message}</p>
-                    ${safeUrl ? `<button type="button" onclick="openCurrentPlayerInNewTab()" class="inline-flex items-center justify-center bg-brand-500 hover:bg-brand-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm">↗ Buka di tab baru</button>` : ''}
+                    <h4 class="text-sm sm:text-base font-bold text-white">${escapeHtml(title)}</h4>
+                    <p class="text-xs sm:text-sm text-zinc-400 leading-relaxed">${escapeHtml(message)}</p>
+                    <div class="flex flex-wrap items-center justify-center gap-2 pt-1">
+                        ${retry ? '<button type="button" onclick="retryCurrentPlayer()" class="inline-flex items-center justify-center bg-brand-500 hover:bg-brand-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm">↻ Coba lagi</button>' : ''}
+                        ${safeUrl ? '<button type="button" onclick="openCurrentPlayerInNewTab()" class="inline-flex items-center justify-center bg-zinc-700 hover:bg-zinc-600 text-white font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm">↗ Buka di tab baru</button>' : ''}
+                    </div>
                 </div>`;
         }
 
@@ -1599,45 +1633,87 @@
             const iframe = document.getElementById('video-iframe');
             if (!iframe) return;
 
-            clearIframeLoadTimer();
+            clearIframeTimers();
             removePlayerNotice();
+            setPlayerLoading(true);
             iframeLoadToken += 1;
             const token = iframeLoadToken;
 
-            // Penting untuk provider eksternal: jangan kirim origin/referrer Netlify.
-            iframe.referrerPolicy = 'no-referrer';
-            iframe.setAttribute('allowfullscreen', '');
-            iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
-            iframe.src = 'about:blank';
-
             if (!url || url === 'about:blank') {
-                showPlayerNotice('URL video tidak tersedia.', '');
+                currentVideoUrl = '';
+                iframe.src = 'about:blank';
+                setPlayerLoading(false);
+                showPlayerNotice('URL video tidak tersedia.', '', { title: 'Video tidak tersedia', retry: false });
                 return;
             }
 
-            // Beri browser satu frame untuk membersihkan dokumen lama sebelum navigasi.
-            requestAnimationFrame(() => {
-                if (token !== iframeLoadToken) return;
-                iframe.src = url;
+            const safeUrl = String(url).trim();
+            if (!/^https?:\/\//i.test(safeUrl)) {
+                setPlayerLoading(false);
+                showPlayerNotice('Alamat video tidak valid.', '', { title: 'URL player tidak valid', retry: false });
+                return;
+            }
 
-                // Cross-origin iframe tidak dapat diperiksa isi/HTTP statusnya dari JS.
-                // Timeout hanya menampilkan fallback; bukan klaim bahwa server pasti error.
+            currentVideoUrl = safeUrl;
+            iframe.referrerPolicy = 'no-referrer';
+            iframe.setAttribute('allowfullscreen', '');
+            iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen; web-share');
+            iframe.setAttribute('title', 'Pemutar video');
+            iframe.src = 'about:blank';
+
+            const load = () => {
+                if (token !== iframeLoadToken) return;
+                iframe.src = safeUrl;
+
+                // onload hanya berarti dokumen iframe selesai dimuat; provider bisa tetap menolak embedding.
                 iframeLoadTimer = setTimeout(() => {
                     if (token !== iframeLoadToken) return;
-                    showPlayerNotice('Server video mungkin menolak embedding di website ini. Coba buka player langsung di tab baru.', url);
+                    setPlayerLoading(false);
+                    showPlayerNotice('Player sudah dicoba dimuat, tetapi tidak ada tanda bahwa pemutar siap. Ini biasanya terjadi ketika provider menolak embedding atau sedang bermasalah.', safeUrl);
                 }, 12000);
-            });
+
+                // Beri sedikit waktu setelah onload sebelum menghapus indikator loading.
+                iframeReadyTimer = setTimeout(() => {
+                    if (token !== iframeLoadToken) return;
+                    setPlayerLoading(false);
+                }, 2500);
+            };
 
             iframe.onload = () => {
                 if (token !== iframeLoadToken) return;
-                clearIframeLoadTimer();
-                removePlayerNotice();
+                clearTimeout(iframeReadyTimer);
+                iframeReadyTimer = null;
+                // Jangan langsung menghapus fallback timeout; onload tidak menjamin video dapat diputar.
+                setPlayerLoading(false);
             };
+
+            iframe.onerror = () => {
+                if (token !== iframeLoadToken) return;
+                clearIframeTimers();
+                setPlayerLoading(false);
+                showPlayerNotice('Browser menerima kegagalan saat memuat player. Coba ulangi atau buka player langsung di tab baru.', safeUrl, { title: 'Gagal memuat player' });
+            };
+
+            requestAnimationFrame(() => {
+                if (token !== iframeLoadToken) return;
+                load();
+            });
+        }
+
+        function retryCurrentPlayer() {
+            if (!currentVideoUrl) {
+                showToast('URL player belum tersedia', '⚠️');
+                return;
+            }
+            prepareIframe(currentVideoUrl);
         }
 
         function openCurrentPlayerInNewTab() {
             if (currentVideoUrl && currentVideoUrl !== 'about:blank') {
-                window.open(currentVideoUrl, '_blank', 'noopener,noreferrer');
+                const opened = window.open(currentVideoUrl, '_blank', 'noopener,noreferrer');
+                if (!opened) showToast('Browser memblokir tab baru. Izinkan pop-up untuk membuka player.', '⚠️');
+            } else {
+                showToast('URL player belum tersedia', '⚠️');
             }
         }
         
@@ -1713,6 +1789,7 @@
                 return 'about:blank';
             }
             if (serverNum === 2) return PUSTAKA_SERVER_2;
+            if (serverNum === 3) return PUSTAKA_SERVER_3;
             return 'about:blank';
         }
 
@@ -1757,14 +1834,14 @@
             if (!item) return;
             const iframe = document.getElementById('video-iframe');
             if (!iframe) return;
-            if (state.currentServer < 1 || state.currentServer > 2) store.setState({ currentServer: 1 });
+            if (state.currentServer < 1 || state.currentServer > 3) store.setState({ currentServer: 1 });
             if (item.isLibraryItem) {
                 currentVideoUrl = getPustakaVideoUrl(state.currentServer, item);
                 prepareIframe(currentVideoUrl);
                 updateServerButtons();
                 return;
             }
-            const provider = VIDEO_PROVIDERS[(state.currentServer - 1) % VIDEO_PROVIDERS.length];
+            const provider = VIDEO_PROVIDERS[state.currentServer - 1];
             if (!provider) { iframe.src = 'about:blank'; return; }
             let url = item.type === 'tv' ? provider.tv(item.id, state.currentSeason, state.currentEpisode) : provider.movie(item.id);
             currentVideoUrl = url;
@@ -1775,8 +1852,8 @@
 
         function updateServerButtons() {
             const state = store.getState();
-            const serverNames = ['Vidsrc', 'Vidsrc CC'];
-            for (let i = 1; i <= 2; i++) {
+            const serverNames = ['Server 1', 'Server 2', 'Server 3'];
+            for (let i = 1; i <= 3; i++) {
                 const btn = document.getElementById(`server-btn-${i}`);
                 if (btn) {
                     if (i === state.currentServer) {
@@ -1791,10 +1868,10 @@
         }
 
         function switchServer(serverNum) {
-            if (serverNum < 1 || serverNum > 2) { showToast('Server tidak tersedia', '⚠️'); return; }
+            if (serverNum < 1 || serverNum > 3) { showToast('Server tidak tersedia', '⚠️'); return; }
             store.setState({ currentServer: serverNum });
             updateIframeSource();
-            showToast(`Server ${serverNum === 1 ? 'Vidsrc' : 'Vidsrc CC'} dipilih`, '🔄');
+            showToast(`Server ${serverNum} dipilih`, '🔄');
         }
 
         function switchEpisode(epNum) {
