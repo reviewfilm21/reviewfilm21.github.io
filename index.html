@@ -772,9 +772,9 @@
             <div class="flex flex-wrap items-center justify-between gap-2 sm:gap-4 bg-zinc-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-800">
                 <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                     <span class="text-[10px] sm:text-xs font-bold text-zinc-400 uppercase tracking-wider">Server:</span>
-                    <button id="server-btn-1" onclick="switchServer(1)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target">Server 1</button>
-                    <button id="server-btn-2" onclick="switchServer(2)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Server 2</button>
-                    <button id="server-btn-3" onclick="switchServer(3)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Server 3</button>
+                    <button id="server-btn-1" onclick="switchServer(1)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold bg-brand-500 text-white transition-all touch-target">Server 1 · Vidsrc</button>
+                    <button id="server-btn-2" onclick="switchServer(2)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Server 2 · Pustaka</button>
+                    <button id="server-btn-3" onclick="switchServer(3)" class="focusable px-2.5 sm:px-3.5 py-1.5 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 transition-all touch-target">Server 3 · Live</button>
                 </div>
                 <div class="flex items-center gap-1.5 sm:gap-2">
                     <button onclick="playTrailer()" class="focusable text-[10px] sm:text-xs bg-amber-500 hover:bg-amber-600 text-zinc-950 font-bold px-3 sm:px-4 py-2 sm:py-2 rounded-lg flex items-center gap-1 sm:gap-1.5 shadow-md touch-target">
@@ -1643,14 +1643,21 @@
                 currentVideoUrl = '';
                 iframe.src = 'about:blank';
                 setPlayerLoading(false);
-                showPlayerNotice('URL video tidak tersedia.', '', { title: 'Video tidak tersedia', retry: false });
+                showPlayerNotice('URL video tidak tersedia.', '', {
+                    title: 'Video tidak tersedia',
+                    retry: false
+                });
                 return;
             }
 
             const safeUrl = String(url).trim();
             if (!/^https?:\/\//i.test(safeUrl)) {
+                currentVideoUrl = '';
                 setPlayerLoading(false);
-                showPlayerNotice('Alamat video tidak valid.', '', { title: 'URL player tidak valid', retry: false });
+                showPlayerNotice('Alamat video tidak valid.', '', {
+                    title: 'URL player tidak valid',
+                    retry: false
+                });
                 return;
             }
 
@@ -1661,51 +1668,42 @@
             iframe.setAttribute('title', 'Pemutar video');
             iframe.src = 'about:blank';
 
-            const load = () => {
-                if (token !== iframeLoadToken) return;
-                iframe.src = safeUrl;
-
-                // onload hanya berarti dokumen iframe selesai dimuat; provider bisa tetap menolak embedding.
-                iframeLoadTimer = setTimeout(() => {
-                    if (token !== iframeLoadToken) return;
-                    setPlayerLoading(false);
-                    showPlayerNotice('Player sudah dicoba dimuat, tetapi tidak ada tanda bahwa pemutar siap. Ini biasanya terjadi ketika provider menolak embedding atau sedang bermasalah.', safeUrl);
-                }, 12000);
-
-                // Beri sedikit waktu setelah onload sebelum menghapus indikator loading.
-                iframeReadyTimer = setTimeout(() => {
-                    if (token !== iframeLoadToken) return;
-                    setPlayerLoading(false);
-                }, 2500);
-            };
-
             iframe.onload = () => {
                 if (token !== iframeLoadToken) return;
-                clearTimeout(iframeReadyTimer);
-                iframeReadyTimer = null;
-                // Jangan langsung menghapus fallback timeout; onload tidak menjamin video dapat diputar.
+                clearIframeTimers();
                 setPlayerLoading(false);
+                removePlayerNotice();
             };
 
             iframe.onerror = () => {
                 if (token !== iframeLoadToken) return;
                 clearIframeTimers();
                 setPlayerLoading(false);
-                showPlayerNotice('Browser menerima kegagalan saat memuat player. Coba ulangi atau buka player langsung di tab baru.', safeUrl, { title: 'Gagal memuat player' });
+                showPlayerNotice(
+                    'Browser gagal memuat halaman player. Provider mungkin sedang bermasalah atau menolak embedding.',
+                    safeUrl,
+                    { title: 'Player gagal dimuat' }
+                );
             };
 
+            // Navigasi setelah dokumen lama benar-benar dilepas.
             requestAnimationFrame(() => {
                 if (token !== iframeLoadToken) return;
-                load();
+                iframe.src = safeUrl;
+
+                // Jangan menutup player dengan overlay hanya karena provider lambat.
+                // Setelah 15 detik spinner dihentikan, tetapi iframe tetap dibiarkan tampil.
+                iframeLoadTimer = setTimeout(() => {
+                    if (token !== iframeLoadToken) return;
+                    setPlayerLoading(false);
+                }, 15000);
             });
         }
 
         function retryCurrentPlayer() {
-            if (!currentVideoUrl) {
-                showToast('URL player belum tersedia', '⚠️');
-                return;
-            }
-            prepareIframe(currentVideoUrl);
+            const state = store.getState();
+            if (!state.currentMedia) return;
+            updateIframeSource();
         }
 
         function openCurrentPlayerInNewTab() {
@@ -1852,7 +1850,7 @@
 
         function updateServerButtons() {
             const state = store.getState();
-            const serverNames = ['Server 1', 'Server 2', 'Server 3'];
+            const serverNames = ['Server 1 · Vidsrc', 'Server 2 · Pustaka', 'Server 3 · Live'];
             for (let i = 1; i <= 3; i++) {
                 const btn = document.getElementById(`server-btn-${i}`);
                 if (btn) {
