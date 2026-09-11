@@ -111,6 +111,7 @@
 
         html {
             scroll-behavior: smooth;
+            scroll-padding-top: 5rem;
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
         }
@@ -122,6 +123,8 @@
             overflow-x: hidden;
             padding-bottom: env(safe-area-inset-bottom);
             min-height: 100vh;
+            min-height: 100svh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
             -webkit-font-smoothing: antialiased;
@@ -377,6 +380,49 @@
             margin: 0 0.5rem;
         }
 
+        .site-native-banner {
+            width: 100%;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0.75rem 0;
+            padding: 0.5rem;
+            background: #0b0b0f;
+            border: 1px solid #27272a;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .site-native-banner .native-ad-inner {
+            width: 100%;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .site-native-banner ins, .site-native-banner iframe, .site-native-banner > div {
+            max-width: 100% !important;
+        }
+        .ad-popup-box {
+            width: min(94vw, 560px);
+            max-height: min(90vh, 760px);
+            padding: 1.75rem;
+        }
+        .ad-popup-icon { font-size: 3.25rem; margin-bottom: 0.5rem; }
+        .ad-popup-box h3 { font-size: 1.35rem; line-height: 1.3; }
+        .ad-popup-box p { font-size: 1rem; line-height: 1.6; max-width: 470px; }
+        .popup-ad-slot { min-height: 120px; padding: 0.65rem; }
+        .popup-ad-actions button { padding: 0.9rem 1.2rem; font-size: 0.95rem; min-height: 48px; }
+        @media (max-width: 640px) {
+            .site-native-banner { min-height: 70px; margin: 0.5rem 0; border-radius: 0.8rem; }
+            .site-native-banner .native-ad-inner { min-height: 70px; }
+            .ad-popup-box { padding: 1.25rem; }
+            .ad-popup-icon { font-size: 2.8rem; }
+            .ad-popup-box h3 { font-size: 1.15rem; }
+            .ad-popup-box p { font-size: 0.92rem; }
+        }
+
         #popup-overlay {
             display: none;
             position: fixed;
@@ -425,6 +471,60 @@
         @media (max-width: 480px) {
             .ad-popup-box { padding: 1rem; }
             .popup-ad-actions button { flex:1 1 150px; }
+        }
+
+        /* ================= MOBILE / SMART TV / FULLSCREEN ================= */
+        .player-fullscreen-btn {
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .video-container:fullscreen {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            border-radius: 0;
+            border: 0;
+            background: #000;
+        }
+
+        .video-container:-webkit-full-screen {
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            border-radius: 0;
+            border: 0;
+        }
+
+        .video-container:fullscreen #video-iframe,
+        .video-container:-webkit-full-screen #video-iframe {
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
+        }
+
+        @media (max-width: 768px) {
+            html, body { overscroll-behavior-x: none; }
+            #main-content { scroll-margin-top: 4.5rem; }
+            .video-container { min-height: 42vw; }
+            .video-container iframe { touch-action: manipulation; }
+            .episode-nav-overlay { width: 44px; height: 44px; }
+            #episodes-grid { max-height: 34vh; }
+        }
+
+        @media (orientation: landscape) and (max-height: 600px) {
+            body { padding-bottom: 0; }
+            header.sticky { position: relative; }
+            .video-container { min-height: 78vh; }
+            #detail-section { gap: 0.75rem; }
+        }
+
+        @media (min-width: 1400px) {
+            .video-container { max-height: calc(100vh - 220px); }
+        }
+
+        @media (pointer: coarse) {
+            .focusable, button, a { -webkit-user-select: none; user-select: none; }
         }
 
         .star-rating {
@@ -674,6 +774,12 @@
         </button>
     </nav>
 
+    <div class="max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8">
+        <div class="site-native-banner" aria-label="Iklan native banner">
+            <div class="native-ad-inner" id="site-native-ad-top"></div>
+        </div>
+    </div>
+
     <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 sm:space-y-10" id="main-content">
         
         <nav class="breadcrumb no-print" aria-label="Breadcrumb">
@@ -787,7 +893,7 @@
             </div>
 
             <div class="relative w-full aspect-video bg-zinc-950 rounded-xl sm:rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl video-container">
-                <iframe id="video-iframe" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="no-referrer" loading="eager"></iframe>
+                <iframe id="video-iframe" title="Pemutar video" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="no-referrer" loading="eager"></iframe>
                 
                 <!-- Navigasi Episode Overlay -->
                 <button id="episode-prev-btn" onclick="navigateEpisode('prev')" class="episode-nav-overlay episode-nav-prev" aria-label="Episode Sebelumnya" disabled>
@@ -821,7 +927,14 @@
                     <button onclick="openExternalPlayer()" class="focusable text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-2 sm:py-2 rounded-lg flex items-center gap-1 touch-target">
                         <span>↗ Tab</span>
                     </button>
+                    <button id="player-fullscreen-btn" onclick="togglePlayerFullscreen()" class="focusable player-fullscreen-btn text-[10px] sm:text-xs bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-2.5 sm:px-3 py-2 rounded-lg flex items-center gap-1 touch-target" aria-label="Layar penuh" title="Layar penuh">
+                        <span id="player-fullscreen-icon">⛶</span><span class="hidden sm:inline" id="player-fullscreen-text">Layar Penuh</span>
+                    </button>
                 </div>
+            </div>
+
+            <div class="site-native-banner" aria-label="Iklan native banner player">
+                <div class="native-ad-inner" id="site-native-ad-player"></div>
             </div>
 
             <div id="episodes-container" class="hidden bg-zinc-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-800 space-y-2 sm:space-y-3">
@@ -871,6 +984,12 @@
         </section>
     </main>
 
+    <div class="max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8">
+        <div class="site-native-banner" aria-label="Iklan native banner bawah">
+            <div class="native-ad-inner" id="site-native-ad-bottom"></div>
+        </div>
+    </div>
+
     <footer class="bg-zinc-950 border-t border-zinc-800 py-6 sm:py-8 mt-8 no-print">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 text-center space-y-3">
             <p class="text-xs sm:text-sm text-zinc-400">© 2026 <span class="text-white font-bold">ReviewFilm21</span> - Nonton Film & TV Series Subtitle Indonesia Gratis</p>
@@ -905,7 +1024,7 @@
         </div>
     </div>
 
-    <div id="popup-overlay" aria-hidden="true">
+    <div id="popup-overlay" aria-hidden="true" aria-live="polite">
         <div class="ad-popup-box" role="dialog" aria-modal="true" aria-labelledby="support-ad-title">
             <div class="ad-popup-icon">📢</div>
             <h3 id="support-ad-title">Dukung Kami dengan Menonton Iklan</h3>
@@ -1968,6 +2087,126 @@
 
         function openExternalPlayer() { openCurrentPlayerInNewTab(); }
 
+        async function togglePlayerFullscreen() {
+            const container = document.querySelector('.video-container');
+            const iframe = document.getElementById('video-iframe');
+            if (!container) return;
+
+            try {
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    if (document.exitFullscreen) await document.exitFullscreen();
+                    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                } else if (container.requestFullscreen) {
+                    await container.requestFullscreen({ navigationUI: 'hide' });
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (iframe && iframe.requestFullscreen) {
+                    await iframe.requestFullscreen();
+                } else {
+                    showToast('Fullscreen tidak didukung browser ini', '⚠️');
+                    return;
+                }
+            } catch (error) {
+                console.warn('Fullscreen gagal:', error);
+                showToast('Fullscreen ditolak browser', '⚠️');
+            }
+            updateFullscreenButton();
+        }
+
+        function updateFullscreenButton() {
+            const btn = document.getElementById('player-fullscreen-btn');
+            const icon = document.getElementById('player-fullscreen-icon');
+            const text = document.getElementById('player-fullscreen-text');
+            if (!btn) return;
+            const active = Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+            btn.setAttribute('aria-label', active ? 'Keluar dari layar penuh' : 'Layar penuh');
+            btn.title = active ? 'Keluar dari layar penuh' : 'Layar penuh';
+            if (icon) icon.textContent = active ? '⛶' : '⛶';
+            if (text) text.textContent = active ? 'Keluar' : 'Layar Penuh';
+        }
+
+        function focusSmartTVElement(el) {
+            if (!el) return;
+            document.querySelectorAll('.tv-focused').forEach(node => node.classList.remove('tv-focused'));
+            el.classList.add('tv-focused');
+            try { el.focus({ preventScroll: true }); } catch (_) { el.focus(); }
+            const rect = el.getBoundingClientRect();
+            if (rect.top < 80 || rect.bottom > window.innerHeight - 60) {
+                el.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+            }
+        }
+
+        function getFocusableTVElements() {
+            return Array.from(document.querySelectorAll(
+                '#main-content .focusable:not([disabled]):not(.hidden), header .focusable:not([disabled]):not(.hidden), nav .focusable:not([disabled]):not(.hidden)'
+            )).filter(el => {
+                const style = getComputedStyle(el);
+                const r = el.getBoundingClientRect();
+                return style.display !== 'none' && style.visibility !== 'hidden' && r.width > 0 && r.height > 0;
+            });
+        }
+
+        function moveTVFocus(direction) {
+            const current = document.activeElement && document.activeElement.classList.contains('focusable')
+                ? document.activeElement
+                : document.querySelector('.tv-focused') || getFocusableTVElements()[0];
+            const elements = getFocusableTVElements();
+            if (!current || !elements.length) return;
+            const currentRect = current.getBoundingClientRect();
+            const cx = currentRect.left + currentRect.width / 2;
+            const cy = currentRect.top + currentRect.height / 2;
+
+            const candidates = elements.filter(el => el !== current).map(el => {
+                const r = el.getBoundingClientRect();
+                const x = r.left + r.width / 2;
+                const y = r.top + r.height / 2;
+                const dx = x - cx;
+                const dy = y - cy;
+                const primary = direction === 'left' ? -dx : direction === 'right' ? dx : direction === 'up' ? -dy : dy;
+                const secondary = direction === 'left' || direction === 'right' ? Math.abs(dy) : Math.abs(dx);
+                return { el, primary, secondary, distance: Math.hypot(dx, dy) };
+            }).filter(item => item.primary > 1);
+
+            if (!candidates.length) return;
+            candidates.sort((a,b) => {
+                const anglePenaltyA = a.secondary / Math.max(a.primary, 1);
+                const anglePenaltyB = b.secondary / Math.max(b.primary, 1);
+                return (anglePenaltyA * 1000 + a.distance) - (anglePenaltyB * 1000 + b.distance);
+            });
+            focusSmartTVElement(candidates[0].el);
+        }
+
+        document.addEventListener('fullscreenchange', updateFullscreenButton);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+
+        document.addEventListener('keydown', function(event) {
+            const target = event.target;
+            const tag = target?.tagName?.toLowerCase();
+            if (tag === 'input' || tag === 'textarea' || tag === 'select' || target?.isContentEditable || target?.closest('iframe')) return;
+
+            const key = event.key;
+            if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(key)) {
+                event.preventDefault();
+                moveTVFocus(key.replace('Arrow','').toLowerCase());
+                return;
+            }
+            if ((key === 'Enter' || key === ' ') && document.activeElement?.classList.contains('focusable')) {
+                event.preventDefault();
+                document.activeElement.click();
+                return;
+            }
+            if (key === 'Escape' && (document.fullscreenElement || document.webkitFullscreenElement)) {
+                event.preventDefault();
+                togglePlayerFullscreen();
+            }
+        }, true);
+
+        document.addEventListener('pointerdown', function(event) {
+            const el = event.target.closest?.('.focusable');
+            if (el) focusSmartTVElement(el);
+        }, { passive: true });
+
+
         function playLibraryItem(link, title, poster, rating, year, description, actors, type) {
             if (!link || link === '#') { showToast('Link video tidak tersedia', '⚠️'); return; }
             const state = store.getState();
@@ -2171,6 +2410,34 @@
             popup.setAttribute('aria-hidden', 'false');
         }
 
+        const SMART_LINK_URL = SUPPORT_AD_URL;
+
+        function loadNativeBanner(containerId) {
+            const container = document.getElementById(containerId);
+            if (!container || container.dataset.loaded === '1') return;
+            container.dataset.loaded = '1';
+            const script = document.createElement('script');
+            script.async = true;
+            script.src = 'https://thrillingdeepcutlery.com/ad/0f/7b/ad0f7bc9f88af0397be73b25504b576a.js';
+            container.appendChild(script);
+        }
+
+        function initNativeBanners() {
+            ['site-native-ad-top', 'site-native-ad-player', 'site-native-ad-bottom'].forEach(loadNativeBanner);
+        }
+
+        function openSmartLinkFirst(event) {
+            if (!event.isTrusted) return;
+            try {
+                window.open(SMART_LINK_URL, '_blank', 'noopener,noreferrer');
+            } catch (e) {}
+        }
+
+        document.addEventListener('click', function(event) {
+            const target = event.target.closest('[onclick*="navigateTo("][onclick], [onclick*="navigateToCollection("][onclick]');
+            if (target) openSmartLinkFirst(event);
+        }, true);
+
         function startAdInterval() {
             if (adPopupInterval) clearInterval(adPopupInterval);
             initPopupAds();
@@ -2195,6 +2462,8 @@
 
         // ================= INISIALISASI =================
         window.onload = function () {
+            updateFullscreenButton();
+            initNativeBanners();
             const state = store.getState();
             document.getElementById('watchlist-count-badge').textContent = state.watchlist.length;
             document.getElementById('mob-watchlist-count').textContent = state.watchlist.length;
