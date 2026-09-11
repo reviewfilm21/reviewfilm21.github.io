@@ -2205,12 +2205,26 @@
         }, { passive: true });
 
 
+        function getStableLibraryMediaId(title, type, link) {
+            // Gunakan ID deterministik agar film perpustakaan memiliki mediaId yang
+            // sama setiap kali dibuka. Ini penting agar komentar online tetap
+            // mengarah ke film yang sama, bukan ke ID acak baru.
+            const source = `${type || 'movie'}|${String(title || '').trim().toLowerCase()}|${String(link || '').trim()}`;
+            let hash = 2166136261;
+            for (let i = 0; i < source.length; i++) {
+                hash ^= source.charCodeAt(i);
+                hash = Math.imul(hash, 16777619);
+            }
+            return Math.abs(hash >>> 0) || 1;
+        }
+
         function playLibraryItem(link, title, poster, rating, year, description, actors, type) {
             if (!link || link === '#') { showToast('Link video tidak tersedia', '⚠️'); return; }
             const state = store.getState();
             const libraryEpisodes = type === 'tv' ? getLibraryEpisodes(title, state.libraryData) : [];
+            const stableMediaId = getStableLibraryMediaId(title, type, link);
             const mediaItem = {
-                id: Math.floor(Math.random() * 1000000),
+                id: stableMediaId,
                 title, type: type || 'movie', rating: rating || '8.0', year: year || '2026',
                 genre: 'Pustaka Film', overview: description || 'Tidak ada deskripsi tersedia.',
                 poster_path: enforceHttps(poster) || 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
