@@ -930,16 +930,8 @@
                 </div>
             </div>
 
-            <div class="site-native-banner" aria-label="Iklan native banner player">
-                <div class="native-ad-inner" id="site-native-ad-player"></div>
-            </div>
-
             <div class="site-native-banner site-native-banner-bottom player-native-ad" aria-label="Iklan native banner di bawah player">
-                <div class="native-ad-inner" id="site-native-ad-player"></div>
-            </div>
-
-            <div class="site-native-banner site-native-banner-bottom player-native-ad" aria-label="Iklan native banner di bawah player">
-                <div class="native-ad-inner" id="native-ad-actual">
+                <div class="native-ad-inner" id="native-ad-player-real">
                     <script async="async" data-cfasync="false" src="https://thrillingdeepcutlery.com/bfbcd7bcd4c8089720ba8ae9aa28ffa0/invoke.js"></script>
                     <div id="container-bfbcd7bcd4c8089720ba8ae9aa28ffa0"></div>
                 </div>
@@ -2414,15 +2406,6 @@
 
         const SMART_LINK_URL = SUPPORT_AD_URL;
 
-        function loadNativeBanner(containerId) {
-            // Native banner dipasang langsung dengan publisher snippet pada markup
-            // agar container ID sesuai persis dengan yang diberikan provider.
-            return;
-        }
-        function initNativeBanners() {
-            ['site-native-ad-top', 'site-native-ad-player', 'site-native-ad-bottom'].forEach(loadNativeBanner);
-        }
-
         function openSmartLinkFirst(event) {
             if (!event.isTrusted) return;
             try {
@@ -2460,7 +2443,6 @@
         // ================= INISIALISASI =================
         window.onload = function () {
             updateFullscreenButton();
-            initNativeBanners();
             const state = store.getState();
             document.getElementById('watchlist-count-badge').textContent = state.watchlist.length;
             document.getElementById('mob-watchlist-count').textContent = state.watchlist.length;
