@@ -1,20 +1,30 @@
 # ReviewFilm21
 
-Repository ini disiapkan untuk deployment static frontend + Netlify Functions.
+Website static ReviewFilm21 untuk GitHub Pages.
 
-## Deploy ke Netlify
-1. Push seluruh isi repository ke GitHub.
-2. Hubungkan repository ke Netlify.
-3. Build command: kosong.
-4. Publish directory: `.`
-5. Set environment variable `TMDB_API_KEY` di Netlify.
-6. Deploy.
+## Live site
 
-API frontend:
-- `/api/tmdb/*` -> Netlify Function `tmdb`
-- `/api/moderate` -> Netlify Function `moderate`
+https://reviewfilm21.github.io/
 
-`backend/` tetap tersedia untuk development atau deployment backend terpisah.
+## Deployment
 
-## Catatan player
-Header situs hanya mengatur response dari situs ReviewFilm21. Header tersebut tidak dapat menimpa X-Frame-Options/CSP yang dikirim server pihak ketiga yang menjadi sumber iframe.
+Repository ini menggunakan GitHub Pages dari branch `main`.
+
+Tidak membutuhkan build command atau server backend untuk frontend static.
+
+## Struktur utama
+
+- `index.html` — aplikasi utama
+- `404.html` — fallback halaman tidak ditemukan
+- `sw.js` — service worker/cache
+- `manifest.json` — metadata PWA
+- `robots.txt` — aturan crawler
+- `sitemap.xml` — sitemap
+- `.nojekyll` — menonaktifkan pemrosesan Jekyll
+- `yandex_01f0fcd6fbc6e79a.html` — verifikasi Yandex
+
+## Catatan
+
+Data pustaka film dimuat dari Google Sheets dan provider video eksternal digunakan oleh aplikasi sesuai konfigurasi di `index.html`.
+
+Untuk GitHub Pages, file/server khusus Netlify atau backend server-side tidak diperlukan.

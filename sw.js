@@ -1,4 +1,4 @@
-const CACHE_NAME = 'reviewfilm21-v2';
+const CACHE_NAME = 'reviewfilm21-v3';
 const CACHE_URLS = ['/', '/index.html', '/manifest.json', '/sitemap.xml', '/robots.txt'];
 
 self.addEventListener('install', event => {
@@ -11,7 +11,6 @@ self.addEventListener('fetch', event => {
   const url = event.request.url;
   if (event.request.method !== 'GET' ||
       url.includes('/api/') ||
-      url.includes('/.netlify/functions/') ||
       url.includes('api.themoviedb.org') ||
       url.includes('vidsrc') ||
       url.includes('mxdrop') ||
