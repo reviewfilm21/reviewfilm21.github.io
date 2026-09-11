@@ -775,11 +775,7 @@
     </nav>
 
     <div class="max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8">
-        <div class="site-native-banner" aria-label="Iklan native banner">
-            <script async="async" data-cfasync="false" src="https://thrillingdeepcutlery.com/bfbcd7bcd4c8089720ba8ae9aa28ffa0/invoke.js"></script>
-            <div class="native-ad-inner" id="container-bfbcd7bcd4c8089720ba8ae9aa28ffa0"></div>
-        </div>
-    </div>
+</div>
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-6 sm:space-y-10" id="main-content">
         
@@ -935,7 +931,18 @@
             </div>
 
             <div class="site-native-banner" aria-label="Iklan native banner player">
-                <div class="native-ad-inner">Iklan</div>
+                <div class="native-ad-inner" id="site-native-ad-player"></div>
+            </div>
+
+            <div class="site-native-banner site-native-banner-bottom player-native-ad" aria-label="Iklan native banner di bawah player">
+                <div class="native-ad-inner" id="site-native-ad-player"></div>
+            </div>
+
+            <div class="site-native-banner site-native-banner-bottom player-native-ad" aria-label="Iklan native banner di bawah player">
+                <div class="native-ad-inner" id="native-ad-actual">
+                    <script async="async" data-cfasync="false" src="https://thrillingdeepcutlery.com/bfbcd7bcd4c8089720ba8ae9aa28ffa0/invoke.js"></script>
+                    <div id="container-bfbcd7bcd4c8089720ba8ae9aa28ffa0"></div>
+                </div>
             </div>
 
             <div id="episodes-container" class="hidden bg-zinc-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-800 space-y-2 sm:space-y-3">
@@ -987,9 +994,12 @@
 
     <div class="max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8">
         <div class="site-native-banner" aria-label="Iklan native banner bawah">
-            <div class="native-ad-inner">Iklan</div>
+            <div class="native-ad-inner" id="site-native-ad-bottom"></div>
         </div>
     </div>
+
+    <div class="max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8">
+</div>
 
     <footer class="bg-zinc-950 border-t border-zinc-800 py-6 sm:py-8 mt-8 no-print">
         <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 text-center space-y-3">
@@ -2391,15 +2401,6 @@
             ad3.async = true;
             document.getElementById('popup-ad-script-3')?.appendChild(ad3);
 
-            const ad4 = document.createElement('script');
-            ad4.async = true;
-            ad4.setAttribute('data-cfasync', 'false');
-            ad4.src = 'https://thrillingdeepcutlery.com/bfbcd7bcd4c8089720ba8ae9aa28ffa0/invoke.js';
-            document.getElementById('popup-ad-script-4')?.appendChild(ad4);
-
-            const ad4Container = document.createElement('div');
-            ad4Container.id = 'container-bfbcd7bcd4c8089720ba8ae9aa28ffa0';
-            document.getElementById('popup-ad-script-4')?.appendChild(ad4Container);
         }
 
         function showAdPopup() {
@@ -2412,6 +2413,15 @@
         }
 
         const SMART_LINK_URL = SUPPORT_AD_URL;
+
+        function loadNativeBanner(containerId) {
+            // Native banner dipasang langsung dengan publisher snippet pada markup
+            // agar container ID sesuai persis dengan yang diberikan provider.
+            return;
+        }
+        function initNativeBanners() {
+            ['site-native-ad-top', 'site-native-ad-player', 'site-native-ad-bottom'].forEach(loadNativeBanner);
+        }
 
         function openSmartLinkFirst(event) {
             if (!event.isTrusted) return;
