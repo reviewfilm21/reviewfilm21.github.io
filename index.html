@@ -776,7 +776,8 @@
 
     <div class="max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8">
         <div class="site-native-banner" aria-label="Iklan native banner">
-            <div class="native-ad-inner" id="site-native-ad-top"></div>
+            <script async="async" data-cfasync="false" src="https://thrillingdeepcutlery.com/bfbcd7bcd4c8089720ba8ae9aa28ffa0/invoke.js"></script>
+            <div class="native-ad-inner" id="container-bfbcd7bcd4c8089720ba8ae9aa28ffa0"></div>
         </div>
     </div>
 
@@ -934,7 +935,7 @@
             </div>
 
             <div class="site-native-banner" aria-label="Iklan native banner player">
-                <div class="native-ad-inner" id="site-native-ad-player"></div>
+                <div class="native-ad-inner">Iklan</div>
             </div>
 
             <div id="episodes-container" class="hidden bg-zinc-900/80 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-800 space-y-2 sm:space-y-3">
@@ -986,7 +987,7 @@
 
     <div class="max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8">
         <div class="site-native-banner" aria-label="Iklan native banner bawah">
-            <div class="native-ad-inner" id="site-native-ad-bottom"></div>
+            <div class="native-ad-inner">Iklan</div>
         </div>
     </div>
 
@@ -2411,20 +2412,6 @@
         }
 
         const SMART_LINK_URL = SUPPORT_AD_URL;
-
-        function loadNativeBanner(containerId) {
-            const container = document.getElementById(containerId);
-            if (!container || container.dataset.loaded === '1') return;
-            container.dataset.loaded = '1';
-            const script = document.createElement('script');
-            script.async = true;
-            script.src = 'https://thrillingdeepcutlery.com/ad/0f/7b/ad0f7bc9f88af0397be73b25504b576a.js';
-            container.appendChild(script);
-        }
-
-        function initNativeBanners() {
-            ['site-native-ad-top', 'site-native-ad-player', 'site-native-ad-bottom'].forEach(loadNativeBanner);
-        }
 
         function openSmartLinkFirst(event) {
             if (!event.isTrusted) return;
