@@ -1,7 +1,0 @@
-DirectoryIndex index.html
-RewriteEngine On
-
-# Pertahankan route SPA /movie/... dan /tv/... agar index.html yang memproses URL.
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.html [L]
