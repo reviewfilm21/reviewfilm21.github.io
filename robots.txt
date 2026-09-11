@@ -1,8 +1,6 @@
-```text
 User-agent: *
 Allow: /
 
 Disallow: /backend/
 
 Sitemap: https://reviewfilm21.github.io/sitemap.xml
-```
