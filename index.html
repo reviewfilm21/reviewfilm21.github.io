@@ -984,6 +984,92 @@
             for (let i = 0; i < str.length; i++) { const char = str.charCodeAt(i); hash = ((hash << 5) - hash) + char; hash = hash & hash; }
             return Math.abs(hash);
         }
+        function upsertMeta(attribute, value, content) {
+            let el = document.querySelector(`meta[${attribute}="${CSS.escape(value)}"]`);
+            if (!el) {
+                el = document.createElement('meta');
+                el.setAttribute(attribute, value);
+                document.head.appendChild(el);
+            }
+            el.setAttribute('content', content);
+        }
+
+        function upsertCanonical(url) {
+            let link = document.querySelector('link[rel="canonical"]');
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'canonical';
+                document.head.appendChild(link);
+            }
+            link.href = url;
+        }
+
+        function updateStructuredData(data) {
+            let script = document.getElementById('dynamic-movie-schema');
+            if (!script) {
+                script = document.createElement('script');
+                script.id = 'dynamic-movie-schema';
+                script.type = 'application/ld+json';
+                document.head.appendChild(script);
+            }
+            script.textContent = JSON.stringify(data);
+        }
+
+        function updateDynamicSEO(item) {
+            if (!item) return;
+            const cleanTitle = String(item.title || 'Film').replace(/\s+/g, ' ').trim();
+            const year = item.year ? String(item.year).trim() : '';
+            const title = year ? `Nonton ${cleanTitle} (${year}) Subtitle Indonesia - ReviewFilm21` : `Nonton ${cleanTitle} Subtitle Indonesia - ReviewFilm21`;
+            const rawDescription = String(item.overview || `Informasi dan detail ${cleanTitle} di ReviewFilm21.`).replace(/\s+/g, ' ').trim();
+            const description = rawDescription.length > 160 ? rawDescription.slice(0, 157).replace(/\s+\S*$/, '') + '...' : rawDescription;
+            const image = enforceHttps(item.poster_path || item.backdrop_path || 'https://reviewfilm21.github.io/');
+            const type = item.type === 'tv' ? 'tv' : 'movie';
+            const schemaType = type === 'tv' ? 'TVSeries' : 'Movie';
+            const url = `https://reviewfilm21.github.io/${type}/${encodeURIComponent(item.id)}/${slugify(cleanTitle)}`;
+            const genres = String(item.genre || '').split(',').map(x => x.trim()).filter(Boolean);
+
+            document.title = title;
+            upsertMeta('name', 'description', description);
+            upsertMeta('property', 'og:title', title);
+            upsertMeta('property', 'og:description', description);
+            upsertMeta('property', 'og:url', url);
+            upsertMeta('property', 'og:image', image);
+            upsertMeta('name', 'twitter:title', title);
+            upsertMeta('name', 'twitter:description', description);
+            upsertMeta('name', 'twitter:image', image);
+            upsertCanonical(url);
+
+            updateStructuredData({
+                '@context': 'https://schema.org',
+                '@type': schemaType,
+                name: cleanTitle,
+                url,
+                image: [image],
+                description,
+                inLanguage: 'id-ID',
+                genre: genres,
+                isAccessibleForFree: true
+            });
+        }
+
+        function resetHomeSEO() {
+            const url = 'https://reviewfilm21.github.io/';
+            const title = 'ReviewFilm21 - Nonton Film Sub Indo Gratis';
+            const description = 'Nonton film bioskop, drama korea (drakor), anime, dan TV series subtitle Indonesia secara gratis di ReviewFilm21. Pemutar multi-server cepat, jernih, dan tanpa iklan mengganggu.';
+            document.title = title;
+            upsertMeta('name', 'description', description);
+            upsertMeta('property', 'og:title', title);
+            upsertMeta('property', 'og:description', description);
+            upsertMeta('property', 'og:url', url);
+            upsertMeta('property', 'og:image', 'https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg');
+            upsertMeta('name', 'twitter:title', title);
+            upsertMeta('name', 'twitter:description', description);
+            upsertMeta('name', 'twitter:image', 'https://image.tmdb.org/t/p/w1280/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg');
+            upsertCanonical(url);
+            const dynamicSchema = document.getElementById('dynamic-movie-schema');
+            if (dynamicSchema) dynamicSchema.remove();
+        }
+
         function showToast(message, icon = 'ℹ️') {
             const toast = document.getElementById('toast');
             const iconEl = document.getElementById('toast-icon');
@@ -1275,6 +1361,7 @@
             else if (tab === 'tv') { sections.series.classList.remove('hidden'); document.getElementById('breadcrumb-current').textContent = 'TV Series'; }
             else { sections.hero.classList.remove('hidden'); sections.trending.classList.remove('hidden'); sections.movies.classList.remove('hidden'); sections.series.classList.remove('hidden'); sections.thriller.classList.remove('hidden'); document.getElementById('breadcrumb-current').textContent = 'Semua Film'; renderAllSections(); }
             const titleMap = { home: 'ReviewFilm21 - Nonton Film Sub Indo Gratis', movies: 'Nonton Film Bioskop Sub Indo Gratis - ReviewFilm21', tv: 'Nonton TV Series & Drakor Sub Indo Gratis - ReviewFilm21', watchlist: 'Daftar Favorit Saya - ReviewFilm21' };
+            resetHomeSEO();
             document.title = titleMap[tab] || titleMap.home;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1637,7 +1724,7 @@
         
         async function openDetailPage(item) {
             store.setState({ currentMedia: item, currentServer: 1, currentSeason: 1, currentEpisode: 1, trailerKey: '', libraryEpisodes: item.libraryEpisodes || [], currentLibraryEpisodeIndex: 0 });
-            document.title = `Nonton ${item.title} (${item.year}) Subtitle Indonesia - ReviewFilm21`;
+            updateDynamicSEO(item);
             document.getElementById('detail-title').textContent = item.title;
             document.getElementById('detail-type-badge').textContent = item.type === 'tv' ? 'TV SERIES' : 'MOVIE';
             document.getElementById('detail-rating').textContent = `★ ${item.rating}`;
@@ -1869,7 +1956,7 @@
             toShow.forEach(id => { const sec = document.getElementById(id); if (sec) sec.classList.remove('hidden'); });
             window.history.pushState({}, '', '/');
             document.getElementById('breadcrumb-current').textContent = 'Semua Film';
-            document.title = 'ReviewFilm21 - Nonton Film Sub Indo Gratis';
+            resetHomeSEO();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
