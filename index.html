@@ -2101,8 +2101,70 @@
         function toggleMobileDropdown() { const dropdown = document.getElementById('mobile-dropdown'); const arrow = document.getElementById('mobile-dropdown-arrow'); if (dropdown) { dropdown.classList.toggle('hidden'); if (arrow) arrow.textContent = dropdown.classList.contains('hidden') ? '▼' : '▲'; } }
         function toggleDesktopDropdown() { const dropdown = document.getElementById('desktop-dropdown'); if (dropdown) dropdown.classList.toggle('active'); }
 
+        async function restoreRoute() {
+            let route = null;
+            try {
+                const savedPath = sessionStorage.getItem('redirectPath');
+                if (savedPath) {
+                    sessionStorage.removeItem('redirectPath');
+                    route = savedPath;
+                }
+            } catch (e) {}
+
+            if (!route) route = window.location.pathname;
+            if (!route || route === '/') return;
+
+            const parts = route.replace(/^\\/+|\\/+$/g, '').split('/');
+            if (parts.length < 3) return;
+
+            const type = parts[0] === 'tv' ? 'tv' : (parts[0] === 'movie' ? 'movie' : '');
+            if (!type) return;
+
+            const id = parts[1];
+            const slug = parts.slice(2).join('-');
+            const state = store.getState();
+
+            let item = state.libraryData.find(row => {
+                const title = row.Judul || row.title || row.name || '';
+                const link = row.Link || row.link || '';
+                const stableId = Math.abs(hashCode(title + link)).toString();
+                const cleanTitle = title.replace(/^Nonton\\s*/i, '').replace(/Sub\\s*Indo(?:nesia)?/i, '').trim();
+                return stableId === id && slugify(cleanTitle) === slug;
+            });
+
+            if (item) {
+                const title = item.Judul || item.title || item.name || 'Film';
+                playLibraryItem(
+                    item.Link || item.link,
+                    title,
+                    item.Poster || item.poster || '',
+                    item.Rating || item.rating || '8.0',
+                    item.Tahun || item.year || new Date().getFullYear().toString(),
+                    item.Deskripsi || item.overview || '',
+                    item.Aktor || item.actors || '',
+                    type
+                );
+                return;
+            }
+
+            const catalogs = [
+                ...(state.trendingData || []),
+                ...(state.moviesData || []),
+                ...(state.seriesData || []),
+                ...(state.thrillerData || [])
+            ];
+            const tmdbItem = catalogs.find(media => String(media.id) === String(id) && media.type === type);
+            if (tmdbItem) {
+                openDetailPage(tmdbItem);
+                return;
+            }
+
+            console.warn('Route film tidak ditemukan:', route);
+            window.history.replaceState({}, '', '/');
+        }
+
         // ================= INISIALISASI =================
-        window.onload = function () {
+        window.onload = async function () {
             const state = store.getState();
             document.getElementById('watchlist-count-badge').textContent = state.watchlist.length;
             document.getElementById('mob-watchlist-count').textContent = state.watchlist.length;
@@ -2116,11 +2178,14 @@
             if (cachedSeries) cachedState.seriesData = cachedSeries;
             if (cachedThriller) cachedState.thrillerData = cachedThriller;
             if (Object.keys(cachedState).length > 0) store.setState(cachedState);
-            loadLibraryFromGoogleSheets().then(() => fetchTMDBCatalogs());
-            setTimeout(() => { if (!store.getState().isLibraryLoaded) { loadFallbackLibraryData(); fetchTMDBCatalogs(); } }, 10000);
+
+            await loadLibraryFromGoogleSheets();
+            await fetchTMDBCatalogs();
+
             setupHeroCarousel();
             renderAllSections();
             hideLoading();
+            await restoreRoute();
         };
     </script>
 </body>
