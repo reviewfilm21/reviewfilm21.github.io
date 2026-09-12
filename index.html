@@ -2025,7 +2025,7 @@
             } catch (e) {}
 
             if (!route || route === '/') return;
-            const parts = route.replace(/^\\/+|\\/+$/g, '').split('/');
+            const parts = route.replace(/^\/+|\/+$/g, '').split('/');
             if (parts.length < 3) return;
 
             const type = parts[0] === 'tv' ? 'tv' : (parts[0] === 'movie' ? 'movie' : '');
