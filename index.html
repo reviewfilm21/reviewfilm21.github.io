@@ -1846,7 +1846,7 @@
             const state = store.getState();
             const libraryEpisodes = type === 'tv' ? getLibraryEpisodes(title, state.libraryData) : [];
             const mediaItem = {
-                id: Math.floor(Math.random() * 1000000),
+                id: hashCode(String(title || '') + '|' + String(link || '')),
                 title, type: type || 'movie', rating: rating || '8.0', year: year || '2026',
                 genre: 'Pustaka Film', overview: description || 'Tidak ada deskripsi tersedia.',
                 poster_path: enforceHttps(poster) || 'https://placehold.co/400x600/18181b/ff5c00?text=No+Poster',
@@ -2014,8 +2014,67 @@
         function toggleMobileDropdown() { const dropdown = document.getElementById('mobile-dropdown'); const arrow = document.getElementById('mobile-dropdown-arrow'); if (dropdown) { dropdown.classList.toggle('hidden'); if (arrow) arrow.textContent = dropdown.classList.contains('hidden') ? '▼' : '▲'; } }
         function toggleDesktopDropdown() { const dropdown = document.getElementById('desktop-dropdown'); if (dropdown) dropdown.classList.toggle('active'); }
 
+        async function restoreRoute() {
+            let route = window.location.pathname;
+            try {
+                const savedPath = sessionStorage.getItem('redirectPath');
+                if (savedPath) {
+                    sessionStorage.removeItem('redirectPath');
+                    route = savedPath;
+                }
+            } catch (e) {}
+
+            if (!route || route === '/') return;
+            const parts = route.replace(/^\\/+|\\/+$/g, '').split('/');
+            if (parts.length < 3) return;
+
+            const type = parts[0] === 'tv' ? 'tv' : (parts[0] === 'movie' ? 'movie' : '');
+            if (!type) return;
+
+            const id = parts[1];
+            const slug = parts.slice(2).join('-');
+            const state = store.getState();
+
+            const libraryItem = (state.libraryData || []).find(row => {
+                const title = String(row.Judul || row.title || row.name || '').trim();
+                const link = String(row.Link || row.link || '').trim();
+                const stableId = String(hashCode(title + '|' + link));
+                const cleanTitle = title.replace(/^Nonton\\s*/i, '').replace(/Sub\\s*Indo(?:nesia)?/i, '').trim();
+                return stableId === String(id) && slugify(cleanTitle) === slug;
+            });
+
+            if (libraryItem) {
+                playLibraryItem(
+                    libraryItem.Link || libraryItem.link,
+                    libraryItem.Judul || libraryItem.title || libraryItem.name || 'Film',
+                    libraryItem.Poster || libraryItem.poster || '',
+                    libraryItem.Rating || libraryItem.rating || '8.0',
+                    libraryItem.Tahun || libraryItem.year || '',
+                    libraryItem.Deskripsi || libraryItem.overview || '',
+                    libraryItem.Aktor || libraryItem.actors || '',
+                    type
+                );
+                return;
+            }
+
+            const catalogs = [
+                ...(state.trendingData || []),
+                ...(state.moviesData || []),
+                ...(state.seriesData || []),
+                ...(state.thrillerData || [])
+            ];
+            const tmdbItem = catalogs.find(media => String(media.id) === String(id) && media.type === type);
+            if (tmdbItem) {
+                openDetailPage(tmdbItem);
+                return;
+            }
+
+            console.warn('Route tidak ditemukan:', route);
+            window.history.replaceState({}, '', '/');
+        }
+
         // ================= INISIALISASI =================
-        window.onload = function () {
+        window.onload = async function () {
             const state = store.getState();
             document.getElementById('watchlist-count-badge').textContent = state.watchlist.length;
             document.getElementById('mob-watchlist-count').textContent = state.watchlist.length;
@@ -2029,11 +2088,14 @@
             if (cachedSeries) cachedState.seriesData = cachedSeries;
             if (cachedThriller) cachedState.thrillerData = cachedThriller;
             if (Object.keys(cachedState).length > 0) store.setState(cachedState);
-            loadLibraryFromGoogleSheets().then(() => fetchTMDBCatalogs());
-            setTimeout(() => { if (!store.getState().isLibraryLoaded) { loadFallbackLibraryData(); fetchTMDBCatalogs(); } }, 10000);
+
+            await loadLibraryFromGoogleSheets();
+            await fetchTMDBCatalogs();
+
             setupHeroCarousel();
             renderAllSections();
             hideLoading();
+            await restoreRoute();
         };
     </script>
 </body>
