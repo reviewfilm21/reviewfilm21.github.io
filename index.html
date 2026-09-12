@@ -1318,7 +1318,8 @@
             const item = mediaCache.get(key);
             if (!item) return;
             const slug = slugify(item.title);
-            window.history.pushState({}, '', `/${item.type}/${item.id}/${slug}`);
+            const routeId = item.isLibraryItem ? hashCode(String(item.title || '') + '|' + String(item.link || '')) : item.id;
+            window.history.pushState({}, '', `/${item.type}/${routeId}/${slug}`);
             document.getElementById('breadcrumb-current').textContent = item.title;
             openDetailPage(item);
         }
@@ -1854,7 +1855,8 @@
                 link, actors: actors || '', isLibraryItem: true, libraryEpisodes
             };
             const slug = slugify(mediaItem.title.replace(/^Nonton\s*/i, '').replace(/Sub\s*Indo(?:nesia)?/i, '').trim());
-            window.history.pushState({}, '', `/${mediaItem.type}/${mediaItem.id}/${slug}`);
+            const routeId = mediaItem.isLibraryItem ? hashCode(String(mediaItem.title || '') + '|' + String(mediaItem.link || '')) : mediaItem.id;
+            window.history.pushState({}, '', `/${mediaItem.type}/${routeId}/${slug}`);
             document.getElementById('breadcrumb-current').textContent = mediaItem.title;
             openDetailPage(mediaItem);
         }
